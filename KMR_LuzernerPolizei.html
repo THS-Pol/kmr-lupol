@@ -1060,6 +1060,12 @@ const renderPrintView = () => {
   </div>`;
 };
 // ===== RENDER ENGINE =====
+const renderContent = () => {
+  const renders=[T0,T1,T2,T3,T4,T5,T6,T7];
+  const mc=document.getElementById('main-content');
+  if(mc) mc.innerHTML=renders[activeTab]();
+};
+
 const render = () => {
   if (!authenticated) { renderLogin(); return; }
   const sub=document.getElementById('hdr-sub');
