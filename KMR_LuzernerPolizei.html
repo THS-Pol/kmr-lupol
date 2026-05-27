@@ -384,10 +384,19 @@ const set = (k,v) => {
   if(k==='heim'||k==='gast'){
     const sub=document.getElementById('hdr-sub');
     if(sub) sub.textContent=(d.heim&&d.gast)?`${d.heim} vs. ${d.gast}${d.tH!==''&&d.tG!==''?' — '+d.tH+':'+d.tG:''}` : 'Kurzmelderapport KMR';
-    // Update avatar immediately with initials (no flicker)
     const side = k==='heim'?'heim':'gast';
-    d[side+'Logo'] = ''; // clear old logo when team name changes
-    renderContent();     // re-render with initials avatar
+    d[side+'Logo'] = ''; // clear old logo when name changes
+    // Update avatar directly in DOM — input keeps focus, no re-render
+    const wrap = document.getElementById('lw-'+side);
+    if(wrap) {
+      const av = `width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800`;
+      if(v) {
+        const col=teamColor(v), inits=teamInitials(v);
+        wrap.innerHTML=`<div style="${av};background:${col};color:#fff;font-size:11px">${inits}</div>`;
+      } else {
+        wrap.innerHTML=`<div style="${av};background:#f0f0f0;color:#bbb;font-size:9px">Logo</div>`;
+      }
+    }
     if(v.length >= 2) fetchLogo(v, side);
     if(k==='gast') fetchHistory();
   }
@@ -510,6 +519,18 @@ const teamColor = name => {
   return ['#1a3560','#c0392b','#27ae60','#8e44ad','#e67e22','#2980b9','#16a085','#d35400'][h%8];
 };
 
+const updateLogoWrap = (side, url) => {
+  d[side+'Logo'] = url;
+  autoSave();
+  const wrap = document.getElementById('lw-'+side);
+  if (!wrap) { renderContent(); return; }
+  const name = side==='heim'?d.heim:d.gast;
+  const av = `width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800`;
+  const col = teamColor(name), inits = teamInitials(name);
+  wrap.innerHTML = `<img src="${url}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;border:1px solid #eee;flex-shrink:0"
+    onerror="this.outerHTML='<div style=\\'${av};background:${col};color:#fff;font-size:11px\\'>${inits}</div>'">`;
+};
+
 // ── LOGO FETCH (Wikipedia API → TheSportsDB) ─────────────────
 const logoTimers = {};
 const fetchLogo = (name, side) => {
@@ -527,21 +548,18 @@ const fetchLogo = (name, side) => {
       if (r.ok) {
         const j = await r.json();
         const img = j.thumbnail?.source;
-        // Only use if it looks like a badge/logo (not a photo)
-        if (img && (j.type==='disambiguation'||true)) {
-          d[side+'Logo'] = img; autoSave(); renderContent(); return;
-        }
+        if (img) { updateLogoWrap(side, img); return; }
       }
     } catch(e) { console.warn('Logo Wikipedia:', e.message); }
 
-    // 2. TheSportsDB (CORS varies by network)
+    // 2. TheSportsDB Fallback
     try {
       const r = await fetch(
         `https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(name)}`
       );
       const j = await r.json();
       const badge = j.teams?.[0]?.strBadge || j.teams?.[0]?.strTeamBadge;
-      if (badge) { d[side+'Logo'] = badge; autoSave(); renderContent(); }
+      if (badge) { updateLogoWrap(side, badge); }
     } catch(e) { console.warn('Logo TheSportsDB:', e.message); }
   }, 700);
 };
@@ -606,17 +624,15 @@ const inpTeam = (l, k, side) => {
   const name = d[k]||'';
   const inits = name ? teamInitials(name) : '';
   const col = teamColor(name);
-  const avatarStyle = `width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px`;
-  const placeholder = name
-    ? `<div style="${avatarStyle};background:${col};color:#fff">${inits}</div>`
-    : `<div style="${avatarStyle};background:#f0f0f0;color:#bbb;font-size:9px">Logo</div>`;
-  const logoEl = logo
+  const avSt = `width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800`;
+  const avatarHtml = logo
     ? `<img src="${logo}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;border:1px solid #eee;flex-shrink:0"
-         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      + `<div style="${avatarStyle};background:${col};color:#fff;display:none">${inits}</div>`
-    : placeholder;
+         onerror="this.outerHTML='<div style=\\'${avSt};background:${col};color:#fff;font-size:11px\\'>${inits}</div>'">`
+    : name
+      ? `<div style="${avSt};background:${col};color:#fff;font-size:11px">${inits}</div>`
+      : `<div style="${avSt};background:#f0f0f0;color:#bbb;font-size:9px">Logo</div>`;
   return `<div class="mb">${lbl(l)}<div style="display:flex;align-items:center;gap:8px">
-    ${logoEl}
+    <span id="lw-${side}">${avatarHtml}</span>
     <input type="text" value="${escH(name)}" oninput="set('${k}',this.value)" style="flex:1">
   </div></div>`;
 };
