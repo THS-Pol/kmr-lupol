@@ -495,16 +495,37 @@ const BEWERTUNG = {
   SCHWERWIEGENDE_PROBLEME: {color:'#c0392b', icon:'✕', label:'Schwerwiegende Probleme'},
 };
 
-// ── LOGO FETCH (TheSportsDB) ─────────────────────────────────
+// ── LOGO FETCH (Wikipedia REST API → TheSportsDB Fallback) ──
 const logoTimers = {};
 const fetchLogo = (name, side) => {
   clearTimeout(logoTimers[side]);
   logoTimers[side] = setTimeout(async () => {
     if (!name || name.length < 2) return;
+
+    // 1. Wikipedia REST API (CORS-freundlich, kein Key benötigt)
     try {
-      const r = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(name)}`);
+      const title = name.trim().replace(/ /g, '_');
+      const r = await fetch(
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
+        { headers: { 'Accept': 'application/json' } }
+      );
+      if (r.ok) {
+        const j = await r.json();
+        const img = j.thumbnail?.source || j.originalimage?.source;
+        if (img) {
+          d[side+'Logo'] = img;
+          autoSave(); renderContent(); return;
+        }
+      }
+    } catch(e) {}
+
+    // 2. Fallback: TheSportsDB
+    try {
+      const r = await fetch(
+        `https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(name)}`
+      );
       const j = await r.json();
-      const badge = j.teams?.[0]?.strTeamBadge;
+      const badge = j.teams?.[0]?.strTeamBadge || j.teams?.[0]?.strBadge;
       if (badge) { d[side+'Logo'] = badge; autoSave(); renderContent(); }
     } catch(e) {}
   }, 900);
