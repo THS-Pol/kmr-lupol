@@ -110,41 +110,65 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   body{background:#fff!important;margin:0;padding:0}
   .app{max-width:none}
+  /* ── PAGE BREAK RULES ── */
+  .pr-h2{
+    break-after:avoid;page-break-after:avoid;
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  /* Keep section headings with their content */
+  .pr-h2 + *{break-before:avoid;page-break-before:avoid;}
+  /* Keep these blocks intact */
+  .pr-beh,.pr-spot,.pr-pers-card,.pr-field,.pr-check,
+  .pr-einsatz,.pr-2col,.pr-spots,.pr-grid{
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  /* Executive stats bar always stays together */
+  .pr-stats-bar{break-inside:avoid;page-break-inside:avoid;}
+  /* Hero match block stays together */
+  .pr-hero{break-inside:avoid;page-break-inside:avoid;}
+  /* Header stays together */
+  .pr-hdr{break-inside:avoid;page-break-inside:avoid;}
+  /* Footer stays together */
+  .pr-footer,.pr-verteiler{break-inside:avoid;page-break-inside:avoid;}
+  /* Prevent widows/orphans in text blocks */
+  .pr-sb{orphans:3;widows:3;word-break:break-word;}
+  .pr-val{orphans:2;widows:2;}
+  /* Long text blocks: allow internal breaks but avoid short orphans */
+  p,div{orphans:2;widows:2;}
 }
 .print-only{display:none}
 /* Print styles */
 .pr{font-family:Arial,Helvetica,sans-serif;font-size:9pt;line-height:1.4;padding:10mm 12mm;max-width:190mm;margin:0 auto;color:#111}
-.pr-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5mm;border-bottom:2pt solid #1a3560;padding-bottom:3mm}
+.pr-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5mm;border-bottom:2pt solid #1a3560;padding-bottom:3mm;break-inside:avoid;page-break-inside:avoid}
 .pr-org{font-size:15pt;font-weight:900;color:#1a3560;letter-spacing:.5px}
 .pr-title{font-size:10pt;font-weight:700;margin-top:1px}
 .pr-ids{font-size:7pt;color:#555;text-align:right;line-height:1.8}
-.pr-match{background:#e8eef7;border-radius:3mm;padding:4mm;margin-bottom:4mm;text-align:center}
-.pr-liga{font-size:7pt;color:#555;margin-bottom:1mm}
-.pr-score{font-size:18pt;font-weight:900;color:#1a3560;margin:1mm 0}
-.pr-ort{font-size:7pt;color:#555}
-.pr-h2{font-weight:800;font-size:10pt;color:#1a3560;border-bottom:1pt solid #e8eef7;padding-bottom:3px;margin:5mm 0 3px}
-.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin-bottom:4mm}
-.pr-field{margin-bottom:4px}
+.pr-hero{border:1.5pt solid #1a3560;border-radius:3mm;padding:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:2mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-stat{background:#1a3560;color:#fff;border-radius:2mm;padding:2.5mm 1mm;text-align:center;break-inside:avoid;page-break-inside:avoid}
+.pr-h2{font-weight:800;font-size:10pt;color:#1a3560;border-bottom:1pt solid #e8eef7;padding-bottom:3px;margin:5mm 0 3px;break-after:avoid;page-break-after:avoid}
+.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-field{margin-bottom:4px;break-inside:avoid;page-break-inside:avoid}
 .pr-lbl{font-size:7pt;font-weight:700;color:#555;display:block;margin-bottom:1px}
 .pr-val{font-size:9pt;display:block}
 .pr-full{grid-column:1/-1}
-.pr-check{display:flex;align-items:center;gap:4px;margin-bottom:2px}
-.pr-spots{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-bottom:4mm}
-.pr-spot{background:#e8eef7;border-radius:2mm;padding:2mm 3mm}
+.pr-check{display:flex;align-items:center;gap:4px;margin-bottom:2px;break-inside:avoid;page-break-inside:avoid}
+.pr-spots{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-spot{background:#e8eef7;border-radius:2mm;padding:2mm 3mm;break-inside:avoid;page-break-inside:avoid}
 .pr-spot-id{font-weight:800;color:#1a3560;font-size:7pt}
 .pr-spot-t{font-size:6pt;color:#555;margin-top:1px}
-.pr-beh{background:#e8eef7;padding:3mm;border-radius:2mm}
+.pr-beh{background:#e8eef7;padding:3mm;border-radius:2mm;break-inside:avoid;page-break-inside:avoid}
 .pr-beh-title{font-weight:800;font-size:9pt;color:#1a3560;margin-bottom:3px}
-.pr-2col{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-bottom:4mm}
-.pr-einsatz{display:grid;grid-template-columns:1fr 2fr;gap:4mm;margin-bottom:4mm}
+.pr-2col{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-einsatz{display:grid;grid-template-columns:1fr 2fr;gap:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
 .pr-em-grid{display:grid;grid-template-columns:1fr 1fr}
-.pr-footer{margin-top:6mm;border-top:1pt solid #1a3560;padding-top:3mm;display:flex;justify-content:space-between;font-size:7pt;color:#555}
+.pr-footer{margin-top:6mm;border-top:1pt solid #1a3560;padding-top:3mm;display:flex;justify-content:space-between;font-size:7pt;color:#555;break-inside:avoid;page-break-inside:avoid}
 .pr-verteiler{margin-top:1.5mm;font-size:6pt;color:#aaa}
-.pr-sb{font-size:9pt;font-style:italic;white-space:pre-wrap;line-height:1.5}
+.pr-sb{font-size:9pt;font-style:italic;white-space:pre-wrap;line-height:1.6;word-break:break-word;orphans:3;widows:3}
 .pr-badge{display:inline-block;background:#e8eef7;color:#1a3560;border-radius:2px;padding:1mm 2mm;font-size:6pt;font-weight:800;margin:1px}
 .pr-badge-m{background:#fff3e0;color:#e67e22}
-.pr-pb{page-break-before:always}
-.pr-pers-card{border:1pt solid #ddd;border-radius:2mm;padding:3mm;margin-bottom:3mm;page-break-inside:avoid}
+.pr-pb{break-before:page;page-break-before:always}
+.pr-pers-card{border:1pt solid #ddd;border-radius:2mm;padding:3mm;margin-bottom:3mm;break-inside:avoid;page-break-inside:avoid}
 .pr-pers-hdr{display:flex;justify-content:space-between;margin-bottom:3px}
 </style>
 </head>
@@ -331,12 +355,63 @@ const loadSaved = () => {
 };
 
 // ===== SETTERS =====
-const set = (k,v) => { d[k]=v; autoSave(); render(); };
-const tog = k => { d[k]=!d[k]; autoSave(); render(); };
+// Keys that change UI structure and require re-render
+const STRUCTURAL = new Set([
+  'pkJ','svJ','rvJ','maJ','gwJ','dPJ','dSJ','dPoJ','praev','repr',
+  'emOD','emGu','emRZ','emPM','emWW','emSG','emOB','emHU','emHK','emSW','emSP','emUP',
+  'hAlk','hAuf','hSp','hAb','gAlk','gAuf','gSp','gAb',
+  'fhPG','fhSP','fgPG','fgSP','einsatzBewertung',
+  'liga','heimLogo','gastLogo','letzterMatch',
+]);
+
+const set = (k,v) => {
+  d[k]=v;
+  autoSave();
+  if(STRUCTURAL.has(k)){ renderContent(); return; }
+  // Targeted DOM updates — no full re-render, input keeps focus
+  if(k==='hFans'||k==='gFans'){
+    const tz=(parseInt(d.hFans)||0)+(parseInt(d.gFans)||0);
+    const el=document.getElementById('disp-totz');
+    if(el) el.textContent=tz?tz.toLocaleString('de-CH'):'—';
+  }
+  if(k==='fzAnz'||k==='fzKm'){
+    const tk=(parseInt(d.fzAnz)||0)*(parseInt(d.fzKm)||0);
+    const el=document.getElementById('disp-totkm');
+    const box=document.getElementById('disp-totkm-box');
+    if(el) el.textContent=tk?tk+' km':'';
+    if(box) box.style.display=tk?'':'none';
+  }
+  if(k==='heim'||k==='gast'){
+    const sub=document.getElementById('hdr-sub');
+    if(sub) sub.textContent=(d.heim&&d.gast)?`${d.heim} vs. ${d.gast}${d.tH!==''&&d.tG!==''?' — '+d.tH+':'+d.tG:''}` : 'Kurzmelderapport KMR';
+    if(k==='heim') fetchLogo(v,'heim');
+    if(k==='gast'){ fetchLogo(v,'gast'); fetchHistory(); }
+  }
+  if(k==='tH'||k==='tG'){
+    const sub=document.getElementById('hdr-sub');
+    if(sub&&d.heim&&d.gast) sub.textContent=`${d.heim} vs. ${d.gast}${d.tH!==''&&d.tG!==''?' — '+d.tH+':'+d.tG:''}`;
+  }
+};
+
+const tog = k => { d[k]=!d[k]; autoSave(); renderContent(); };
+
 const setSpot = (i,k,v) => {
-  if(k==='id'){const f=SPOTS_DB.find(x=>x.id===v); spots[i].id=v; if(f)spots[i].n=f.n;}
-  else spots[i][k]=v;
-  autoSave(); render();
+  if(k==='id'){
+    const f=SPOTS_DB.find(x=>x.id===v);
+    spots[i].id=v;
+    if(f){ spots[i].n=f.n; const ne=document.getElementById(`sn${i}`); if(ne) ne.value=f.n; }
+  } else { spots[i][k]=v; }
+  autoSave();
+  // Update tag label
+  const tag=document.getElementById(`st${i}`);
+  if(tag) tag.textContent=`${spots[i].id||('#'+(i+1))} ${spots[i].n}${spots[i].rolle?' · '+spots[i].rolle:''}`;
+  // Update hours display
+  if(k==='von'||k==='bis'){
+    const h=calcH(spots[i].von,spots[i].bis);
+    const hel=document.getElementById(`sh${i}`);
+    if(hel){ hel.textContent=h; hel.style.display=h?'flex':'none'; }
+    else if(h) renderContent(); // first time hours appear, need render
+  }
 };
 const addSpot = () => { spots.push({id:'',n:'',von:'',bis:'',rolle:''}); autoSave(); render(); };
 const rmSpot = i => { if(confirm('Spotter entfernen?')){ spots.splice(i,1); autoSave(); render(); }};
@@ -347,8 +422,8 @@ const addPers = () => {
   autoSave(); render();
 };
 const rmPers = i => { if(confirm('Person entfernen?')){ pers.splice(i,1); autoSave(); render(); }};
-const setPers = (i,k,v) => { pers[i][k]=v; autoSave(); render(); };
-const togPers = (i,k) => { pers[i][k]=!pers[i][k]; autoSave(); render(); };
+const setPers = (i,k,v) => { pers[i][k]=v; autoSave(); /* no re-render, input keeps focus */ };
+const togPers = (i,k) => { pers[i][k]=!pers[i][k]; autoSave(); renderContent(); };
 const clearAll = () => {
   if(confirm('Neuen KMR starten?\n\nAlle aktuellen Daten werden gelöscht.')) {
     d=JSON.parse(JSON.stringify(INIT_D));
@@ -548,7 +623,7 @@ const T0 = () => {
     const rolleOpts=ROLLEN.map(r=>`<option${sp.rolle===r?' selected':''}>${r}</option>`).join('');
     return `<div class="spot-card">
       <div class="spot-hdr">
-        <div class="spot-tag">${sp.id||('#'+(i+1))} ${escH(sp.n)}${sp.rolle?' · '+sp.rolle:''}</div>
+        <div class="spot-tag" id="st${i}">${sp.id||('#'+(i+1))} ${escH(sp.n)}${sp.rolle?' · '+sp.rolle:''}</div>
         <button class="btn-rm" onclick="rmSpot(${i})">✕</button>
       </div>
       <div class="row mb">
@@ -557,7 +632,7 @@ const T0 = () => {
             <option value="">— wählen —</option>${opts}
             <option value="EXT"${sp.id==='EXT'?' selected':''}>Extern</option>
           </select></div>
-        <div>${lbl('Name')}<input type="text" value="${escH(sp.n)}" oninput="setSpot(${i},'n',this.value)"></div>
+        <div>${lbl('Name')}<input id="sn${i}" type="text" value="${escH(sp.n)}" oninput="setSpot(${i},'n',this.value)"></div>
       </div>
       <div class="mb">${lbl('Rolle / Auftrag')}<select oninput="setSpot(${i},'rolle',this.value)">
         <option value="">— auswählen —</option>${rolleOpts}
@@ -565,7 +640,7 @@ const T0 = () => {
       <div class="time-row">
         <div>${lbl('Einsatz von')}<input type="time" value="${sp.von}" oninput="setSpot(${i},'von',this.value)"></div>
         <div>${lbl('Einsatz bis')}<input type="time" value="${sp.bis}" oninput="setSpot(${i},'bis',this.value)"></div>
-        ${h?`<div class="calc-h">${h}</div>`:''}
+        <div class="calc-h" id="sh${i}" style="${h?'display:flex':'display:none'}">${h}</div>
       </div>
     </div>`;
   }).join('');
@@ -594,7 +669,7 @@ const T1 = () => card('Zuschauer',`
   ${row(col(inpN('Heim-Fans','hFans')),col(inpN('Gäste-Fans','gFans')))}
   ${row(col(inpN('Risk-Fans Heim','riskH')),col(inpN('Risk-Fans Gast','riskG')))}
   <div class="total-box"><div class="tot-lbl">Total Zuschauer</div>
-    <div class="tot-val">${totZ()?totZ().toLocaleString('de-CH'):'—'}</div></div>
+    <div class="tot-val" id="disp-totz">${totZ()?totZ().toLocaleString('de-CH'):'—'}</div></div>
 `) + card('Anreise Gästefans',`
   ${divider('PW / Privatauto')}
   ${row(col(inpN('Personen','pwP')),col(inpN('Fahrzeuge','pwF')))}
@@ -610,7 +685,10 @@ const T2 = () => card('Personalaufgebot',`
   ${row(col(inpN('Private Si-Kräfte','anzSi')),col(inpN('Rechtshilfe Szenenkenner','anzR')))}
   ${divider('Fahrzeuge Spotter')}
   ${row(col(inpN('Anzahl Fahrzeuge','fzAnz')),col(inpN('Km pro Fahrzeug','fzKm')))}
-  ${totKm()>0?`<div class="total-box mb" style="padding:8px 14px"><div class="tot-lbl">Total Km</div><div class="tot-sm">${totKm()} km</div></div>`:''}
+  <div class="total-box mb" id="disp-totkm-box" style="padding:8px 14px;${totKm()===0?'display:none':''}">
+    <div class="tot-lbl">Total Km</div>
+    <div class="tot-sm" id="disp-totkm">${totKm()>0?totKm()+' km':''}</div>
+  </div>
   ${divider('Einsatzzeiten')}
   ${timeRow('Spotter LuPol','sVon','sBis')}
   ${timeRow('Polizeikräfte','pVon','pBis')}
@@ -858,7 +936,7 @@ const renderPrintView = () => {
     </div>
 
     <!-- ══ MATCH HERO ══ -->
-    <div style="border:1.5pt solid #1a3560;border-radius:3mm;padding:5mm;margin-bottom:4mm">
+    <div class="pr-hero">
       <div style="font-size:7.5pt;color:#666;text-align:center;margin-bottom:3mm">${escH(d.liga)} · ${fmtDate(d.datum)}</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:4mm">
         ${logoImg(d.heimLogo, d.heim||'H')}
@@ -879,14 +957,14 @@ const renderPrintView = () => {
     </div>
 
     <!-- ══ EXECUTIVE SUMMARY BAR ══ -->
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:2mm;margin-bottom:4mm;text-align:center">
+    <div class="pr-stats-bar">
       ${[
         ['Zuschauer', tz>0?tz.toLocaleString('de-CH'):'—'],
         ['Spotter', d.anzS||'—'],
         ['Pyro Total', pyroTotal||'0'],
         ['Festnahmen', festTotal||'0'],
         ['Anzeigen', anzTotal||'0'],
-      ].map(([label,val])=>`<div style="background:#1a3560;color:#fff;border-radius:2mm;padding:2.5mm 1mm">
+      ].map(([label,val])=>`<div class="pr-stat">
         <div style="font-size:6pt;opacity:.7;text-transform:uppercase;margin-bottom:1.5mm;letter-spacing:.3px">${label}</div>
         <div style="font-size:14pt;font-weight:900;line-height:1">${val}</div>
       </div>`).join('')}
