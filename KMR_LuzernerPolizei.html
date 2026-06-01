@@ -210,18 +210,54 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <script>
 // ===== CONSTANTS =====
 const SPOTS_DB = [
-  {id:'LU01',n:'BUHOLZER Marc'},{id:'LU04',n:'GARATTONI Roger'},
-  {id:'LU08',n:'STIRNIMANN Christian'},{id:'LU10',n:'LINDEGGER Patrick'},
-  {id:'LU13',n:'MAURER Jonas'},{id:'LU16',n:'BERTSCHI Silas'},
-  {id:'LU18',n:'KERBER Philippe'},{id:'LU19',n:'STADELMANN Thierry'},
-  {id:'LU22',n:'WICKI Daniel'},
+  {id:'LU01',n:'BUHOLZER Marc'},   {id:'LU02',n:'STADELMANN Thierry'},
+  {id:'LU03',n:'GARATTONI Roger'}, {id:'LU04',n:'MAURER Jonas'},
+  {id:'LU05',n:'MARBACHER Reto'},  {id:'LU06',n:'KERBER Philippe'},
+  {id:'LU07',n:'WICKI Daniel'},    {id:'LU08',n:'BERTSCHI Silas'},
+  {id:'LU09',n:'BAUR Leandro'},    {id:'LU10',n:'STIRNIMANN Christian'},
+  {id:'LU11',n:'BAUMANN Mario'},   {id:'LU12',n:'LINDEGGER Patrick'},
+  {id:'LU13',n:'KOLLER Marco'},    {id:'LU14',n:'STANGER Andreas'},
+  {id:'LU15',n:'AEMMER Silvan'},   {id:'LU16',n:'LUSTENBERGER Fabian'},
+  {id:'LU17',n:'SIDLER Nicholas'}, {id:'LU18',n:'HAAS Aaron'},
+  {id:'LU19',n:'GÄRTNER Pascal'},  {id:'LU20',n:'TESSAROLO Nicola'},
+  {id:'LU21',n:'BUCHER Nathan'},   {id:'LU22',n:'MERZ Patrick'},
 ];
-const LIGAS = ['Brack Super League','Credit Suisse Super League','Swiss Cup','Freundschaftsspiel','Anderes'];
+const LIGAS = ['Brack Super League','Credit Suisse Challenge League','Swiss Cup','Freundschaftsspiel','Andere'];
+
+// Schweizer Stadien-Datenbank (Heimteam → automatische Befüllung)
+const STADIEN = {
+  'fc luzern':            {stadion:'swissporarena',             plz:'6005 Luzern LU, Horwerstrasse 91',                 kap:'17000'},
+  'fc zürich':            {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'fc zurich':            {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'bsc young boys':       {stadion:'Wankdorf Stadion',          plz:'3014 Bern BE, Papiermühlestrasse 71',              kap:'31120'},
+  'young boys':           {stadion:'Wankdorf Stadion',          plz:'3014 Bern BE, Papiermühlestrasse 71',              kap:'31120'},
+  'fc basel':             {stadion:'St. Jakob-Park',            plz:'4052 Basel BS, Brüglingerstrasse 2',               kap:'38512'},
+  'fc st. gallen':        {stadion:'kybunpark',                 plz:'9015 St. Gallen SG, Abtwilerstrasse 6',            kap:'19694'},
+  'fc st gallen':         {stadion:'kybunpark',                 plz:'9015 St. Gallen SG, Abtwilerstrasse 6',            kap:'19694'},
+  'servette fc':          {stadion:'Stade de Genève',           plz:'1227 Carouge GE, Route des Jeunes 18',             kap:'30084'},
+  'servette':             {stadion:'Stade de Genève',           plz:'1227 Carouge GE, Route des Jeunes 18',             kap:'30084'},
+  'fc lugano':            {stadion:'Stadio di Cornaredo',       plz:'6900 Lugano TI, Via Trevano 54',                   kap:'6330'},
+  'grasshopper':          {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'grasshopper club':     {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'fc winterthur':        {stadion:'Stadion Schützenwiese',     plz:'8400 Winterthur ZH, Rennweg 5',                    kap:'8700'},
+  'fc sion':              {stadion:'Stade de Tourbillon',       plz:'1950 Sion VS, Chemin de Tourbillon 36',            kap:'14283'},
+  'fc lausanne-sport':    {stadion:'Stade de la Tuilière',      plz:'1014 Lausanne VD, Avenue de la Tuilière',          kap:'12000'},
+  'lausanne-sport':       {stadion:'Stade de la Tuilière',      plz:'1014 Lausanne VD, Avenue de la Tuilière',          kap:'12000'},
+  'yverdon sport':        {stadion:'Stade Municipal d\'Yverdon',plz:'1400 Yverdon-les-Bains VD',                        kap:'6300'},
+  'sc kriens':            {stadion:'Kleinfeld',                 plz:'6010 Kriens LU, Sportanlage Kleinfeld',            kap:'4500'},
+  'fc aarau':             {stadion:'Brügglifeld',               plz:'5000 Aarau AG, Brügglifeld 1',                     kap:'8350'},
+  'fc schaffhausen':      {stadion:'Lipo Park Schaffhausen',    plz:'8200 Schaffhausen SH, Mühlentalstrasse 60',        kap:'8200'},
+  'fc thun':              {stadion:'Stockhorn Arena',           plz:'3604 Thun BE, Bernstrasse 52',                     kap:'10000'},
+  'fc vaduz':             {stadion:'Rheinpark Stadion',         plz:'9494 Vaduz FL, Im Brühl 15',                      kap:'6127'},
+  'neuchâtel xamax':      {stadion:'Stade du Maladière',        plz:'2000 Neuchâtel NE, Rue du Maladière 25',           kap:'12200'},
+  'xamax':                {stadion:'Stade du Maladière',        plz:'2000 Neuchâtel NE, Rue du Maladière 25',           kap:'12200'},
+  'fc wil':               {stadion:'Bergholz',                  plz:'9500 Wil SG, Bergholzstrasse 1',                   kap:'6000'},
+  'fc stade-lausanne-ouchy':{stadion:'Stade Olympique de la Pontaise',plz:'1018 Lausanne VD',                           kap:'10000'},
+};
 const VERTEILER = [
   'Kommandant, Adi Achermann',
   'fussball.polizei@lu.ch',
-  '2. Stv C Kripo, Roland Stöckli',
-  'intervention.polizei@lu.ch'
+  'aj.polizei@lu.ch',
 ];
 const TABS = [
   {i:'⚽',l:'Spiel'},{i:'👥',l:'Fans'},{i:'👮',l:'Personal'},{i:'📝',l:'Bericht'},
@@ -235,33 +271,30 @@ const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz3voR-WzgqQbaic_GAi
 
 // ===== STATE =====
 const INIT_D = {
-  journalNr:'',ereignisId:'',datum:today,liga:'Brack Super League',
+  ereignisId:'',datum:today,uhrzeit:'',liga:'Brack Super League',ligaAndere:'',
   heim:'FC Luzern',gast:'',tH:'',tG:'',
   stadion:'swissporarena',plz:'6005 Luzern LU, Horwerstrasse 91',kap:'17000',
   hFans:'',gFans:'',riskH:'',riskG:'',
-  pwP:'',pwF:'',carP:'',carF:'',carI:'',zugP:'',
-  anzS:'',anzP:'',anzSi:'',fzAnz:'',fzKm:'',anzR:'',
-  sVon:'',sBis:'',pVon:'',pBis:'',siVon:'',siBis:'',totEZ:'',
+  pwP:'',pwF:'',carP:'',carF:'',carI:'',zugP:'',zugZ:'',
+  anzS:'',anzP:'',anzR:'',
+  totEZ:'',
   aufm:'',spiel:'',abm:'',
   praev:false,repr:false,
-  emOD:false,emGu:false,emRZ:false,emPM:false,
-  emWW:false,emSG:false,emOB:false,emHU:false,
-  emHK:false,emSW:false,emSP:false,emUP:false,
-  hAlk:false,hAuf:true,hSp:true,hAb:true,hHlf:'',hPet:'',hRau:'',
-  gAlk:false,gAuf:true,gSp:true,gAb:true,gHlf:'',gPet:'',gRau:'',
+  pyroEvents:[],
+  mHHlf:'',mHRau:'',mHFw:'',mHBoel:'',
+  mGHlf:'',mGRau:'',mGFw:'',mGBoel:'',
   pkJ:false,pkAnz:'',
   fhAnz:'',fhPG:false,fhSP:false,fgAnz:'',fgPG:false,fgSP:false,
   azHAnz:'',azHArt:'',azGAnz:'',azGArt:'',
-  svJ:false,svA:'',rvJ:false,rvA:'',maJ:false,maA:'',gwJ:false,gwA:'',
-  dPJ:false,dPAnz:'',dPB:'',dSJ:false,dSAnz:'',dSSm:'',dPoJ:false,dPoAnz:'',
-  eName:'STADELMANN Thierry',eTel:'',eMob:'',eEml:'',
+  dPJ:false,dPAnz:'',dPB:'',dSJ:false,dSAnz:'',dSSm:'',dSB:'',dPoJ:false,dPoAnz:'',dPoB:'',
+  eName:'',
   einsatzBewertung:'PROBLEMLOS',
   heimLogo:'', gastLogo:'',
   letzterMatch: null,
 };
 
 let d = JSON.parse(JSON.stringify(INIT_D));
-let spots = [{id:'LU19',n:'STADELMANN Thierry',von:'',bis:'',rolle:''}];
+let spots = [{id:'LU02',n:'STADELMANN Thierry',von:'',bis:'',rolle:'',rolleAndere:'',el:false}];
 let pers = [];
 let activeTab = 0;
 let saveTimer = null;
@@ -322,7 +355,6 @@ const fmtDate = s => {
   catch(e) { return s; }
 };
 const totZ = () => (parseInt(d.hFans)||0)+(parseInt(d.gFans)||0);
-const totKm = () => (parseInt(d.fzAnz)||0)*(parseInt(d.fzKm)||0);
 const escH = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
 // ===== PERSISTENCE =====
@@ -357,11 +389,9 @@ const loadSaved = () => {
 // ===== SETTERS =====
 // Keys that change UI structure and require re-render
 const STRUCTURAL = new Set([
-  'pkJ','svJ','rvJ','maJ','gwJ','dPJ','dSJ','dPoJ','praev','repr',
-  'emOD','emGu','emRZ','emPM','emWW','emSG','emOB','emHU','emHK','emSW','emSP','emUP',
-  'hAlk','hAuf','hSp','hAb','gAlk','gAuf','gSp','gAb',
-  'fhPG','fhSP','fgPG','fgSP','einsatzBewertung',
-  'liga','heimLogo','gastLogo','letzterMatch',
+  'pkJ','dPJ','dSJ','dPoJ',
+  'fhPG','fhSP','fgPG','fgSP',
+  'einsatzBewertung','liga','heimLogo','gastLogo','letzterMatch','pyroEvents',
 ]);
 
 const set = (k,v) => {
@@ -374,12 +404,25 @@ const set = (k,v) => {
     const el=document.getElementById('disp-totz');
     if(el) el.textContent=tz?tz.toLocaleString('de-CH'):'—';
   }
-  if(k==='fzAnz'||k==='fzKm'){
-    const tk=(parseInt(d.fzAnz)||0)*(parseInt(d.fzKm)||0);
-    const el=document.getElementById('disp-totkm');
-    const box=document.getElementById('disp-totkm-box');
-    if(el) el.textContent=tk?tk+' km':'';
-    if(box) box.style.display=tk?'':'none';
+  // pkAnz → sync pers array count when Personenkontrollen = Ja
+  if(k==='pkAnz' && d.pkJ) {
+    const n = Math.min(parseInt(v)||0, 50);
+    const emptyPers = () => ({ort:'',zeit:'',durch:'',nm:'',vnm:'',geb:'',ho:'',beruf:'',adr:'',tel:'',fanz:'',
+      gVM:false,gPR:false,gSB:false,gGW:false,gSL:false,gPV:false,gPY:false,
+      mPK:false,mAZ:false,mFP:false,mFS:false,mWG:false,mSV:false,mRV:false,sv:''});
+    while(pers.length < n) pers.push(emptyPers());
+    if(n > 0 && pers.length > n) pers.splice(n);
+    autoSave();
+    // Show hint without full re-render
+    const hint = document.getElementById('pers-hint');
+    if(hint) hint.textContent = n > 0 ? `✓ ${n} Personenmaske${n>1?'n':''} im Reiter 👤 Personen erstellt` : '';
+    return;
+  }
+    const n=Math.min(Math.max(parseInt(v)||0,0),22);
+    const first=spots[0]||{};
+    while(spots.length<n) spots.push({id:'',n:'',von:first.von||'',bis:first.bis||'',rolle:'',rolleAndere:''});
+    if(n>0&&spots.length>n) spots.splice(n);
+    autoSave(); updateTotEZ(); renderContent(); return;
   }
   if(k==='heim'||k==='gast'){
     const sub=document.getElementById('hdr-sub');
@@ -397,6 +440,20 @@ const set = (k,v) => {
         wrap.innerHTML=`<div style="${av};background:#f0f0f0;color:#bbb;font-size:9px">Logo</div>`;
       }
     }
+    // Stadium auto-fill for home team
+    if(k==='heim') {
+      const st = STADIEN[(v||'').toLowerCase().trim()];
+      if(st) {
+        d.stadion=st.stadion; d.plz=st.plz; d.kap=st.kap;
+        autoSave();
+        const sEl=document.getElementById('inp-stadion');
+        const pEl=document.getElementById('inp-plz');
+        const kEl=document.getElementById('inp-kap');
+        if(sEl) sEl.value=st.stadion;
+        if(pEl) pEl.value=st.plz;
+        if(kEl) kEl.value=st.kap;
+      }
+    }
     if(v.length >= 2) fetchLogo(v, side);
     if(k==='gast') fetchHistory();
   }
@@ -408,6 +465,23 @@ const set = (k,v) => {
 
 const tog = k => { d[k]=!d[k]; autoSave(); renderContent(); };
 
+const updateTotEZ = () => {
+  let totalMin = 0;
+  spots.forEach(sp => {
+    if(sp.von && sp.bis) {
+      const m = t => { const [h,mn]=t.split(':').map(Number); return h*60+mn; };
+      let diff = m(sp.bis)-m(sp.von); if(diff<0) diff+=1440;
+      totalMin += diff;
+    }
+  });
+  if(totalMin > 0) {
+    const h=Math.floor(totalMin/60), mn=totalMin%60;
+    d.totEZ = `${h}:${mn.toString().padStart(2,'0')} h`;
+  } else { d.totEZ=''; }
+  const el=document.getElementById('disp-totEZ');
+  if(el) el.textContent=d.totEZ||'—';
+};
+
 const setSpot = (i,k,v) => {
   if(k==='id'){
     const f=SPOTS_DB.find(x=>x.id===v);
@@ -417,16 +491,30 @@ const setSpot = (i,k,v) => {
   autoSave();
   // Update tag label
   const tag=document.getElementById(`st${i}`);
-  if(tag) tag.textContent=`${spots[i].id||('#'+(i+1))} ${spots[i].n}${spots[i].rolle?' · '+spots[i].rolle:''}`;
+  if(tag) tag.textContent=`${spots[i].id||('#'+(i+1))} ${spots[i].n}${spots[i].rolle?' · '+(spots[i].rolle==='Anderes'?spots[i].rolleAndere||'Anderes':spots[i].rolle):''}`;
   // Update hours display
   if(k==='von'||k==='bis'){
     const h=calcH(spots[i].von,spots[i].bis);
     const hel=document.getElementById(`sh${i}`);
     if(hel){ hel.textContent=h; hel.style.display=h?'flex':'none'; }
-    else if(h) renderContent(); // first time hours appear, need render
+    else if(h) renderContent();
+    updateTotEZ();
+    // Auto-fill other spotters' times from spotter 0
+    if(i===0) {
+      spots.forEach((sp,j) => {
+        if(j===0) return;
+        spots[j][k]=v;
+        const el=document.getElementById(`sp-${j}-${k}`);
+        if(el) el.value=v;
+        const hj=calcH(spots[j].von,spots[j].bis);
+        const hjelEl=document.getElementById(`sh${j}`);
+        if(hjelEl){ hjelEl.textContent=hj; hjelEl.style.display=hj?'flex':'none'; }
+      });
+    }
   }
 };
-const addSpot = () => { spots.push({id:'',n:'',von:'',bis:'',rolle:''}); autoSave(); render(); };
+const addSpot = () => { spots.push({id:'',n:'',von:'',bis:'',rolle:'',rolleAndere:'',el:false}); autoSave(); render(); };
+const setEL = i => { spots.forEach((sp,j)=>sp.el=(j===i?!sp.el:false)); autoSave(); renderContent(); };
 const rmSpot = i => { if(confirm('Spotter entfernen?')){ spots.splice(i,1); autoSave(); render(); }};
 const addPers = () => {
   pers.push({ort:'',zeit:'',durch:'',nm:'',vnm:'',geb:'',ho:'',beruf:'',adr:'',tel:'',fanz:'',
@@ -440,7 +528,7 @@ const togPers = (i,k) => { pers[i][k]=!pers[i][k]; autoSave(); renderContent(); 
 const clearAll = () => {
   if(confirm('Neuen KMR starten?\n\nAlle aktuellen Daten werden gelöscht.')) {
     d=JSON.parse(JSON.stringify(INIT_D));
-    spots=[{id:'LU19',n:'STADELMANN Thierry',von:'',bis:''}];
+    spots=[{id:'LU02',n:'STADELMANN Thierry',von:'',bis:'',rolle:'',rolleAndere:'',el:false}];
     pers=[];
     autoSave(); render();
   }
@@ -501,11 +589,11 @@ const showToast = (msg, type='info') => {
 };
 
 // ── CONSTANTS ────────────────────────────────────────────────
-const ROLLEN = ['FCL-Team','Hotspot','Gästefans','Bahnhof','Stadion','Anderes'];
+const ROLLEN = ['FCL','Gast Stadion','Gast Bahnhof','Hotspot','Anderes'];
 const BEWERTUNG = {
-  PROBLEMLOS:              {color:'#27ae60', icon:'✓', label:'Problemlos'},
-  MITTLERE_PROBLEME:       {color:'#e67e22', icon:'⚠', label:'Mittlere Probleme'},
-  SCHWERWIEGENDE_PROBLEME: {color:'#c0392b', icon:'✕', label:'Schwerwiegende Probleme'},
+  PROBLEMLOS:              {color:'#27ae60', icon:'🟢', label:'Ruhiger Verlauf'},
+  MITTLERE_PROBLEME:       {color:'#e67e22', icon:'🟡', label:'Zwischenfälle'},
+  SCHWERWIEGENDE_PROBLEME: {color:'#c0392b', icon:'🔴', label:'Gravierender Zwischenfall'},
 };
 
 // ── LOGO HELPERS ─────────────────────────────────────────────
@@ -579,16 +667,54 @@ const fetchHistory = () => {
   }, 1200);
 };
 
-// ── CROSS-DEVICE DRAFT SYNC ──────────────────────────────────
+// ── PYRO COUNTER IMPORT ──────────────────────────────────────
+const PYRO_PHASES = [
+  {id:'AUFM',label:'Aufmarsch'},
+  {id:'HZ1', label:'1. Halbzeit'},
+  {id:'PAUSE',label:'Pause'},
+  {id:'HZ2', label:'2. Halbzeit'},
+  {id:'VL',  label:'Verlängerung'},
+  {id:'ABML',label:'Abmarsch'},
+];
+const PYRO_TYPES = [
+  {id:'HLF', label:'HLF',      emoji:'🔥'},
+  {id:'RAUCH',label:'Rauch',   emoji:'💨'},
+  {id:'FW',  label:'Feuerwerk',emoji:'✨'},
+  {id:'BOEL',label:'Böller',   emoji:'⚡'},
+];
+const pyroCnt = (team, type, phases) =>
+  (d.pyroEvents||[]).filter(e=>
+    !e.dupl && e.team===team && (e.type===type||(type==='BOEL'&&e.type==='BLITZ')) &&
+    (!phases||phases.includes(e.phase))
+  ).length;
+
+const loadPyroFromCounter = async () => {
+  showToast('🎆 Pyro-Daten werden geladen…','info');
+  let pyroData = null;
+  try {
+    const s = await window.storage.get('pyro-v3', true);
+    if(s?.value) pyroData = JSON.parse(s.value);
+  } catch(e) {}
+  if(!pyroData) {
+    try { const ls=localStorage.getItem('pyro-v3'); if(ls) pyroData=JSON.parse(ls); } catch(e) {}
+  }
+  if(pyroData?.events?.length) {
+    d.pyroEvents = pyroData.events;
+    autoSave(); renderContent();
+    const cnt = pyroData.events.filter(e=>!e.dupl).length;
+    showToast(`✓ ${cnt} Pyro-Ereignisse geladen`,'success');
+  } else {
+    showToast('⚠ Keine Pyro-Daten im Live Counter gefunden','error');
+  }
+};
 const exportDraft = async () => {
   if (!SHEETS_URL) { showToast('⚠ SHEETS_URL nicht konfiguriert','error'); return; }
   showToast('☁️ Entwurf wird gespeichert…','info');
-  const payload = {action:'saveDraft', ...d, spotterEinsatz:spots, persons:pers};
-  const form = new FormData();
-  form.append('data', JSON.stringify(payload));
+  const payload = JSON.stringify({action:'saveDraft', ...d, spotterEinsatz:spots, persons:pers});
   try {
-    await fetch(SHEETS_URL, {method:'POST', mode:'no-cors', body:form});
-    setTimeout(()=>showToast(`✓ Gespeichert — Code: ${d.datum}`,'success'), 1200);
+    // Plain text body — einziges Format das Apps Script no-cors korrekt empfängt
+    fetch(SHEETS_URL, {method:'POST', mode:'no-cors', body: payload});
+    setTimeout(()=>showToast(`✓ Gespeichert — Code: ${d.datum}`,'success'), 1500);
   } catch(e) { showToast('⚠ Fehler beim Speichern','error'); }
 };
 
@@ -612,12 +738,17 @@ const loadDraftByDate = async (date) => {
 
 // ===== HTML HELPERS =====
 const lbl = t => `<label class="lbl">${t}</label>`;
-const inp = (l,k,type='text',ph='') =>
-  `<div class="mb">${l?lbl(l):''}<input type="${type}" value="${escH(d[k]||'')}" oninput="set('${k}',this.value)" placeholder="${ph}"></div>`;
-const inpN = (l,k,ph='0') => {
+const inp = (l,k,type='text',ph='',id='') =>
+  `<div class="mb">${l?lbl(l):''}<input ${id?`id="${id}" `:''}type="${type}" value="${escH(d[k]||'')}" oninput="set('${k}',this.value)" placeholder="${ph}"></div>`;
+const inpN = (l,k,ph='0',id='') => {
   const hist = d.letzterMatch?.[k];
-  const hint = hist ? `<div style="font-size:10px;color:#3498db;margin-top:2px">📊 ${d.letzterMatch._datum||'Letztes Mal'}: ${hist}</div>` : '';
-  return `<div class="mb">${l?lbl(l):''}<input type="number" inputmode="numeric" value="${d[k]||''}" oninput="set('${k}',this.value)" placeholder="${ph}">${hint}</div>`;
+  const hint = hist
+    ? `<div style="display:flex;align-items:center;gap:6px;margin-top:3px">
+        <span style="font-size:10px;color:#3498db">📊 Letzte Begegnung (${d.letzterMatch._datum||'?'}): <strong>${hist}</strong></span>
+        <button onclick="set('${k}','${hist}');document.getElementById('${id||k}').value='${hist}'" 
+          style="font-size:10px;padding:1px 7px;background:#3498db;color:#fff;border:none;border-radius:4px;cursor:pointer;white-space:nowrap">Übernehmen</button>
+      </div>` : '';
+  return `<div class="mb">${l?lbl(l):''}<input id="${id||k}" ${id?`id="${id}" `:''}type="number" inputmode="numeric" value="${d[k]||''}" oninput="set('${k}',this.value)" placeholder="${ph}">${hint}</div>`;
 };
 const inpTeam = (l, k, side) => {
   const logo = d[side+'Logo'];
@@ -679,37 +810,11 @@ const timeRow = (l,vk,bk) => {
 
 // ===== TAB RENDERERS =====
 const T0 = () => {
-  const spotsHtml = spots.map((sp,i)=>{
-    const h=calcH(sp.von,sp.bis);
-    const opts=SPOTS_DB.map(x=>`<option value="${x.id}"${sp.id===x.id?' selected':''}>${x.id} — ${x.n}</option>`).join('');
-    const rolleOpts=ROLLEN.map(r=>`<option${sp.rolle===r?' selected':''}>${r}</option>`).join('');
-    return `<div class="spot-card">
-      <div class="spot-hdr">
-        <div class="spot-tag" id="st${i}">${sp.id||('#'+(i+1))} ${escH(sp.n)}${sp.rolle?' · '+sp.rolle:''}</div>
-        <button class="btn-rm" onclick="rmSpot(${i})">✕</button>
-      </div>
-      <div class="row mb">
-        <div style="flex:0 0 130px">${lbl('LU-Nummer')}
-          <select oninput="setSpot(${i},'id',this.value)">
-            <option value="">— wählen —</option>${opts}
-            <option value="EXT"${sp.id==='EXT'?' selected':''}>Extern</option>
-          </select></div>
-        <div>${lbl('Name')}<input id="sn${i}" type="text" value="${escH(sp.n)}" oninput="setSpot(${i},'n',this.value)"></div>
-      </div>
-      <div class="mb">${lbl('Rolle / Auftrag')}<select oninput="setSpot(${i},'rolle',this.value)">
-        <option value="">— auswählen —</option>${rolleOpts}
-      </select></div>
-      <div class="time-row">
-        <div>${lbl('Einsatz von')}<input type="time" value="${sp.von}" oninput="setSpot(${i},'von',this.value)"></div>
-        <div>${lbl('Einsatz bis')}<input type="time" value="${sp.bis}" oninput="setSpot(${i},'bis',this.value)"></div>
-        <div class="calc-h" id="sh${i}" style="${h?'display:flex':'display:none'}">${h}</div>
-      </div>
-    </div>`;
-  }).join('');
   return card('Spieldaten',`
-    ${row(col(inp('Journal-Nr.','journalNr')),col(inp('Ereignis-ID','ereignisId')))}
-    ${inp('Datum','datum','date')}
+    ${inp('Ereignis-ID','ereignisId')}
+    ${row(col(inp('Datum','datum','date')),col(`<div class="mb">${lbl('Anpfiff')}<input type="time" value="${d.uhrzeit||''}" oninput="set('uhrzeit',this.value)"></div>`))}
     <div class="mb">${lbl('Liga')}<select oninput="set('liga',this.value)">${LIGAS.map(l=>`<option${d.liga===l?' selected':''}>${l}</option>`).join('')}</select></div>
+    ${d.liga==='Andere'?`<div class="mb">${lbl('Welche Liga / Wettbewerb?')}<input type="text" value="${escH(d.ligaAndere||'')}" oninput="set('ligaAndere',this.value)" placeholder="z.B. UEFA Conference League, Testspiel..."></div>`:''}
     ${row(col(inpTeam('Heimteam','heim','heim')),col(inpTeam('Gastteam','gast','gast')))}
     ${d.letzterMatch?`<div style="background:#e8f4fd;border-radius:7px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#1a3560">
       📊 Letzte Begegnung: <strong>${d.letzterMatch._datum||'?'}</strong> — Ergebnis: ${d.letzterMatch.ergebnis||'?'} · ${(parseInt(d.letzterMatch.hFans)||0)+(parseInt(d.letzterMatch.gFans)||0) > 0 ? ((parseInt(d.letzterMatch.hFans)||0)+(parseInt(d.letzterMatch.gFans)||0)).toLocaleString('de-CH')+' Zuschauer' : ''}
@@ -719,11 +824,8 @@ const T0 = () => {
       <div class="colon">:</div>
       <div>${lbl('Tore Gast')}<input class="score-inp" type="number" inputmode="numeric" value="${d.tG||''}" oninput="set('tG',this.value)"></div>
     </div>
-    ${inp('Stadion','stadion',undefined,'z.B. swissporarena')}
-    ${row(col(inp('PLZ, Ort, Strasse','plz')),col(inpN('Kapazität','kap')))}
-  `) + card(`Spotter im Einsatz (${spots.length})`,`
-    ${spotsHtml}
-    <button class="btn-add" onclick="addSpot()">+ Spotter hinzufügen</button>
+    ${inp('Stadion','stadion',undefined,'wird automatisch befüllt','inp-stadion')}
+    ${row(col(inp('PLZ, Ort, Strasse','plz','text','','inp-plz')),col(inpN('Kapazität','kap','0','inp-kap')))}
   `);
 };
 
@@ -739,24 +841,66 @@ const T1 = () => card('Zuschauer',`
   ${row(col(inpN('Personen','carP')),col(inpN('Fahrzeuge','carF')))}
   ${ta('Kontrollschild / Angaben','carI',2,'Firma, Ort, Anzahl und Art der Passagiere...')}
   ${divider('Zug / ÖV')}
-  ${inpN('Personen','zugP')}
+  ${row(col(inpN('Personen','zugP')),col(inpN('Anzahl Züge / Verbindungen','zugZ')))}
 `);
 
-const T2 = () => card('Personalaufgebot',`
-  ${row(col(inpN('Spotter','anzS')),col(inpN('Polizeikräfte inkl. Spotter','anzP')))}
-  ${row(col(inpN('Private Si-Kräfte','anzSi')),col(inpN('Rechtshilfe Szenenkenner','anzR')))}
-  ${divider('Fahrzeuge Spotter')}
-  ${row(col(inpN('Anzahl Fahrzeuge','fzAnz')),col(inpN('Km pro Fahrzeug','fzKm')))}
-  <div class="total-box mb" id="disp-totkm-box" style="padding:8px 14px;${totKm()===0?'display:none':''}">
-    <div class="tot-lbl">Total Km</div>
-    <div class="tot-sm" id="disp-totkm">${totKm()>0?totKm()+' km':''}</div>
+const T2 = () => {
+  const isAway = d.heim && d.heim.toLowerCase().trim() !== 'fc luzern';
+  const spotsHtml = spots.map((sp,i)=>{
+    const h=calcH(sp.von,sp.bis);
+    const opts=SPOTS_DB.map(x=>`<option value="${x.id}"${sp.id===x.id?' selected':''}>${x.id} — ${x.n}</option>`).join('');
+    const rolleLabel = sp.rolle==='Anderes'?(sp.rolleAndere||'Anderes'):sp.rolle;
+    const tagLabel = `${sp.id||('#'+(i+1))} ${sp.n}${sp.rolle?' · '+rolleLabel:''}`;
+    const rolleOpts = ROLLEN.map(r=>`<option value="${r}"${sp.rolle===r?' selected':''}>${r}</option>`).join('');
+    return `<div class="spot-card">
+      <div class="spot-hdr">
+        <div class="spot-tag" id="st${i}">${tagLabel}</div>
+        <button class="btn-rm" onclick="rmSpot(${i})">✕</button>
+      </div>
+      <div class="row mb">
+        <div style="flex:0 0 130px">${lbl('LU-Nummer')}
+          <select oninput="setSpot(${i},'id',this.value)">
+            <option value="">— wählen —</option>${opts}
+            <option value="EXT"${sp.id==='EXT'?' selected':''}>Extern</option>
+          </select></div>
+        <div>${lbl('Name')}<input id="sn${i}" type="text" value="${escH(sp.n)}" oninput="setSpot(${i},'n',this.value)"></div>
+      </div>
+      <div class="mb" style="${isAway?'opacity:.4;pointer-events:none':''}">
+        ${lbl('Rolle / Auftrag'+(isAway?' (Auswärtsspiel — inaktiv)':''))}
+        <select ${isAway?'disabled':''} oninput="setSpot(${i},'rolle',this.value);toggleRolleAndere(${i},this.value)" style="${isAway?'background:#f5f5f5;color:#aaa':''}">
+          <option value="">— auswählen —</option>${rolleOpts}
+        </select>
+      </div>
+      <div id="ra-${i}" style="display:${sp.rolle==='Anderes'&&!isAway?'block':'none'}">
+        <div class="mb">${lbl('Welche Rolle?')}<input type="text" value="${escH(sp.rolleAndere||'')}" oninput="setSpot(${i},'rolleAndere',this.value)" placeholder="Freitext..."></div>
+      </div>
+      <div class="time-row">
+        <div>${lbl(i===0?'Einsatz von (gilt für alle)':'Einsatz von')}<input id="sp-${i}-von" type="time" value="${sp.von}" oninput="setSpot(${i},'von',this.value)"></div>
+        <div>${lbl('Einsatz bis')}<input id="sp-${i}-bis" type="time" value="${sp.bis}" oninput="setSpot(${i},'bis',this.value)"></div>
+        <div class="calc-h" id="sh${i}" style="${h?'display:flex':'display:none'}">${h}</div>
+      </div>
+      <div style="margin-top:6px">
+        <button onclick="setEL(${i})" style="width:100%;padding:7px;border:2px solid ${sp.el?'#e67e22':'#ddd'};border-radius:7px;background:${sp.el?'#fef3e8':'white'};color:${sp.el?'#e67e22':'#aaa'};font-size:12px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">${sp.el?'⭐':'☆'}</span> Einsatzleiter Spotter
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return card(`Spotter im Einsatz (${spots.length})`,`
+    ${spotsHtml}
+    <button class="btn-add" onclick="addSpot()">+ Spotter hinzufügen</button>
+  `) + card('Personalaufgebot',`
+  ${row(col(inpN('Anzahl Spotter (passt Felder unten an)','anzS')),col(inpN('Polizeikräfte inkl. Spotter','anzP')))}
+  ${inpN('Anzahl Rechtshilfe Szenenkenner','anzR')}
+  `) + card('Total Einsatzzeit Spotter',`
+  <div style="background:var(--lb);border-radius:8px;padding:12px 16px;text-align:center">
+    <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Einsatzzeit aller Spotter</div>
+    <div style="font-size:26px;font-weight:900;color:var(--b)" id="disp-totEZ">${d.totEZ||'—'}</div>
+    <div style="font-size:10px;color:#aaa;margin-top:3px">Wird automatisch aus den Einsatzzeiten berechnet</div>
   </div>
-  ${divider('Einsatzzeiten')}
-  ${timeRow('Spotter LuPol','sVon','sBis')}
-  ${timeRow('Polizeikräfte','pVon','pBis')}
-  ${timeRow('Private Si-Kräfte','siVon','siBis')}
-  ${inp('Total Einsatzzeit Spotter LuPol','totEZ',undefined,'z.B. 64:00:00')}
 `);
+};
 
 const T3 = () => card('Sachverhalt',`
   ${ta('⬆ Aufmarsch','aufm',5,'Beschreibung Aufmarsch / Anreise der Fans...')}
@@ -765,36 +909,87 @@ const T3 = () => card('Sachverhalt',`
 `);
 
 const T4 = () => {
-  const emList=[
-    ['emOD','Ordnungsdienst'],['emGu','Gummi'],['emRZ','Reizstoff'],['emPM','PMS/TES'],
-    ['emWW','Wasserwerfer'],['emSG','Sperrgitterfahrzeug'],['emOB','Observation'],['emHU','Hund'],
-    ['emHK','Helikopter'],['emSW','Schusswaffe'],['emSP','Spotter'],['emUP','Uniformpolizei'],
-  ];
-  const sz = p => `
-    ${yn('Alkoholeinfluss',p+'Alk')}
-    ${beh('Aufmarsch',p+'Auf')}${beh('Spielphase',p+'Sp')}${beh('Abmarsch',p+'Ab')}
-    ${divider('🎆 Pyrotechnik')}
-    ${row(col(inpN('HLF',p+'Hlf')),col(inpN('Petarden',p+'Pet')),col(inpN('Rauch',p+'Rau')))}`;
-  return card('Polizeieinsatz',`
-    <div style="margin-bottom:14px">
-      <p style="font-size:13px;font-weight:700;color:var(--b);margin-bottom:3px">Präventiv</p>
-      <p style="font-size:11px;color:#888;margin-bottom:6px">Jede Intervention zur Wahrung der Ruhe und Ordnung inkl. Aufstellen von Polizeiketten</p>
-      ${yn('','praev')}
+  const events = d.pyroEvents||[];
+  const hasData = events.length > 0;
+  const validEvents = events.filter(e=>!e.dupl);
+  const hName = d.heim||'Heim', gName = d.gast||'Gast';
+
+  // Pyro table for one team
+  const pyroTable = (team, teamName) => {
+    const rows = PYRO_PHASES.map(ph => {
+      const pIds = [ph.id];
+      const cells = PYRO_TYPES.map(pt => {
+        const n = pyroCnt(team, pt.id, pIds);
+        return `<td style="text-align:center;padding:5px 4px;font-size:${n>0?'15px':'13px'};font-weight:${n>0?'900':'400'};color:${n>0?'var(--b)':'#ccc'}">${n}</td>`;
+      }).join('');
+      const total = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt(team,pt.id,pIds),0);
+      return `<tr style="border-bottom:1px solid #f0f0f0">
+        <td style="padding:5px 6px;font-size:11px;color:#555;white-space:nowrap">${ph.label}</td>
+        ${cells}
+        <td style="text-align:center;padding:5px 4px;font-size:13px;font-weight:700;color:#888">${total||'—'}</td>
+      </tr>`;
+    }).join('');
+    const totCells = PYRO_TYPES.map(pt=>{
+      const n=pyroCnt(team,pt.id,null);
+      return `<td style="text-align:center;padding:6px 4px;font-size:16px;font-weight:900;color:${n>0?'var(--b)':'#ccc'}">${n}</td>`;
+    }).join('');
+    const grandTotal = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt(team,pt.id,null),0);
+    return `<div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:800;color:var(--b);margin-bottom:6px">${teamName}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:var(--lb)">
+          <th style="text-align:left;padding:5px 6px;font-size:10px;color:#666"></th>
+          ${PYRO_TYPES.map(pt=>`<th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">${pt.emoji}<br>${pt.label}</th>`).join('')}
+          <th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">Total</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr style="background:#f8f9fa;font-weight:bold">
+          <td style="padding:6px;font-size:11px;color:#333">TOTAL</td>
+          ${totCells}
+          <td style="text-align:center;font-size:16px;font-weight:900;color:var(--b)">${grandTotal||'—'}</td>
+        </tr></tfoot>
+      </table>
+    </div>`;
+  };
+
+  // Manual entry fallback
+  const manualEntry = (prefix, teamName) => `
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:800;color:var(--b);margin-bottom:6px">${teamName}</div>
+      ${row(col(inpN('🔥 HLF',prefix+'HLF')),col(inpN('💨 Rauch',prefix+'RAU')))}
+      ${row(col(inpN('✨ Feuerwerk',prefix+'FW')),col(inpN('⚡ Böller',prefix+'BOE')))}
+    </div>`;
+
+  // Manual state keys
+  const mPrefH = 'mH', mPrefG = 'mG';
+
+  return card('🎆 Pyrotechnik',`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:12px;color:${hasData?'var(--g)':'#888'}">
+        ${hasData
+          ? `✓ ${validEvents.length} Ereignisse aus Pyro Live Counter`
+          : 'Noch keine Daten aus Pyro Live Counter'}
+      </div>
+      <button onclick="loadPyroFromCounter()" style="padding:7px 12px;background:var(--b);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">
+        🎆 Aus Counter laden
+      </button>
     </div>
-    <div>
-      <p style="font-size:13px;font-weight:700;color:var(--b);margin-bottom:3px">Repressiv</p>
-      <p style="font-size:11px;color:#888;margin-bottom:6px">Jede Intervention oder Einsatz von Mitteln zur Wiederherstellung der Ruhe und Ordnung</p>
-      ${yn('','repr')}
-    </div>
-  `) + card('Eingesetzte Einsatzmittel',`<div class="grid2">${emList.map(([k,l])=>chk(l,k)).join('')}</div>`)
-    + card(`Szenenverhalten — Heim (${d.heim||'Heim'})`,sz('h'))
-    + card(`Szenenverhalten — Gast (${d.gast||'Gast'})`,sz('g'));
+    ${hasData
+      ? pyroTable('HEIM', hName) + pyroTable('GAST', gName)
+      : `<div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#e67e22">
+          Klicke "Aus Counter laden" um die Daten aus dem Pyro Live Counter zu importieren.<br>
+          Oder manuelle Erfassung:
+        </div>
+        ${manualEntry(mPrefH, hName)}
+        ${manualEntry(mPrefG, gName)}`}
+  `);
 };
 
 const T5 = () => card('Anhaltungen & Festnahmen',`
   <div style="margin-bottom:14px">
     <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Personenkontrollen</p>
     <div class="row"><div>${yn('','pkJ')}</div>${d.pkJ?`<div>${inpN('Anzahl','pkAnz')}</div>`:''}</div>
+    ${d.pkJ&&d.pkAnz?`<div id="pers-hint" style="font-size:11px;color:var(--g);margin-top:4px">✓ ${d.pkAnz} Personenmaske${parseInt(d.pkAnz)>1?'n':''} im Reiter 👤 Personen erstellt</div>`:`<div id="pers-hint"></div>`}
   </div>
   ${['h','g'].map(p=>{
     const lbl2=p==='h'?`Festnahmen — Heim (${d.heim||'Heim'})`:`Festnahmen — Gast (${d.gast||'Gast'})`;
@@ -811,24 +1006,18 @@ const T5 = () => card('Anhaltungen & Festnahmen',`
     <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">${lbl2}</p>
     ${row(`<div style="width:80px">${inpN('Anzahl',`az${p.toUpperCase()}Anz`)}</div>`,col(inp('Artikel',`az${p.toUpperCase()}Art`,undefined,'Art. ...')))}
   </div>`;
-}).join('')) + card('Massnahmen',`
-  <div class="mass-grid">
-    ${[['svJ','svA','SV'],['rvJ','rvA','RV'],['maJ','maA','MA'],['gwJ','gwA','GW']].map(([jk,ak,l])=>
-      `<div class="mass-card"><div class="mass-lbl">${l}</div>${yn('',jk)}${d[jk]?inpN('Anzahl',ak):''}</div>`
-    ).join('')}
-  </div>
-`) + card('Verursachte Schäden',`
-  <div style="margin-bottom:12px">
+}).join('')) + card('Verursachte Schäden',`
+  <div style="margin-bottom:14px">
     <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Personen</p>
     ${yn('','dPJ')}${d.dPJ?inpN('Anzahl','dPAnz')+ta('Beschreibung','dPB',2):''}
   </div>
-  <div style="margin-bottom:12px">
+  <div style="margin-bottom:14px">
     <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Sachen</p>
-    ${yn('','dSJ')}${d.dSJ?inpN('Anzahl','dSAnz')+inp('Schadensumme (CHF)','dSSm',undefined,'0.00'):''}
+    ${yn('','dSJ')}${d.dSJ?inpN('Anzahl','dSAnz')+inp('Schadensumme (CHF)','dSSm',undefined,'0.00')+ta('Beschreibung Sachschaden','dSB',2):''}
   </div>
   <div>
     <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Polizei</p>
-    ${yn('','dPoJ')}${d.dPoJ?inpN('Anzahl','dPoAnz'):''}
+    ${yn('','dPoJ')}${d.dPoJ?inpN('Anzahl','dPoAnz')+ta('Beschreibung Polizeischaden','dPoB',2):''}
   </div>
 `);
 
@@ -866,10 +1055,19 @@ const T6 = () => card(`Kontrollierte Personen (${pers.length})`,`
 
 const T7 = () => {
   const bw = BEWERTUNG[d.einsatzBewertung] || BEWERTUNG.PROBLEMLOS;
+  const erstelltDurch = spots[0] ? `${spots[0].id} ${spots[0].n}` : '—';
+  const el = spots.find(sp=>sp.el);
+  const elName = el ? `${el.id} ${el.n}` : '—';
   return card('Abschluss — Erstellt durch',`
-    ${inp('Name','eName')}
-    ${row(col(inp('Telefon direkt','eTel','tel')),col(inp('Mobile','eMob','tel')))}
-    ${inp('E-Mail','eEml','email')}
+    <div style="background:var(--lb);border-radius:8px;padding:10px 14px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Erstellt durch (1. Spotter)</div>
+      <div style="font-size:15px;font-weight:800;color:var(--b)">${escH(erstelltDurch)}</div>
+    </div>
+    <div style="background:${el?'#fef3e8':'#f8f8f8'};border:1px solid ${el?'#e67e22':'#ddd'};border-radius:8px;padding:10px 14px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Einsatzleiter Spotter</div>
+      <div style="font-size:15px;font-weight:800;color:${el?'#e67e22':'#aaa'}">${escH(elName)}</div>
+      ${!el?`<div style="font-size:10px;color:#aaa;margin-top:2px">Beim Reiter 👮 Personal beim jeweiligen Spotter ⭐ setzen</div>`:''}
+    </div>
     <div class="mb">${lbl('Erstellt am')}<input type="text" value="${fmtDate(d.datum)}" readonly style="background:#f8f8f8;color:#666"></div>
   `) + card('Einsatz-Bewertung',`
     ${Object.entries(BEWERTUNG).map(([k,v])=>`
@@ -924,32 +1122,19 @@ const prChk = (l,v) => `<div class="pr-check"><span style="color:${v?'#27ae60':'
 const prF = (l,v) => v ? `<div class="pr-field"><span class="pr-lbl">${l}</span><span class="pr-val">${escH(String(v))}</span></div>` : '';
 
 const renderPrintView = () => {
-  const tz=totZ(), tk=totKm();
+  const tz=totZ();
   const bw = BEWERTUNG[d.einsatzBewertung] || BEWERTUNG.PROBLEMLOS;
-  const emList=[['emOD','Ordnungsdienst'],['emGu','Gummi'],['emRZ','Reizstoff'],['emPM','PMS/TES'],['emWW','Wasserwerfer'],['emSG','Sperrgitter'],['emOB','Observation'],['emHU','Hund'],['emHK','Helikopter'],['emSW','Schusswaffe'],['emSP','Spotter'],['emUP','Uniformpolizei']];
 
-  // Pyro totals (from form fields — Pyro Counter data merged via exportToSheets)
-  const pyroHeim = (parseInt(d.hHlf)||0)+(parseInt(d.hPet)||0)+(parseInt(d.hRau)||0);
-  const pyroGast = (parseInt(d.gHlf)||0)+(parseInt(d.gPet)||0)+(parseInt(d.gRau)||0);
-  const pyroTotal = pyroHeim + pyroGast;
+  // Pyro totals
+  const pyroTotal = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt('HEIM',pt.id,null)+pyroCnt('GAST',pt.id,null),0)
+    || (parseInt(d.mHHlf)||0)+(parseInt(d.mHRau)||0)+(parseInt(d.mHFw)||0)+(parseInt(d.mHBoel)||0)
+    +(parseInt(d.mGHlf)||0)+(parseInt(d.mGRau)||0)+(parseInt(d.mGFw)||0)+(parseInt(d.mGBoel)||0);
   const festTotal = (parseInt(d.fhAnz)||0)+(parseInt(d.fgAnz)||0);
   const anzTotal  = (parseInt(d.azHAnz)||0)+(parseInt(d.azGAnz)||0);
 
   const logoImg = (url, alt) => url
     ? `<img src="${url}" alt="${escH(alt)}" style="height:48px;width:48px;object-fit:contain;border-radius:4px" onerror="this.style.display='none'">`
     : `<div style="width:48px;height:48px;background:#e8eef7;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9pt;color:#aaa;font-weight:700">${escH((alt||'?').substring(0,3).toUpperCase())}</div>`;
-
-  const szBlock=(title,logo,p)=>`<div class="pr-beh">
-    <div class="pr-beh-title" style="display:flex;align-items:center;gap:4px">
-      ${logo?`<img src="${logo}" style="height:14px;width:14px;object-fit:contain;border-radius:2px" onerror="this.style.display='none'">`:''}
-      ${title}
-    </div>
-    ${prChk('Alkohol',d[p+'Alk'])}
-    <div style="font-size:9pt">Aufmarsch: <strong style="color:${d[p+'Auf']?'#27ae60':'#c0392b'}">${d[p+'Auf']?'Normal':'Aggressiv'}</strong></div>
-    <div style="font-size:9pt">Spielphase: <strong style="color:${d[p+'Sp']?'#27ae60':'#c0392b'}">${d[p+'Sp']?'Normal':'Aggressiv'}</strong></div>
-    <div style="font-size:9pt">Abmarsch: <strong style="color:${d[p+'Ab']?'#27ae60':'#c0392b'}">${d[p+'Ab']?'Normal':'Aggressiv'}</strong></div>
-    ${(d[p+'Hlf']||d[p+'Pet']||d[p+'Rau'])?`<div style="font-size:8pt;font-weight:700;margin-top:2px">Pyro: HLF ${d[p+'Hlf']||0} · Pet ${d[p+'Pet']||0} · Rauch ${d[p+'Rau']||0}</div>`:''}
-  </div>`;
 
   const persBlock = pers.length>0?`<div class="pr-pb"></div>
     <div class="pr-h2">Kontrollierte Personen (${pers.length})</div>
@@ -988,8 +1173,6 @@ const renderPrintView = () => {
         <div class="pr-org">LUZERNER POLIZEI</div>
         <div class="pr-title">Kurzmelderapport (KMR) Sportveranstaltung</div>
         <div style="font-size:7pt;color:#666;margin-top:2px">
-          ${d.journalNr?`Journal-Nr.: <strong>${d.journalNr}</strong>`:''} 
-          ${d.journalNr&&d.ereignisId?' · ':''}
           ${d.ereignisId?`Ereignis-ID: <strong>${d.ereignisId}</strong>`:''}
         </div>
       </div>
@@ -1003,7 +1186,7 @@ const renderPrintView = () => {
 
     <!-- ══ MATCH HERO ══ -->
     <div class="pr-hero">
-      <div style="font-size:7.5pt;color:#666;text-align:center;margin-bottom:3mm">${escH(d.liga)} · ${fmtDate(d.datum)}</div>
+      <div style="font-size:7.5pt;color:#666;text-align:center;margin-bottom:3mm">${escH(d.liga==='Andere'?(d.ligaAndere||'Andere'):d.liga)} · ${fmtDate(d.datum)}${d.uhrzeit?' · Anpfiff '+d.uhrzeit+' Uhr':''}</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:4mm">
         ${logoImg(d.heimLogo, d.heim||'H')}
         <div style="flex:1;text-align:right">
@@ -1056,7 +1239,7 @@ const renderPrintView = () => {
     <div class="pr-grid" style="margin-bottom:4mm">
       ${prF('PW — Personen',d.pwP)}${prF('PW — Fahrzeuge',d.pwF)}
       ${prF('Car — Personen',d.carP)}${prF('Car — Fahrzeuge',d.carF)}
-      ${prF('Zug — Personen',d.zugP)}
+      ${prF('Zug — Personen',d.zugP)}${prF('Zug — Anzahl Züge',d.zugZ)}
       ${d.carI?`<div class="pr-full">${prF('Angaben Car',d.carI)}</div>`:''}
     </div>`:''}
 
@@ -1064,11 +1247,8 @@ const renderPrintView = () => {
     <div class="pr-h2">Personalaufgebot</div>
     <div class="pr-grid" style="margin-bottom:4mm">
       ${prF('Spotter',d.anzS)}${prF('Polizeikräfte inkl. Spotter',d.anzP)}
-      ${prF('Private Si-Kräfte',d.anzSi)}${prF('Rechtshilfe Szenenkenner',d.anzR)}
-      ${prF('Fahrzeuge Spotter',d.fzAnz)}${tk>0?prF('Total Km',tk+' km'):''}
-      ${d.sVon?`<div class="pr-full">${prF('Einsatzzeit Spotter LuPol',d.sVon+'–'+d.sBis+(calcH(d.sVon,d.sBis)?' ('+calcH(d.sVon,d.sBis)+')':''))}</div>`:''}
-      ${d.pVon?`<div class="pr-full">${prF('Einsatzzeit Polizeikräfte',d.pVon+'–'+d.pBis+(calcH(d.pVon,d.pBis)?' ('+calcH(d.pVon,d.pBis)+')':''))}</div>`:''}
-      ${d.totEZ?`<div class="pr-full">${prF('Total Einsatzzeit Spotter LuPol',d.totEZ)}</div>`:''}
+      ${prF('Rechtshilfe Szenenkenner',d.anzR)}
+      ${d.totEZ?`<div class="pr-full">${prF('Total Einsatzzeit Spotter',d.totEZ)}</div>`:''}
     </div>
 
     <!-- ══ SACHVERHALT ══ -->
@@ -1078,39 +1258,53 @@ const renderPrintView = () => {
       ${d.abm?`<div style="margin-bottom:4mm"><div style="font-weight:800;font-size:8pt;color:#e67e22;margin-bottom:1mm">Abmarsch</div><div class="pr-sb">${escH(d.abm)}</div></div>`:''}
     `:''}
 
-    <!-- ══ EINSATZ + MITTEL ══ -->
-    <div class="pr-einsatz">
-      <div><div class="pr-h2" style="margin-top:0">Polizeieinsatz</div>${prChk('Präventiv',d.praev)}${prChk('Repressiv',d.repr)}</div>
-      <div><div class="pr-h2" style="margin-top:0">Einsatzmittel</div>
-        <div class="pr-em-grid">${emList.map(([k,l])=>prChk(l,d[k])).join('')}</div>
-      </div>
-    </div>
-
-    <!-- ══ SZENENVERHALTEN ══ -->
-    <div class="pr-h2">Szenenverhalten</div>
-    <div class="pr-2col">
-      ${szBlock('Heim — '+escH(d.heim), d.heimLogo, 'h')}
-      ${szBlock('Gast — '+escH(d.gast), d.gastLogo, 'g')}
-    </div>
+    <!-- ══ PYROTECHNIK ══ -->
+    <div class="pr-h2">Pyrotechnik</div>
+    ${(()=>{
+      const events = d.pyroEvents||[];
+      const hasData = events.filter(e=>!e.dupl).length > 0;
+      const phLabels = {AUFM:'Aufmarsch',HZ1:'1. HZ',PAUSE:'Pause',HZ2:'2. HZ',VL:'Verlängerung',ABML:'Abmarsch'};
+      const typeLabels = {HLF:'HLF',RAUCH:'Rauch',FW:'Feuerwerk',BOEL:'Böller',BLITZ:'Böller'};
+      if(hasData){
+        return ['HEIM','GAST'].map(team=>{
+          const tName = team==='HEIM'?(d.heim||'Heim'):(d.gast||'Gast');
+          const rows = Object.entries(phLabels).map(([pid,plbl])=>{
+            const types = ['HLF','RAUCH','FW','BOEL'].map(t=>pyroCnt(team,t,[pid]));
+            const tot = types.reduce((a,b)=>a+b,0);
+            if(tot===0) return '';
+            return `<tr><td style="font-size:7pt;padding:1mm 2mm;color:#555">${plbl}</td>${types.map(n=>`<td style="text-align:center;font-size:8pt;font-weight:${n>0?'bold':'400'};color:${n>0?'#1a3560':'#ccc'};padding:1mm">${n||'—'}</td>`).join('')}<td style="text-align:center;font-size:8pt;font-weight:bold;padding:1mm">${tot}</td></tr>`;
+          }).filter(Boolean).join('');
+          const tots = ['HLF','RAUCH','FW','BOEL'].map(t=>pyroCnt(team,t,null));
+          const grand = tots.reduce((a,b)=>a+b,0);
+          return `<div style="margin-bottom:3mm"><strong style="font-size:9pt;color:#1a3560">${escH(tName)}</strong>
+            <table style="width:100%;border-collapse:collapse;margin-top:1mm">
+              <tr style="background:#e8eef7"><th style="font-size:6pt;padding:1mm 2mm;text-align:left"></th><th style="font-size:6pt;padding:1mm;text-align:center">🔥HLF</th><th style="font-size:6pt;padding:1mm;text-align:center">💨Rauch</th><th style="font-size:6pt;padding:1mm;text-align:center">✨FW</th><th style="font-size:6pt;padding:1mm;text-align:center">⚡Böller</th><th style="font-size:6pt;padding:1mm;text-align:center">Total</th></tr>
+              ${rows}
+              <tr style="background:#f0f4f9;font-weight:bold"><td style="font-size:7pt;padding:1mm 2mm">TOTAL</td>${tots.map(n=>`<td style="text-align:center;font-size:9pt;font-weight:900;color:#1a3560;padding:1mm">${n||'—'}</td>`).join('')}<td style="text-align:center;font-size:10pt;font-weight:900;color:#1a3560;padding:1mm">${grand||'—'}</td></tr>
+            </table></div>`;
+        }).join('');
+      }
+      // Manual fallback
+      const mh=[d.mHHlf,d.mHRau,d.mHFw,d.mHBoel], mg=[d.mGHlf,d.mGRau,d.mGFw,d.mGBoel];
+      return `<div class="pr-grid">${prF('HLF Heim',d.mHHlf)}${prF('Rauch Heim',d.mHRau)}${prF('Feuerwerk Heim',d.mHFw)}${prF('Böller Heim',d.mHBoel)}${prF('HLF Gast',d.mGHlf)}${prF('Rauch Gast',d.mGRau)}${prF('Feuerwerk Gast',d.mGFw)}${prF('Böller Gast',d.mGBoel)}</div>`;
+    })()}
 
     <!-- ══ KONTROLLEN ══ -->
-    <div class="pr-h2">Anhaltungen, Anzeigen & Massnahmen</div>
+    <div class="pr-h2">Anhaltungen & Anzeigen</div>
     <div class="pr-grid" style="margin-bottom:4mm">
       ${d.pkJ?prF('Personenkontrollen',d.pkAnz||'Ja'):''}
       ${d.fhAnz?prF('Festnahmen Heim',d.fhAnz+(d.fhPG?' (PolG)':'')+(d.fhSP?' (StPO)':'')):''}
       ${d.fgAnz?prF('Festnahmen Gast',d.fgAnz+(d.fgPG?' (PolG)':'')+(d.fgSP?' (StPO)':'')):''}
       ${d.azHAnz?prF('Anzeigen Heim',d.azHAnz+'x — '+d.azHArt):''}
       ${d.azGAnz?prF('Anzeigen Gast',d.azGAnz+'x — '+d.azGArt):''}
-      ${d.svJ?prF('SV',d.svA||'Ja'):''}${d.rvJ?prF('RV',d.rvA||'Ja'):''}
-      ${d.maJ?prF('MA',d.maA||'Ja'):''}${d.gwJ?prF('GW',d.gwA||'Ja'):''}
     </div>
 
     <!-- ══ SCHÄDEN ══ -->
     ${(d.dPJ||d.dSJ||d.dPoJ)?`<div class="pr-h2">Verursachte Schäden</div>
-    <div class="pr-grid" style="margin-bottom:4mm">
-      ${d.dPJ?`<div class="pr-full">${prF('Personen',`Anzahl: ${d.dPAnz||'—'}${d.dPB?' — '+d.dPB:''}`)}</div>`:''}
-      ${d.dSJ?prF('Sachen',d.dSSm?'CHF '+d.dSSm:'Ja'):''}
-      ${d.dPoJ?prF('Polizei',d.dPoAnz||'Ja'):''}
+    <div style="margin-bottom:4mm">
+      ${d.dPJ?`<div style="margin-bottom:2mm">${prF('Personen',`Anzahl: ${d.dPAnz||'—'}${d.dPB?' — '+d.dPB:''}`)}</div>`:''}
+      ${d.dSJ?`<div style="margin-bottom:2mm">${prF('Sachen',`Anzahl: ${d.dSAnz||'—'}${d.dSSm?' · CHF '+d.dSSm:''}${d.dSB?' — '+d.dSB:''}`)}</div>`:''}
+      ${d.dPoJ?`<div style="margin-bottom:2mm">${prF('Polizei',`Anzahl: ${d.dPoAnz||'—'}${d.dPoB?' — '+d.dPoB:''}`)}</div>`:''}
     </div>`:''}
 
     <!-- ══ KONTROLLIERTE PERSONEN ══ -->
@@ -1118,7 +1312,7 @@ const renderPrintView = () => {
 
     <!-- ══ FOOTER ══ -->
     <div class="pr-footer">
-      <div>Erstellt durch: ${escH(d.eName)}${d.eTel?' · '+d.eTel:''}${d.eMob?' · '+d.eMob:''}${d.eEml?' · '+d.eEml:''}</div>
+      <div>Erstellt durch: ${escH(spots[0]?spots[0].id+' '+spots[0].n:'—')}${(()=>{const el=spots.find(s=>s.el);return el?' · EL: '+el.id+' '+el.n:'';})()}</div>
       <div>${fmtDate(d.datum||today)}</div>
     </div>
     <div class="pr-verteiler">Geht an: ${VERTEILER.join(' · ')}</div>
@@ -1184,6 +1378,12 @@ const render = () => {
 
 const setTab = i => { activeTab=i; render(); };
 window.checkPW = checkPW;
+window.toggleRolleAndere = (i, rolle) => {
+  const el=document.getElementById(`ra-${i}`);
+  if(el) el.style.display=rolle==='Anderes'?'block':'none';
+};
+window.loadPyroFromCounter = loadPyroFromCounter;
+window.setEL = setEL;
 
 // ===== BOOT =====
 loadSaved();

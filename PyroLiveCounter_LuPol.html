@@ -89,8 +89,8 @@ body{background:#0f1a2e;color:#fff;min-height:100vh}
 const PYRO=[
   {id:'HLF',emoji:'🔥',label:'HLF',desc:'Handlichtfackel',color:'#e74c3c'},
   {id:'RAUCH',emoji:'💨',label:'Rauch',desc:'Rauchbombe',color:'#95a5a6'},
-  {id:'BLITZ',emoji:'⚡',label:'Blitzer',desc:'Blitzknaller',color:'#f39c12'},
-  {id:'FW',emoji:'✨',label:'Feuerwerk',desc:'Feuerwerk',color:'#9b59b6'},
+  {id:'BOEL',emoji:'⚡',label:'Böller',desc:'Böller/Knaller',color:'#f39c12'},
+  {id:'FW',  emoji:'✨',label:'Feuerwerk',desc:'Feuerwerk',color:'#9b59b6'},
 ];
 const PHASES=[
   {id:'AUFM',label:'Aufmarsch',hasMin:false,offset:0},
@@ -299,9 +299,9 @@ const renderSummary=()=>{
     const abm=S.events.filter(e=>!e.dupl&&e.team===tid&&e.phase==='ABML');
     const c=(a,t)=>a.filter(e=>e.type===t).length;
     return`<div style="margin-bottom:10px"><div style="color:${tid==='HEIM'?'#4dde89':'#ff7070'};font-weight:700;margin-bottom:2px">${name}</div>
-      <div>Aufm:  HLF ${c(aufm,'HLF')} · Rauch ${c(aufm,'RAUCH')} · Blitz ${c(aufm,'BLITZ')} · FW ${c(aufm,'FW')}</div>
-      <div>Spiel: HLF ${c(spiel,'HLF')} · Rauch ${c(spiel,'RAUCH')} · Blitz ${c(spiel,'BLITZ')} · FW ${c(spiel,'FW')}</div>
-      <div>Abm:   HLF ${c(abm,'HLF')} · Rauch ${c(abm,'RAUCH')} · Blitz ${c(abm,'BLITZ')} · FW ${c(abm,'FW')}</div>
+      <div>Aufm:  HLF ${c(aufm,'HLF')} · Rauch ${c(aufm,'RAUCH')} · FW ${c(aufm,'FW')} · Böller ${c(aufm,'BOEL')}</div>
+      <div>Spiel: HLF ${c(spiel,'HLF')} · Rauch ${c(spiel,'RAUCH')} · FW ${c(spiel,'FW')} · Böller ${c(spiel,'BOEL')}</div>
+      <div>Abm:   HLF ${c(abm,'HLF')} · Rauch ${c(abm,'RAUCH')} · FW ${c(abm,'FW')} · Böller ${c(abm,'BOEL')}</div>
     </div>`;
   }).join('');
   return`<div class="sum-wrap">
