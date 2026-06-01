@@ -87,18 +87,16 @@ body{background:#0f1a2e;color:#fff;min-height:100vh}
 <div class="app" id="app"></div>
 <script>
 const PYRO=[
-  {id:'HLF',emoji:'🔥',label:'HLF',desc:'Handlichtfackel',color:'#e74c3c'},
-  {id:'RAUCH',emoji:'💨',label:'Rauch',desc:'Rauchbombe',color:'#95a5a6'},
-  {id:'BOEL',emoji:'⚡',label:'Böller',desc:'Böller/Knaller',color:'#f39c12'},
-  {id:'FW',  emoji:'✨',label:'Feuerwerk',desc:'Feuerwerk',color:'#9b59b6'},
+  {id:'HLF',  emoji:'🔥',label:'HLF',     desc:'Handlichtfackel', color:'#e74c3c'},
+  {id:'RAUCH',emoji:'💨',label:'Rauch',    desc:'Rauchbombe',      color:'#95a5a6'},
+  {id:'FW',   emoji:'✨',label:'Feuerwerk',desc:'Feuerwerk',       color:'#9b59b6'},
+  {id:'BOEL', emoji:'⚡',label:'Böller',   desc:'Böller/Knaller',  color:'#f39c12'},
+  {id:'BLITZ',emoji:'💥',label:'Blitzer',  desc:'Blitzknaller',    color:'#e67e22'},
 ];
 const PHASES=[
-  {id:'AUFM',label:'Aufmarsch',hasMin:false,offset:0},
-  {id:'HZ1',label:'1. Halbzeit',hasMin:true,offset:0},
-  {id:'PAUSE',label:'Pause',hasMin:false,offset:45},
-  {id:'HZ2',label:'2. Halbzeit',hasMin:true,offset:45},
-  {id:'VL',label:'Verlängerung',hasMin:true,offset:90},
-  {id:'ABML',label:'Abmarsch',hasMin:false,offset:0},
+  {id:'VOR', label:'Vor dem Spiel',     hasMin:false,offset:0},
+  {id:'WAHR',label:'Während dem Spiel', hasMin:false,offset:0},
+  {id:'NACH',label:'Nach dem Spiel',    hasMin:false,offset:0},
 ];
 const SPOTS=[
   {id:'LU01',n:'BUHOLZER Marc'},{id:'LU04',n:'GARATTONI Roger'},
@@ -134,7 +132,7 @@ let S={
   setup:true,myId:'',myName:'',
   heim: urlParams.get('heim') || 'FC Luzern',
   gast: urlParams.get('gast') || '',
-  phase:'HZ1',team:'HEIM',view:'COUNT',events:[],
+  phase:'VOR',team:'HEIM',view:'COUNT',events:[],
   clock:{running:false,startTs:null,off:0,manual:''},
   lastSync:null,
 };
@@ -299,14 +297,14 @@ const renderSummary=()=>{
   }).join('');
   const kmr=['HEIM','GAST'].map(tid=>{
     const name=tid==='HEIM'?hN:gN;
-    const aufm=S.events.filter(e=>!e.dupl&&e.team===tid&&e.phase==='AUFM');
-    const spiel=S.events.filter(e=>!e.dupl&&e.team===tid&&['HZ1','PAUSE','HZ2','VL'].includes(e.phase));
-    const abm=S.events.filter(e=>!e.dupl&&e.team===tid&&e.phase==='ABML');
+    const vor=S.events.filter(e=>!e.dupl&&e.team===tid&&e.phase==='VOR');
+    const wahr=S.events.filter(e=>!e.dupl&&e.team===tid&&e.phase==='WAHR');
+    const nach=S.events.filter(e=>!e.dupl&&e.team===tid&&e.phase==='NACH');
     const c=(a,t)=>a.filter(e=>e.type===t).length;
     return`<div style="margin-bottom:10px"><div style="color:${tid==='HEIM'?'#4dde89':'#ff7070'};font-weight:700;margin-bottom:2px">${name}</div>
-      <div>Aufm:  HLF ${c(aufm,'HLF')} · Rauch ${c(aufm,'RAUCH')} · FW ${c(aufm,'FW')} · Böller ${c(aufm,'BOEL')}</div>
-      <div>Spiel: HLF ${c(spiel,'HLF')} · Rauch ${c(spiel,'RAUCH')} · FW ${c(spiel,'FW')} · Böller ${c(spiel,'BOEL')}</div>
-      <div>Abm:   HLF ${c(abm,'HLF')} · Rauch ${c(abm,'RAUCH')} · FW ${c(abm,'FW')} · Böller ${c(abm,'BOEL')}</div>
+      <div>Vor:     HLF ${c(vor,'HLF')} · Rauch ${c(vor,'RAUCH')} · FW ${c(vor,'FW')} · Böller ${c(vor,'BOEL')} · Blitzer ${c(vor,'BLITZ')}</div>
+      <div>Während: HLF ${c(wahr,'HLF')} · Rauch ${c(wahr,'RAUCH')} · FW ${c(wahr,'FW')} · Böller ${c(wahr,'BOEL')} · Blitzer ${c(wahr,'BLITZ')}</div>
+      <div>Nach:    HLF ${c(nach,'HLF')} · Rauch ${c(nach,'RAUCH')} · FW ${c(nach,'FW')} · Böller ${c(nach,'BOEL')} · Blitzer ${c(nach,'BLITZ')}</div>
     </div>`;
   }).join('');
   return`<div class="sum-wrap">

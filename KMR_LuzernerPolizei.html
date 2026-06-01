@@ -285,8 +285,8 @@ const INIT_D = {
   praev:false,repr:false,
   pyroEvents:[],
   mPyro:{
-    HEIM:{AUFM:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ1:{HLF:0,RAUCH:0,FW:0,BOEL:0},PAUSE:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ2:{HLF:0,RAUCH:0,FW:0,BOEL:0},ABML:{HLF:0,RAUCH:0,FW:0,BOEL:0}},
-    GAST:{AUFM:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ1:{HLF:0,RAUCH:0,FW:0,BOEL:0},PAUSE:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ2:{HLF:0,RAUCH:0,FW:0,BOEL:0},ABML:{HLF:0,RAUCH:0,FW:0,BOEL:0}},
+    HEIM:{VOR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},WAHR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},NACH:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0}},
+    GAST:{VOR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},WAHR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},NACH:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0}},
   },
   pkJ:false,pkAnz:'',
   fhAnz:'',fhPG:false,fhSP:false,fgAnz:'',fgPG:false,fgSP:false,
@@ -677,22 +677,20 @@ const fetchHistory = () => {
 
 // ── PYRO COUNTER IMPORT ──────────────────────────────────────
 const PYRO_PHASES = [
-  {id:'AUFM',label:'Aufmarsch'},
-  {id:'HZ1', label:'1. Halbzeit'},
-  {id:'PAUSE',label:'Pause'},
-  {id:'HZ2', label:'2. Halbzeit'},
-  {id:'VL',  label:'Verlängerung'},
-  {id:'ABML',label:'Abmarsch'},
+  {id:'VOR', label:'Vor dem Spiel'},
+  {id:'WAHR',label:'Während dem Spiel'},
+  {id:'NACH',label:'Nach dem Spiel'},
 ];
 const PYRO_TYPES = [
-  {id:'HLF', label:'HLF',      emoji:'🔥'},
-  {id:'RAUCH',label:'Rauch',   emoji:'💨'},
-  {id:'FW',  label:'Feuerwerk',emoji:'✨'},
-  {id:'BOEL',label:'Böller',   emoji:'⚡'},
+  {id:'HLF',  label:'HLF',      emoji:'🔥'},
+  {id:'RAUCH',label:'Rauch',    emoji:'💨'},
+  {id:'FW',   label:'Feuerwerk',emoji:'✨'},
+  {id:'BOEL', label:'Böller',   emoji:'⚡'},
+  {id:'BLITZ',label:'Blitzer',  emoji:'💥'},
 ];
 const pyroCnt = (team, type, phases) =>
   (d.pyroEvents||[]).filter(e=>
-    !e.dupl && e.team===team && (e.type===type||(type==='BOEL'&&e.type==='BLITZ')) &&
+    !e.dupl && e.team===team && e.type===type &&
     (!phases||phases.includes(e.phase))
   ).length;
 
