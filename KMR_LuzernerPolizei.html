@@ -505,8 +505,7 @@ const setSpot = (i,k,v) => {
     const hel=document.getElementById(`sh${i}`);
     if(hel){ hel.textContent=h; hel.style.display=h?'flex':'none'; }
     else if(h) renderContent();
-    updateTotEZ();
-    // Auto-fill other spotters' times from spotter 0
+    // Auto-fill other spotters' times from spotter 0 FIRST
     if(i===0) {
       spots.forEach((sp,j) => {
         if(j===0) return;
@@ -518,6 +517,8 @@ const setSpot = (i,k,v) => {
         if(hjelEl){ hjelEl.textContent=hj; hjelEl.style.display=hj?'flex':'none'; }
       });
     }
+    // THEN calculate total with all updated times
+    updateTotEZ();
   }
 };
 const addSpot = () => { spots.push({id:'',n:'',von:'',bis:'',rolle:'',rolleAndere:'',el:false}); autoSave(); render(); };
