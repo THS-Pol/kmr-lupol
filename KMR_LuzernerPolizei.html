@@ -892,12 +892,13 @@ const T2 = () => {
     </div>`;
   }).join('');
 
-  return card(`Spotter im Einsatz (${spots.length})`,`
-    ${spotsHtml}
-    <button class="btn-add" onclick="addSpot()">+ Spotter hinzufügen</button>
-  `) + card('Personalaufgebot',`
+  return card('Personalaufgebot',`
   ${row(col(inpN('Anzahl Spotter (passt Felder unten an)','anzS')),col(inpN('Polizeikräfte inkl. Spotter','anzP')))}
   ${inpN('Anzahl Rechtshilfe Szenenkenner','anzR')}
+  `) + card(`Spotter im Einsatz (${spots.length})`,`
+    ${spots.length===0?`<div style="text-align:center;padding:20px;color:#aaa;font-size:13px">↑ Anzahl Spotter eingeben um Felder zu öffnen</div>`:''}
+    ${spotsHtml}
+    <button class="btn-add" onclick="addSpot()" style="margin-top:${spots.length?'8':'0'}px">+ Spotter manuell hinzufügen</button>
   `) + card('Total Einsatzzeit Spotter',`
   <div style="background:var(--lb);border-radius:8px;padding:12px 16px;text-align:center">
     <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Einsatzzeit aller Spotter</div>
