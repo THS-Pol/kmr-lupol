@@ -418,9 +418,11 @@ const set = (k,v) => {
     if(hint) hint.textContent = n > 0 ? `✓ ${n} Personenmaske${n>1?'n':''} im Reiter 👤 Personen erstellt` : '';
     return;
   }
+  // anzS → sync spots array count
+  if(k==='anzS'){
     const n=Math.min(Math.max(parseInt(v)||0,0),22);
     const first=spots[0]||{};
-    while(spots.length<n) spots.push({id:'',n:'',von:first.von||'',bis:first.bis||'',rolle:'',rolleAndere:''});
+    while(spots.length<n) spots.push({id:'',n:'',von:first.von||'',bis:first.bis||'',rolle:'',rolleAndere:'',el:false});
     if(n>0&&spots.length>n) spots.splice(n);
     autoSave(); updateTotEZ(); renderContent(); return;
   }
