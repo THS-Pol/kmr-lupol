@@ -284,8 +284,10 @@ const INIT_D = {
   aufm:'',spiel:'',abm:'',
   praev:false,repr:false,
   pyroEvents:[],
-  mHHlf:'',mHRau:'',mHFw:'',mHBoel:'',
-  mGHlf:'',mGRau:'',mGFw:'',mGBoel:'',
+  mPyro:{
+    HEIM:{AUFM:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ1:{HLF:0,RAUCH:0,FW:0,BOEL:0},PAUSE:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ2:{HLF:0,RAUCH:0,FW:0,BOEL:0},ABML:{HLF:0,RAUCH:0,FW:0,BOEL:0}},
+    GAST:{AUFM:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ1:{HLF:0,RAUCH:0,FW:0,BOEL:0},PAUSE:{HLF:0,RAUCH:0,FW:0,BOEL:0},HZ2:{HLF:0,RAUCH:0,FW:0,BOEL:0},ABML:{HLF:0,RAUCH:0,FW:0,BOEL:0}},
+  },
   pkJ:false,pkAnz:'',
   fhAnz:'',fhPG:false,fhSP:false,fgAnz:'',fgPG:false,fgSP:false,
   azHAnz:'',azHArt:'',azGAnz:'',azGArt:'',
@@ -970,16 +972,36 @@ const T4 = () => {
     </div>`;
   };
 
-  // Manual entry fallback
-  const manualEntry = (prefix, teamName) => `
-    <div style="margin-bottom:12px">
+  // Manual entry table per phase
+  const manualTable = (team, teamName) => {
+    const mp = (d.mPyro||{})[team]||{};
+    const rows = PYRO_PHASES.map(ph => {
+      const phData = mp[ph.id]||{};
+      const cells = PYRO_TYPES.map(pt =>
+        `<td style="padding:3px"><input type="number" inputmode="numeric" min="0"
+          value="${phData[pt.id]||0}"
+          oninput="setMPyro('${team}','${ph.id}','${pt.id}',this.value)"
+          style="width:100%;text-align:center;border:1px solid #ddd;border-radius:5px;padding:4px 2px;font-size:13px;font-weight:700"></td>`
+      ).join('');
+      const tot = PYRO_TYPES.reduce((s,pt)=>s+(phData[pt.id]||0),0);
+      return `<tr style="border-bottom:1px solid #f0f0f0">
+        <td style="padding:5px 6px;font-size:11px;color:#555;white-space:nowrap">${ph.label}</td>
+        ${cells}
+        <td style="text-align:center;padding:5px 4px;font-size:13px;font-weight:700;color:#888">${tot||'—'}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-bottom:14px">
       <div style="font-size:12px;font-weight:800;color:var(--b);margin-bottom:6px">${teamName}</div>
-      ${row(col(inpN('🔥 HLF',prefix+'HLF')),col(inpN('💨 Rauch',prefix+'RAU')))}
-      ${row(col(inpN('✨ Feuerwerk',prefix+'FW')),col(inpN('⚡ Böller',prefix+'BOE')))}
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:var(--lb)">
+          <th style="text-align:left;padding:5px 6px;font-size:10px;color:#666"></th>
+          ${PYRO_TYPES.map(pt=>`<th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">${pt.emoji}<br>${pt.label}</th>`).join('')}
+          <th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">Total</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
     </div>`;
-
-  // Manual state keys
-  const mPrefH = 'mH', mPrefG = 'mG';
+  };
 
   return card('🎆 Pyrotechnik',`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1001,11 +1023,11 @@ const T4 = () => {
     ${hasData
       ? pyroTable('HEIM', hName) + pyroTable('GAST', gName)
       : `<div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#e67e22">
-          Klicke "Aus Counter laden" um die Daten aus dem Pyro Live Counter zu importieren.<br>
-          Oder manuelle Erfassung:
+          Klicke "🔗 Counter öffnen" um den Pyro Live Counter für dieses Spiel zu starten.<br>
+          Oder manuelle Erfassung pro Phase:
         </div>
-        ${manualEntry(mPrefH, hName)}
-        ${manualEntry(mPrefG, gName)}`}
+        ${manualTable('HEIM', hName)}
+        ${manualTable('GAST', gName)}`}
   `);
 };
 
@@ -1150,9 +1172,9 @@ const renderPrintView = () => {
   const bw = BEWERTUNG[d.einsatzBewertung] || BEWERTUNG.PROBLEMLOS;
 
   // Pyro totals
+  const mPyroCnt = (team,type) => Object.values((d.mPyro||{})[team]||{}).reduce((s,ph)=>s+(ph[type]||0),0);
   const pyroTotal = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt('HEIM',pt.id,null)+pyroCnt('GAST',pt.id,null),0)
-    || (parseInt(d.mHHlf)||0)+(parseInt(d.mHRau)||0)+(parseInt(d.mHFw)||0)+(parseInt(d.mHBoel)||0)
-    +(parseInt(d.mGHlf)||0)+(parseInt(d.mGRau)||0)+(parseInt(d.mGFw)||0)+(parseInt(d.mGBoel)||0);
+    || PYRO_TYPES.reduce((s,pt)=>s+mPyroCnt('HEIM',pt.id)+mPyroCnt('GAST',pt.id),0);
   const festTotal = (parseInt(d.fhAnz)||0)+(parseInt(d.fgAnz)||0);
   const anzTotal  = (parseInt(d.azHAnz)||0)+(parseInt(d.azGAnz)||0);
 
@@ -1309,8 +1331,16 @@ const renderPrintView = () => {
         }).join('');
       }
       // Manual fallback
-      const mh=[d.mHHlf,d.mHRau,d.mHFw,d.mHBoel], mg=[d.mGHlf,d.mGRau,d.mGFw,d.mGBoel];
-      return `<div class="pr-grid">${prF('HLF Heim',d.mHHlf)}${prF('Rauch Heim',d.mHRau)}${prF('Feuerwerk Heim',d.mHFw)}${prF('Böller Heim',d.mHBoel)}${prF('HLF Gast',d.mGHlf)}${prF('Rauch Gast',d.mGRau)}${prF('Feuerwerk Gast',d.mGFw)}${prF('Böller Gast',d.mGBoel)}</div>`;
+      const mPyroCntP = (team,type) => Object.values((d.mPyro||{})[team]||{}).reduce((s,ph)=>s+(ph[type]||0),0);
+      return ['HEIM','GAST'].map(team=>{
+        const tName=team==='HEIM'?(d.heim||'Heim'):(d.gast||'Gast');
+        const tots=PYRO_TYPES.map(pt=>mPyroCntP(team,pt.id));
+        const grand=tots.reduce((a,b)=>a+b,0);
+        if(!grand) return '';
+        return `<div style="margin-bottom:3mm"><strong style="font-size:9pt;color:#1a3560">${escH(tName)}</strong>
+          <div style="font-size:8pt">${PYRO_TYPES.map((pt,i)=>tots[i]?`${pt.emoji} ${pt.label}: ${tots[i]}`:''). filter(Boolean).join(' · ')}</div>
+        </div>`;
+      }).join('');
     })()}
 
     <!-- ══ KONTROLLEN ══ -->
@@ -1408,6 +1438,13 @@ window.toggleRolleAndere = (i, rolle) => {
 };
 window.loadPyroFromCounter = loadPyroFromCounter;
 window.openPyroCounter = openPyroCounter;
+window.setMPyro = (team, phase, type, val) => {
+  if(!d.mPyro) d.mPyro={HEIM:{},GAST:{}};
+  if(!d.mPyro[team]) d.mPyro[team]={};
+  if(!d.mPyro[team][phase]) d.mPyro[team][phase]={};
+  d.mPyro[team][phase][type] = parseInt(val)||0;
+  autoSave();
+};
 window.setEL = setEL;
 
 // ===== BOOT =====
