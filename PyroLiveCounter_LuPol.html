@@ -107,7 +107,10 @@ const SPOTS=[
   {id:'LU18',n:'KERBER Philippe'},{id:'LU19',n:'STADELMANN Thierry'},
   {id:'LU22',n:'WICKI Daniel'},
 ];
-const KEY='pyro-v3';
+// Datum aus URL-Parameter lesen (gesetzt vom KMR)
+const urlParams = new URLSearchParams(window.location.search);
+const matchDatum = urlParams.get('datum') || new Date().toISOString().split('T')[0];
+const KEY = `pyro-${matchDatum}`;
 
 // ===== PASSWORTSCHUTZ =====
 const APP_PW = '1825';
@@ -128,7 +131,9 @@ const checkPyroPW = () => {
 };
 
 let S={
-  setup:true,myId:'',myName:'',heim:'FC Luzern',gast:'',
+  setup:true,myId:'',myName:'',
+  heim: urlParams.get('heim') || 'FC Luzern',
+  gast: urlParams.get('gast') || '',
   phase:'HZ1',team:'HEIM',view:'COUNT',events:[],
   clock:{running:false,startTs:null,off:0,manual:''},
   lastSync:null,
@@ -362,7 +367,7 @@ const render=()=>{
   const hN=esc(S.heim||'Heim'),gN=esc(S.gast||'Gast');
   app.innerHTML=`
     <div class="hdr">
-      <div><h1>🎆 Pyro Live</h1><p>${hN} vs. ${gN} · ${S.myId} ${S.myName}</p></div>
+      <div><h1>🎆 Pyro Live</h1><p>${hN} vs. ${gN} · ${matchDatum} · ${S.myId} ${S.myName}</p></div>
       <div style="display:flex;gap:8px;align-items:center">
         <div class="sync-dot${ago>8?' old':''}"></div>
         <div class="badge">${S.events.filter(e=>!e.dupl).length} Pyros</div>

@@ -550,13 +550,14 @@ const exportToSheets = async () => {
   showToast('📊 Statistik wird gespeichert…','info');
 
   // Pyro-Daten aus Pyro-Counter laden (falls vorhanden)
+  const pyroKey = d.datum ? `pyro-${d.datum}` : 'pyro-v3';
   let pyroEvents = [];
   try {
-    const ps = await window.storage.get('pyro-v3', true);
+    const ps = await window.storage.get(pyroKey, true);
     if (ps?.value) pyroEvents = JSON.parse(ps.value).events || [];
   } catch(e) {}
   if (!pyroEvents.length) {
-    try { const ps=localStorage.getItem('pyro-v3'); if(ps) pyroEvents=JSON.parse(ps).events||[]; } catch(e){}
+    try { const ps=localStorage.getItem(pyroKey); if(ps) pyroEvents=JSON.parse(ps).events||[]; } catch(e){}
   }
 
   const payload = {
@@ -695,22 +696,33 @@ const pyroCnt = (team, type, phases) =>
 
 const loadPyroFromCounter = async () => {
   showToast('🎆 Pyro-Daten werden geladen…','info');
+  const key = d.datum ? `pyro-${d.datum}` : 'pyro-v3';
   let pyroData = null;
   try {
-    const s = await window.storage.get('pyro-v3', true);
+    const s = await window.storage.get(key, true);
     if(s?.value) pyroData = JSON.parse(s.value);
   } catch(e) {}
   if(!pyroData) {
-    try { const ls=localStorage.getItem('pyro-v3'); if(ls) pyroData=JSON.parse(ls); } catch(e) {}
+    try { const ls=localStorage.getItem(key); if(ls) pyroData=JSON.parse(ls); } catch(e) {}
   }
   if(pyroData?.events?.length) {
     d.pyroEvents = pyroData.events;
     autoSave(); renderContent();
     const cnt = pyroData.events.filter(e=>!e.dupl).length;
-    showToast(`✓ ${cnt} Pyro-Ereignisse geladen`,'success');
+    showToast(`✓ ${cnt} Ereignisse geladen (${key})`,'success');
   } else {
-    showToast('⚠ Keine Pyro-Daten im Live Counter gefunden','error');
+    showToast(`⚠ Keine Daten gefunden für: ${key}`,'error');
   }
+};
+
+const openPyroCounter = () => {
+  const base = 'PyroLiveCounter_LuPol.html';
+  const params = new URLSearchParams();
+  if(d.datum) params.set('datum', d.datum);
+  if(d.heim)  params.set('heim',  d.heim);
+  if(d.gast)  params.set('gast',  d.gast);
+  const url = `${base}?${params.toString()}`;
+  window.open(url, '_blank');
 };
 const exportDraft = async () => {
   if (!SHEETS_URL) { showToast('⚠ SHEETS_URL nicht konfiguriert','error'); return; }
@@ -976,10 +988,16 @@ const T4 = () => {
           ? `✓ ${validEvents.length} Ereignisse aus Pyro Live Counter`
           : 'Noch keine Daten aus Pyro Live Counter'}
       </div>
-      <button onclick="loadPyroFromCounter()" style="padding:7px 12px;background:var(--b);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">
-        🎆 Aus Counter laden
-      </button>
+      <div style="display:flex;gap:6px">
+        <button onclick="openPyroCounter()" style="padding:7px 10px;background:#1a3560;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">
+          🔗 Counter öffnen
+        </button>
+        <button onclick="loadPyroFromCounter()" style="padding:7px 10px;background:var(--b);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">
+          📥 Laden
+        </button>
+      </div>
     </div>
+    ${d.datum?`<div style="font-size:10px;color:#aaa;margin-bottom:10px">Spiel-Key: <code style="background:#f0f0f0;padding:1px 5px;border-radius:3px">pyro-${d.datum}</code></div>`:''}
     ${hasData
       ? pyroTable('HEIM', hName) + pyroTable('GAST', gName)
       : `<div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#e67e22">
@@ -1389,6 +1407,7 @@ window.toggleRolleAndere = (i, rolle) => {
   if(el) el.style.display=rolle==='Anderes'?'block':'none';
 };
 window.loadPyroFromCounter = loadPyroFromCounter;
+window.openPyroCounter = openPyroCounter;
 window.setEL = setEL;
 
 // ===== BOOT =====
