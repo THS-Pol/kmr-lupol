@@ -543,9 +543,11 @@ const clearAll = () => {
   }
 };
 const doPrint = () => {
+  // Toast ausblenden damit er nicht auf dem PDF erscheint
+  const t = document.getElementById('toast');
+  if(t) { t.style.opacity='0'; t.style.pointerEvents='none'; }
   renderPrintView();
-  setTimeout(()=>window.print(),150);
-  exportToSheets();
+  setTimeout(()=>{ window.print(); exportToSheets(); },150);
 };
 
 // ── GOOGLE SHEETS EXPORT ─────────────────────────────────────
@@ -730,15 +732,15 @@ const openPyroCounter = () => {
 const exportDraft = async () => {
   if (!SHEETS_URL) { showToast('⚠ SHEETS_URL nicht konfiguriert','error'); return; }
   showToast('☁️ Entwurf wird gespeichert…','info');
-  // Kompakte Version: leere Felder entfernen
-  const compact = obj => Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==''&&v!==false&&v!==null&&v!==undefined));
+  // Grosse/unwichtige Felder weglassen (pyroEvents kommen aus PyroSync, Logos werden neu geladen)
+  const {pyroEvents, heimLogo, gastLogo, letzterMatch, mPyro, ...dClean} = d;
+  const compact = obj => Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==''&&v!==false&&v!==null&&v!==undefined&&!(Array.isArray(v)&&!v.length)));
   const payload = {
-    ...compact(d),
+    ...compact(dClean),
     spotterEinsatz: spots,
     persons: pers,
   };
   try {
-    // GET statt POST — umgeht das Apps Script Redirect-Problem
     const params = new URLSearchParams({
       action: 'saveDraft',
       datum: d.datum || '',
@@ -749,9 +751,9 @@ const exportDraft = async () => {
     if(j.success) {
       showToast(`✓ Gespeichert — Code: ${d.datum}`,'success');
     } else {
-      showToast(`⚠ Fehler: ${j.error||j.message}`,'error');
+      showToast(`⚠ ${j.error||j.message||'Fehler'}`,'error');
     }
-  } catch(e) { showToast('⚠ Verbindungsfehler beim Speichern','error'); }
+  } catch(e) { showToast('⚠ Verbindungsfehler','error'); }
 };
 
 const loadDraftByDate = async (date) => {

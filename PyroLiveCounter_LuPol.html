@@ -169,9 +169,18 @@ const load = async () => {
     if (r.ok) {
       const remote = JSON.parse(await r.text());
       if (Array.isArray(remote) && remote.length > 0) {
+        // Spieluhr-Zustand aus CLOCK_STATE Event laden
+        const clockEv = remote.find(e=>e.id==='__clock__'&&e.type==='CLOCK_STATE');
+        if(clockEv?.clock && !S.clock.running) {
+          S.clock = clockEv.clock;
+          if(S.clock.running) {
+            if(clockT) clearInterval(clockT);
+            clockT = setInterval(()=>{if(S.view==='COUNT')renderContent();},10000);
+          }
+        }
+        // Normale Events mergen (CLOCK_STATE nicht als reguläres Event speichern)
         const lids = new Set(S.events.map(e => e.id));
-        remote.forEach(e => { if (!lids.has(e.id)) S.events.push(e); });
-        // Dupl-Flags synchronisieren
+        remote.filter(e=>e.type!=='CLOCK_STATE').forEach(e => { if (!lids.has(e.id)) S.events.push(e); });
         S.events.forEach(e => {
           const rv = remote.find(x => x.id === e.id);
           if (rv) e.dupl = rv.dupl;
@@ -195,18 +204,20 @@ const startClock=ph=>{
   const p=PHASES.find(x=>x.id===ph);
   S.clock={running:true,startTs:Date.now(),off:p?.offset||0,manual:''};
   saveLocal();
+  // Spieluhr-Zustand an alle Geräte synchronisieren
+  syncEvent({id:'__clock__',type:'CLOCK_STATE',clock:S.clock,ts:Date.now()});
   if(clockT)clearInterval(clockT);
   clockT=setInterval(()=>{if(S.view==='COUNT')renderContent();},10000);
 };
 const stopClock=()=>{
   if(S.clock.running){
-    // Freeze current minute so it persists
     S.clock.off=clockMin()||0;
     S.clock.startTs=null;
     S.clock.running=false;
   }
   if(clockT){clearInterval(clockT);clockT=null;}
   saveLocal();
+  syncEvent({id:'__clock__',type:'CLOCK_STATE',clock:S.clock,ts:Date.now()});
 };
 
 // EVENTS
