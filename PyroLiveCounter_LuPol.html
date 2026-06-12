@@ -169,16 +169,20 @@ const load = async () => {
     if (r.ok) {
       const remote = JSON.parse(await r.text());
       if (Array.isArray(remote) && remote.length > 0) {
-        // Spieluhr-Zustand aus CLOCK_STATE Event laden
+        // Spieluhr-Zustand: immer den neuesten Stand vom Server übernehmen
         const clockEv = remote.find(e=>e.id==='__clock__'&&e.type==='CLOCK_STATE');
-        if(clockEv?.clock && !S.clock.running) {
+        if(clockEv?.clock && clockEv.ts > (S.clockLastUpdate||0)) {
+          const wasRunning = S.clock.running;
           S.clock = clockEv.clock;
-          if(S.clock.running) {
+          S.clockLastUpdate = clockEv.ts;
+          if(S.clock.running && !wasRunning) {
             if(clockT) clearInterval(clockT);
             clockT = setInterval(()=>{if(S.view==='COUNT')renderContent();},10000);
+          } else if(!S.clock.running && wasRunning) {
+            if(clockT){ clearInterval(clockT); clockT=null; }
           }
         }
-        // Normale Events mergen (CLOCK_STATE nicht als reguläres Event speichern)
+        // Normale Events mergen
         const lids = new Set(S.events.map(e => e.id));
         remote.filter(e=>e.type!=='CLOCK_STATE').forEach(e => { if (!lids.has(e.id)) S.events.push(e); });
         S.events.forEach(e => {
@@ -232,7 +236,23 @@ const addEvent=type=>{
   render();
 };
 const togDupl=id=>{const ev=S.events.find(x=>x.id===id);if(ev){ev.dupl=!ev.dupl;saveLocal();syncEvent(ev);render();}};
-const clearAll=()=>{if(confirm('Alle Pyro-Ereignisse löschen?')){S.events=[];save();render();}};
+window.resetCounter = async () => {
+  if (!confirm('⚠️ Counter wirklich zurücksetzen?\n\nAlle erfassten Pyros und die Spieluhr werden gelöscht.\nDies kann nicht rückgängig gemacht werden!')) return;
+  if (!confirm('Sicher? Letzter Check vor dem Löschen.')) return;
+  // Lokal leeren
+  S.events = [];
+  S.clock = {running:false, startTs:null, off:0, manual:''};
+  S.clockLastUpdate = 0;
+  if(clockT){ clearInterval(clockT); clockT=null; }
+  saveLocal();
+  // Server zurücksetzen
+  if(SHEETS_URL) {
+    try {
+      await fetch(`${SHEETS_URL}?action=resetPyro&key=${encodeURIComponent(KEY)}`);
+    } catch(e) {}
+  }
+  render();
+};
 const cnt=(team,type,phases)=>S.events.filter(e=>!e.dupl&&e.team===team&&(!type||e.type===type)&&(!phases||phases.includes(e.phase))).length;
 
 // RENDER
@@ -316,7 +336,7 @@ const renderLog=()=>{
   return `<div class="log-wrap">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <div style="font-size:12px;opacity:.5">${S.events.length} total · ${S.events.filter(e=>e.dupl).length} Duplikate</div>
-      <button onclick="clearAll()" style="background:rgba(255,80,80,.2);color:#ff7070;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">Löschen</button>
+      <button onclick="resetCounter()" style="background:rgba(255,80,80,.2);color:#ff7070;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">🗑 Reset</button>
     </div>
     ${cards||'<div style="text-align:center;opacity:.3;padding:40px">Keine Ereignisse</div>'}
   </div>`;
@@ -450,7 +470,7 @@ window.setTeam=id=>{S.team=id;render();};
 window.setView=id=>{S.view=id;render();};
 window.addEvent=addEvent;
 window.togDupl=togDupl;
-window.clearAll=clearAll;
+window.resetCounter = resetCounter;
 window.startClock=startClock;
 window.stopClock=stopClock;
 window.adjMin=delta=>{

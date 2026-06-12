@@ -771,6 +771,9 @@ const loadDraftByDate = async (date) => {
       if (saved.spotterEinsatz) spots = saved.spotterEinsatz;
       if (saved.persons) pers = saved.persons;
       autoSave(); render();
+      // Logos automatisch neu laden
+      if(d.heim) fetchLogo(d.heim, 'heim');
+      if(d.gast) fetchLogo(d.gast, 'gast');
       showToast('✓ Entwurf geladen','success');
     } else { showToast('⚠ Kein Entwurf gefunden für: '+date,'error'); }
   } catch(e) { showToast('⚠ Fehler beim Laden','error'); }
