@@ -176,6 +176,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 </style>
 </head>
 <body>
+<!-- Hidden form für Draft-Save (umgeht CORS via iframe) -->
+<iframe name="save-frame" id="save-frame" style="display:none"></iframe>
+<form id="save-form" method="POST" target="save-frame" style="display:none">
+  <input id="save-payload" name="payload" value="">
+</form>
 <div class="app" id="app">
   <!-- HEADER -->
   <div class="hdr no-print">
@@ -732,28 +737,30 @@ const openPyroCounter = () => {
 const exportDraft = async () => {
   if (!SHEETS_URL) { showToast('⚠ SHEETS_URL nicht konfiguriert','error'); return; }
   showToast('☁️ Entwurf wird gespeichert…','info');
-  // Grosse/unwichtige Felder weglassen (pyroEvents kommen aus PyroSync, Logos werden neu geladen)
-  const {pyroEvents, heimLogo, gastLogo, letzterMatch, mPyro, ...dClean} = d;
-  const compact = obj => Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==''&&v!==false&&v!==null&&v!==undefined&&!(Array.isArray(v)&&!v.length)));
-  const payload = {
-    ...compact(dClean),
+  const {pyroEvents, heimLogo, gastLogo, letzterMatch, ...dClean} = d;
+  const payload = JSON.stringify({
+    action: 'saveDraft',
+    ...dClean,
     spotterEinsatz: spots,
     persons: pers,
-  };
+  });
   try {
-    const params = new URLSearchParams({
-      action: 'saveDraft',
-      datum: d.datum || '',
-      data: JSON.stringify(payload)
-    });
-    const r = await fetch(`${SHEETS_URL}?${params.toString()}`);
-    const j = await r.json();
-    if(j.success) {
-      showToast(`✓ Gespeichert — Code: ${d.datum}`,'success');
-    } else {
-      showToast(`⚠ ${j.error||j.message||'Fehler'}`,'error');
-    }
-  } catch(e) { showToast('⚠ Verbindungsfehler','error'); }
+    // iframe-Form POST: umgeht CORS + Redirect-Problem, beliebige Datengrösse
+    const form = document.getElementById('save-form');
+    const inp  = document.getElementById('save-payload');
+    form.action = SHEETS_URL;
+    inp.value   = payload;
+    form.submit();
+    // Nach 2.5 Sek prüfen ob gespeichert wurde
+    setTimeout(async () => {
+      try {
+        const r = await fetch(`${SHEETS_URL}?action=loadDraft&date=${encodeURIComponent(d.datum||today)}`);
+        const j = await r.json();
+        if(j.success) showToast(`✓ Gespeichert — Code: ${d.datum}`,'success');
+        else showToast('⚠ Speichern fehlgeschlagen — erneut versuchen','error');
+      } catch(e) { showToast(`✓ Gesendet — Code: ${d.datum}`,'success'); }
+    }, 2500);
+  } catch(e) { showToast('⚠ Fehler beim Speichern','error'); }
 };
 
 const loadDraftByDate = async (date) => {

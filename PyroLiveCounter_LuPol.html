@@ -431,22 +431,16 @@ window.checkPyroPW = checkPyroPW;
 window.go=()=>{
   if(!S.myId)return;
   S.setup=false;
-  // Lokalen Zustand wiederherstellen (Spieluhr + bisherige Events)
+  // Nur Spieluhr aus lokalem Cache wiederherstellen (nicht alte Events!)
   try {
     const local=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(local){
-      if(local.events?.length) S.events=local.events;
-      if(local.heim) S.heim=local.heim;
-      if(local.gast) S.gast=local.gast;
-      // Spieluhr wiederherstellen
-      if(local.clock?.running){
-        S.clock=local.clock;
-        if(clockT) clearInterval(clockT);
-        clockT=setInterval(()=>{if(S.view==='COUNT')renderContent();},10000);
-      }
+    if(local?.clock?.running){
+      S.clock=local.clock;
+      if(clockT) clearInterval(clockT);
+      clockT=setInterval(()=>{if(S.view==='COUNT')renderContent();},10000);
     }
   }catch(e){}
-  // Dann Server-Daten laden (mergt neue Events von anderen Geräten)
+  // Events immer frisch vom Server laden
   load();
   pollT=setInterval(load,3000);
   render();
@@ -462,6 +456,8 @@ window.stopClock=stopClock;
 window.adjMin=delta=>{
   if(S.clock.running){S.clock.startTs-=delta*60000;}
   else{S.clock.manual=String(Math.max(0,(parseInt(S.clock.manual)||0)+delta));}
+  saveLocal();
+  syncEvent({id:'__clock__',type:'CLOCK_STATE',clock:S.clock,ts:Date.now()});
   renderContent();
 };
 render();
