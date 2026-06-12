@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KMR LuPol">
+<meta name="theme-color" content="#1a3560">
+<title>KMR — Luzerner Polizei</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+:root{--b:#1a3560;--lb:#e8eef7;--g:#27ae60;--r:#c0392b;--o:#e67e22}
+body{background:#eef1f7;color:#222;min-height:100vh;-webkit-text-size-adjust:100%}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+/* HEADER */
+.hdr{background:var(--b);color:#fff;padding:11px 14px 11px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.hdr-title{font-weight:800;font-size:14px;letter-spacing:.3px}
+.hdr-sub{font-size:10px;opacity:.7;margin-top:1px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hdr-btns{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.btn-hdr{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer}
+.btn-pdf{background:#fff;color:var(--b);border:none;border-radius:6px;padding:5px 11px;font-size:12px;font-weight:800;cursor:pointer}
+.save-badge{font-size:10px;color:rgba(255,255,255,.65)}
+/* TABS */
+.tabs{display:flex;overflow-x:auto;background:var(--b);border-top:1px solid rgba(255,255,255,.15);scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:6px 11px 7px;font-size:10px;font-weight:700;cursor:pointer;border:none;color:rgba(255,255,255,.7);background:transparent;transition:all .15s;min-width:52px;text-align:center}
+.tab.active{background:#fff;color:var(--b);border-radius:6px 6px 0 0}
+.tab-icon{display:block;font-size:16px;text-align:center;margin-bottom:1px}
+/* CONTENT */
+.content{padding-bottom:100px;flex:1}
+/* CARDS */
+.card{background:#fff;margin:10px 12px;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card-title{font-size:13px;font-weight:800;color:var(--b);border-bottom:2px solid var(--lb);padding-bottom:8px;margin-bottom:12px}
+/* FORM ELEMENTS */
+label.lbl{display:block;font-size:10px;font-weight:700;color:#666;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid #ddd;border-radius:7px;font-size:16px;background:#fff;color:#222;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--b);box-shadow:0 0 0 3px rgba(26,53,96,.1)}
+input[type=number]{text-align:right;-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=date],input[type=time]{font-size:14px}
+textarea{resize:vertical;min-height:80px;line-height:1.5;font-size:14px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' fill='none' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.mb{margin-bottom:10px}
+.row{display:flex;gap:8px}
+.row>*{flex:1;min-width:0}
+/* SCORE */
+.score-inp{text-align:center!important;font-size:26px!important;font-weight:900!important;padding:8px!important}
+.colon{display:flex;align-items:flex-end;padding:0 4px 10px;font-size:22px;font-weight:700;color:#bbb;flex:0 0 auto!important}
+/* TOTAL BOX */
+.total-box{background:var(--lb);border-radius:8px;padding:10px 14px;text-align:center;margin-bottom:10px}
+.tot-lbl{font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.tot-val{font-size:32px;font-weight:900;color:var(--b)}
+.tot-sm{font-size:18px;font-weight:800;color:var(--b)}
+/* DIVIDER */
+.divider{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;border-top:1px solid #eee;padding-top:8px;margin:4px 0 8px}
+/* JA/NEIN */
+.yn-row{display:flex;gap:6px;margin-bottom:10px}
+.yn-btn,.beh-btn{flex:1;padding:10px;border:2px solid #ddd;border-radius:7px;background:#fff;color:#555;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px}
+.yn-btn.ja{border-color:var(--g);background:var(--g);color:#fff}
+.yn-btn.nein{border-color:#888;background:#888;color:#fff}
+.beh-btn.normal{border-color:var(--g);background:var(--g);color:#fff}
+.beh-btn.agg{border-color:var(--r);background:var(--r);color:#fff}
+/* CHECKBOX */
+.chk-row{display:flex;align-items:center;gap:9px;padding:7px 0;cursor:pointer;user-select:none;min-height:40px}
+.chk-box{width:22px;height:22px;border:2px solid #ccc;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.chk-box.on{background:var(--b);border-color:var(--b)}
+.chk-mark{color:#fff;font-size:13px;font-weight:900}
+.chk-lbl{font-size:13px;line-height:1.3}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0}
+/* SPOTTER */
+.spot-card{background:var(--lb);border-radius:8px;padding:11px;margin-bottom:8px}
+.spot-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.spot-tag{background:var(--b);color:#fff;border-radius:4px;padding:2px 9px;font-size:11px;font-weight:800;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-rm{background:var(--r);color:#fff;border:none;border-radius:5px;padding:5px 11px;cursor:pointer;font-size:12px;font-weight:700;min-height:32px}
+.btn-add{width:100%;padding:12px;border:2px dashed var(--b);border-radius:8px;background:#fff;color:var(--b);font-weight:700;cursor:pointer;font-size:14px;margin-top:4px;min-height:44px}
+/* TIME ROW */
+.time-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:10px}
+.time-row>div{flex:1}
+.calc-h{flex:0 0 auto!important;display:flex;align-items:flex-end;padding-bottom:10px;font-size:12px;font-weight:800;color:var(--b);white-space:nowrap;padding-left:2px}
+/* MASSNAHMEN */
+.mass-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mass-card{background:var(--lb);border-radius:8px;padding:10px}
+.mass-lbl{font-weight:900;color:var(--b);font-size:16px;margin-bottom:6px}
+/* PDF BUTTON */
+.btn-pdf-main{width:100%;padding:16px;background:var(--b);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:900;cursor:pointer;margin-bottom:8px;min-height:54px}
+.btn-neu{width:100%;padding:13px;background:#fff;color:var(--b);border:2px solid var(--b);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.pdf-hint{font-size:11px;color:#888;text-align:center;line-height:1.8;padding:4px 0}
+/* VERTEILER */
+.vert-list div{padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#444;display:flex;align-items:center;gap:7px}
+.vert-list div:last-child{border-bottom:none}
+.vert-ok{color:var(--g);font-weight:700}
+/* PERSONEN */
+.pers-card{border:1px solid var(--lb);border-radius:9px;padding:12px;margin-bottom:12px}
+.pers-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.pers-tag{background:var(--b);color:#fff;border-radius:5px;padding:3px 10px;font-weight:800;font-size:12px}
+.empty-state{text-align:center;padding:28px 10px;color:#aaa}
+.empty-ico{font-size:44px;margin-bottom:10px}
+/* INSTALL BANNER */
+.install-banner{background:var(--lb);border:1px solid #c5d5e8;border-radius:10px;padding:12px 14px;margin:10px 12px 0;display:flex;gap:10px;align-items:flex-start}
+.install-ico{font-size:22px;flex-shrink:0;margin-top:1px}
+.install-txt{font-size:12px;color:var(--b);line-height:1.5}
+.install-txt strong{font-size:13px;display:block;margin-bottom:2px}
+.install-close{background:none;border:none;color:#888;cursor:pointer;font-size:16px;flex-shrink:0;padding:0 2px}
+
+/* ========== PRINT ========== */
+@media print{
+  .no-print{display:none!important}
+  .print-only{display:block!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;margin:0;padding:0}
+  .app{max-width:none}
+  /* ── PAGE BREAK RULES ── */
+  .pr-h2{
+    break-after:avoid;page-break-after:avoid;
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  /* Keep section headings with their content */
+  .pr-h2 + *{break-before:avoid;page-break-before:avoid;}
+  /* Keep these blocks intact */
+  .pr-beh,.pr-spot,.pr-pers-card,.pr-field,.pr-check,
+  .pr-einsatz,.pr-2col,.pr-spots,.pr-grid{
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  /* Executive stats bar always stays together */
+  .pr-stats-bar{break-inside:avoid;page-break-inside:avoid;}
+  /* Hero match block stays together */
+  .pr-hero{break-inside:avoid;page-break-inside:avoid;}
+  /* Header stays together */
+  .pr-hdr{break-inside:avoid;page-break-inside:avoid;}
+  /* Footer stays together */
+  .pr-footer,.pr-verteiler{break-inside:avoid;page-break-inside:avoid;}
+  /* Prevent widows/orphans in text blocks */
+  .pr-sb{orphans:3;widows:3;word-break:break-word;}
+  .pr-val{orphans:2;widows:2;}
+  /* Long text blocks: allow internal breaks but avoid short orphans */
+  p,div{orphans:2;widows:2;}
+}
+.print-only{display:none}
+/* Print styles */
+.pr{font-family:Arial,Helvetica,sans-serif;font-size:9pt;line-height:1.4;padding:10mm 12mm;max-width:190mm;margin:0 auto;color:#111}
+.pr-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5mm;border-bottom:2pt solid #1a3560;padding-bottom:3mm;break-inside:avoid;page-break-inside:avoid}
+.pr-org{font-size:15pt;font-weight:900;color:#1a3560;letter-spacing:.5px}
+.pr-title{font-size:10pt;font-weight:700;margin-top:1px}
+.pr-ids{font-size:7pt;color:#555;text-align:right;line-height:1.8}
+.pr-hero{border:1.5pt solid #1a3560;border-radius:3mm;padding:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:2mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-stat{background:#1a3560;color:#fff;border-radius:2mm;padding:2.5mm 1mm;text-align:center;break-inside:avoid;page-break-inside:avoid}
+.pr-h2{font-weight:800;font-size:10pt;color:#1a3560;border-bottom:1pt solid #e8eef7;padding-bottom:3px;margin:5mm 0 3px;break-after:avoid;page-break-after:avoid}
+.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-field{margin-bottom:4px;break-inside:avoid;page-break-inside:avoid}
+.pr-lbl{font-size:7pt;font-weight:700;color:#555;display:block;margin-bottom:1px}
+.pr-val{font-size:9pt;display:block}
+.pr-full{grid-column:1/-1}
+.pr-check{display:flex;align-items:center;gap:4px;margin-bottom:2px;break-inside:avoid;page-break-inside:avoid}
+.pr-spots{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-spot{background:#e8eef7;border-radius:2mm;padding:2mm 3mm;break-inside:avoid;page-break-inside:avoid}
+.pr-spot-id{font-weight:800;color:#1a3560;font-size:7pt}
+.pr-spot-t{font-size:6pt;color:#555;margin-top:1px}
+.pr-beh{background:#e8eef7;padding:3mm;border-radius:2mm;break-inside:avoid;page-break-inside:avoid}
+.pr-beh-title{font-weight:800;font-size:9pt;color:#1a3560;margin-bottom:3px}
+.pr-2col{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-einsatz{display:grid;grid-template-columns:1fr 2fr;gap:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
+.pr-em-grid{display:grid;grid-template-columns:1fr 1fr}
+.pr-footer{margin-top:6mm;border-top:1pt solid #1a3560;padding-top:3mm;display:flex;justify-content:space-between;font-size:7pt;color:#555;break-inside:avoid;page-break-inside:avoid}
+.pr-verteiler{margin-top:1.5mm;font-size:6pt;color:#aaa}
+.pr-sb{font-size:9pt;font-style:italic;white-space:pre-wrap;line-height:1.6;word-break:break-word;orphans:3;widows:3}
+.pr-badge{display:inline-block;background:#e8eef7;color:#1a3560;border-radius:2px;padding:1mm 2mm;font-size:6pt;font-weight:800;margin:1px}
+.pr-badge-m{background:#fff3e0;color:#e67e22}
+.pr-pb{break-before:page;page-break-before:always}
+.pr-pers-card{border:1pt solid #ddd;border-radius:2mm;padding:3mm;margin-bottom:3mm;break-inside:avoid;page-break-inside:avoid}
+.pr-pers-hdr{display:flex;justify-content:space-between;margin-bottom:3px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- HEADER -->
+  <div class="hdr no-print">
+    <div style="min-width:0">
+      <div class="hdr-title">🚔 LUZERNER POLIZEI</div>
+      <div class="hdr-sub" id="hdr-sub">Kurzmelderapport KMR</div>
+    </div>
+    <div class="hdr-btns">
+      <span style="background:#c0392b;color:#fff;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;letter-spacing:1.5px">INTERN</span>
+      <span class="save-badge" id="save-badge" style="display:none">✓</span>
+      <button class="btn-hdr" onclick="clearAll()">Neu</button>
+      <button class="btn-pdf" onclick="doPrint()">📄 PDF</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs no-print" id="tabs-bar"></div>
+
+  <!-- INSTALL HINT (iOS) -->
+  <div class="install-banner no-print" id="install-banner">
+    <div class="install-ico">📲</div>
+    <div class="install-txt">
+      <strong>Als App installieren</strong>
+      Safari → Teilen-Symbol → «Zum Home-Bildschirm» → dann wie normale App öffnen
+    </div>
+    <button class="install-close" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content no-print" id="main-content"></div>
+
+  <!-- PRINT VIEW -->
+  <div class="print-only" id="print-view"></div>
+</div>
+
+<script>
+// ===== CONSTANTS =====
+const SPOTS_DB = [
+  {id:'LU01',n:'BUHOLZER Marc'},   {id:'LU02',n:'STADELMANN Thierry'},
+  {id:'LU03',n:'GARATTONI Roger'}, {id:'LU04',n:'MAURER Jonas'},
+  {id:'LU05',n:'MARBACHER Reto'},  {id:'LU06',n:'KERBER Philippe'},
+  {id:'LU07',n:'WICKI Daniel'},    {id:'LU08',n:'BERTSCHI Silas'},
+  {id:'LU09',n:'BAUR Leandro'},    {id:'LU10',n:'STIRNIMANN Christian'},
+  {id:'LU11',n:'BAUMANN Mario'},   {id:'LU12',n:'LINDEGGER Patrick'},
+  {id:'LU13',n:'KOLLER Marco'},    {id:'LU14',n:'STANGER Andreas'},
+  {id:'LU15',n:'AEMMER Silvan'},   {id:'LU16',n:'LUSTENBERGER Fabian'},
+  {id:'LU17',n:'SIDLER Nicholas'}, {id:'LU18',n:'HAAS Aaron'},
+  {id:'LU19',n:'GÄRTNER Pascal'},  {id:'LU20',n:'TESSAROLO Nicola'},
+  {id:'LU21',n:'BUCHER Nathan'},   {id:'LU22',n:'MERZ Patrick'},
+];
+const LIGAS = ['Brack Super League','Credit Suisse Challenge League','Swiss Cup','Freundschaftsspiel','Andere'];
+
+// Schweizer Stadien-Datenbank (Heimteam → automatische Befüllung)
+const STADIEN = {
+  'fc luzern':            {stadion:'swissporarena',             plz:'6005 Luzern LU, Horwerstrasse 91',                 kap:'17000'},
+  'fc zürich':            {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'fc zurich':            {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'bsc young boys':       {stadion:'Wankdorf Stadion',          plz:'3014 Bern BE, Papiermühlestrasse 71',              kap:'31120'},
+  'young boys':           {stadion:'Wankdorf Stadion',          plz:'3014 Bern BE, Papiermühlestrasse 71',              kap:'31120'},
+  'fc basel':             {stadion:'St. Jakob-Park',            plz:'4052 Basel BS, Brüglingerstrasse 2',               kap:'38512'},
+  'fc st. gallen':        {stadion:'kybunpark',                 plz:'9015 St. Gallen SG, Abtwilerstrasse 6',            kap:'19694'},
+  'fc st gallen':         {stadion:'kybunpark',                 plz:'9015 St. Gallen SG, Abtwilerstrasse 6',            kap:'19694'},
+  'servette fc':          {stadion:'Stade de Genève',           plz:'1227 Carouge GE, Route des Jeunes 18',             kap:'30084'},
+  'servette':             {stadion:'Stade de Genève',           plz:'1227 Carouge GE, Route des Jeunes 18',             kap:'30084'},
+  'fc lugano':            {stadion:'Stadio di Cornaredo',       plz:'6900 Lugano TI, Via Trevano 54',                   kap:'6330'},
+  'grasshopper':          {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'grasshopper club':     {stadion:'Letzigrund',                plz:'8048 Zürich ZH, Badenerstrasse 500',               kap:'26104'},
+  'fc winterthur':        {stadion:'Stadion Schützenwiese',     plz:'8400 Winterthur ZH, Rennweg 5',                    kap:'8700'},
+  'fc sion':              {stadion:'Stade de Tourbillon',       plz:'1950 Sion VS, Chemin de Tourbillon 36',            kap:'14283'},
+  'fc lausanne-sport':    {stadion:'Stade de la Tuilière',      plz:'1014 Lausanne VD, Avenue de la Tuilière',          kap:'12000'},
+  'lausanne-sport':       {stadion:'Stade de la Tuilière',      plz:'1014 Lausanne VD, Avenue de la Tuilière',          kap:'12000'},
+  'yverdon sport':        {stadion:'Stade Municipal d\'Yverdon',plz:'1400 Yverdon-les-Bains VD',                        kap:'6300'},
+  'sc kriens':            {stadion:'Kleinfeld',                 plz:'6010 Kriens LU, Sportanlage Kleinfeld',            kap:'4500'},
+  'fc aarau':             {stadion:'Brügglifeld',               plz:'5000 Aarau AG, Brügglifeld 1',                     kap:'8350'},
+  'fc schaffhausen':      {stadion:'Lipo Park Schaffhausen',    plz:'8200 Schaffhausen SH, Mühlentalstrasse 60',        kap:'8200'},
+  'fc thun':              {stadion:'Stockhorn Arena',           plz:'3604 Thun BE, Bernstrasse 52',                     kap:'10000'},
+  'fc vaduz':             {stadion:'Rheinpark Stadion',         plz:'9494 Vaduz FL, Im Brühl 15',                      kap:'6127'},
+  'neuchâtel xamax':      {stadion:'Stade du Maladière',        plz:'2000 Neuchâtel NE, Rue du Maladière 25',           kap:'12200'},
+  'xamax':                {stadion:'Stade du Maladière',        plz:'2000 Neuchâtel NE, Rue du Maladière 25',           kap:'12200'},
+  'fc wil':               {stadion:'Bergholz',                  plz:'9500 Wil SG, Bergholzstrasse 1',                   kap:'6000'},
+  'fc stade-lausanne-ouchy':{stadion:'Stade Olympique de la Pontaise',plz:'1018 Lausanne VD',                           kap:'10000'},
+};
+const VERTEILER = [
+  'Kommandant, Adi Achermann',
+  'fussball.polizei@lu.ch',
+  'aj.polizei@lu.ch',
+];
+const TABS = [
+  {i:'⚽',l:'Spiel'},{i:'👥',l:'Fans'},{i:'👮',l:'Personal'},{i:'📝',l:'Bericht'},
+  {i:'⚠️',l:'Einsatz'},{i:'📋',l:'Kontrollen'},{i:'👤',l:'Personen'},{i:'✅',l:'PDF'}
+];
+const today = new Date().toISOString().split('T')[0];
+
+// ===== GOOGLE SHEETS EXPORT =====
+// Hier deine Apps Script Web-App URL eintragen (einmalig):
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz3voR-WzgqQbaic_GAiwWkeqME0UaPkl3G_jEl-PCKQMhEP1w2SmDrrZAtJu5QRocp/exec';
+
+// ===== STATE =====
+const INIT_D = {
+  ereignisId:'',datum:today,uhrzeit:'',liga:'Brack Super League',ligaAndere:'',
+  heim:'FC Luzern',gast:'',tH:'',tG:'',
+  stadion:'swissporarena',plz:'6005 Luzern LU, Horwerstrasse 91',kap:'17000',
+  hFans:'',gFans:'',riskH:'',riskG:'',
+  pwP:'',pwF:'',carP:'',carF:'',carI:'',zugP:'',zugZ:'',
+  anzS:'',anzP:'',anzR:'',
+  totEZ:'',
+  aufm:'',spiel:'',abm:'',
+  praev:false,repr:false,
+  pyroEvents:[],
+  mPyro:{
+    HEIM:{VOR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},WAHR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},NACH:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0}},
+    GAST:{VOR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},WAHR:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0},NACH:{HLF:0,RAUCH:0,FW:0,BOEL:0,BLITZ:0}},
+  },
+  pkJ:false,pkAnz:'',
+  fhAnz:'',fhPG:false,fhSP:false,fgAnz:'',fgPG:false,fgSP:false,
+  azHAnz:'',azHArt:'',azGAnz:'',azGArt:'',
+  dPJ:false,dPAnz:'',dPB:'',dSJ:false,dSAnz:'',dSSm:'',dSB:'',dPoJ:false,dPoAnz:'',dPoB:'',
+  eName:'',
+  einsatzBewertung:'PROBLEMLOS',
+  heimLogo:'', gastLogo:'',
+  letzterMatch: null,
+};
+
+let d = JSON.parse(JSON.stringify(INIT_D));
+let spots = [{id:'LU02',n:'STADELMANN Thierry',von:'',bis:'',rolle:'',rolleAndere:'',el:false}];
+let pers = [];
+let activeTab = 0;
+let saveTimer = null;
+
+// ===== PASSWORTSCHUTZ =====
+const APP_PW = '1825';
+let authenticated = false;
+try { authenticated = localStorage.getItem('kmr_pw') === APP_PW; } catch(e) {}
+
+const checkPW = () => {
+  const val = document.getElementById('pw-inp').value;
+  if (val === APP_PW) {
+    authenticated = true;
+    try { localStorage.setItem('kmr_pw', APP_PW); } catch(e) {}
+    render();
+  } else {
+    const inp = document.getElementById('pw-inp');
+    inp.style.borderColor = '#c0392b';
+    inp.value = '';
+    inp.placeholder = 'Falsches Passwort — nochmals versuchen';
+    setTimeout(() => { inp.style.borderColor = '#ddd'; inp.placeholder = 'Passwort'; }, 2000);
+  }
+};
+
+const renderLogin = () => {
+  document.getElementById('app').innerHTML = `
+    <div style="min-height:100vh;background:#0f1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px">
+      <div style="text-align:center;margin-bottom:32px">
+        <div style="font-size:52px;margin-bottom:12px">🚔</div>
+        <div style="color:#fff;font-size:20px;font-weight:900;letter-spacing:.5px">LUZERNER POLIZEI</div>
+        <div style="color:rgba(255,255,255,.5);font-size:13px;margin-top:4px">Kurzmelderapport KMR</div>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:28px;width:100%;max-width:340px">
+        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Zugangscode</label>
+        <input id="pw-inp" type="password" inputmode="numeric" placeholder="Passwort"
+          onkeydown="if(event.key==='Enter')checkPW()"
+          style="width:100%;padding:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:9px;font-size:20px;color:#fff;text-align:center;letter-spacing:6px;margin-bottom:14px;box-sizing:border-box;outline:none">
+        <button onclick="checkPW()" style="width:100%;padding:15px;background:#1a3560;color:#fff;border:none;border-radius:9px;font-size:16px;font-weight:800;cursor:pointer">
+          Anmelden →
+        </button>
+      </div>
+      <div style="color:rgba(255,255,255,.2);font-size:10px;margin-top:24px">Nur für autorisierte Spotter</div>
+    </div>`;
+  setTimeout(() => document.getElementById('pw-inp')?.focus(), 100);
+};
+
+// ===== UTILS =====
+const calcH = (v,b) => {
+  if(!v||!b) return '';
+  const m = t => { const [h,mn] = t.split(':').map(Number); return h*60+mn; };
+  let diff = m(b)-m(v); if(diff<0) diff+=1440;
+  const h=Math.floor(diff/60),mn=diff%60;
+  return `${h}h${mn?` ${mn}min`:''}`;
+};
+const fmtDate = s => {
+  if(!s) return '';
+  try { return new Date(s+'T12:00:00').toLocaleDateString('de-CH',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'}); }
+  catch(e) { return s; }
+};
+const totZ = () => (parseInt(d.hFans)||0)+(parseInt(d.gFans)||0);
+const escH = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+// ===== PERSISTENCE =====
+const autoSave = () => {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try {
+      localStorage.setItem('kmr_v3', JSON.stringify({d,spots,pers}));
+      const b=document.getElementById('save-badge');
+      if(b){b.style.display='inline';setTimeout(()=>b.style.display='none',2000);}
+    } catch(e){}
+  }, 800);
+};
+const loadSaved = () => {
+  try {
+    const s = localStorage.getItem('kmr_v3');
+    if(s) {
+      const p = JSON.parse(s);
+      if(p.d) d = {...INIT_D,...p.d};
+      if(p.spots && p.spots.length) spots = p.spots;
+      if(p.pers) pers = p.pers;
+    }
+  } catch(e){}
+  // Hide install banner if already installed
+  if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+    const b=document.getElementById('install-banner');
+    if(b) b.style.display='none';
+  }
+  render();
+};
+
+// ===== SETTERS =====
+// Keys that change UI structure and require re-render
+const STRUCTURAL = new Set([
+  'pkJ','dPJ','dSJ','dPoJ',
+  'fhPG','fhSP','fgPG','fgSP',
+  'einsatzBewertung','liga','heimLogo','gastLogo','letzterMatch','pyroEvents',
+]);
+
+const set = (k,v) => {
+  d[k]=v;
+  autoSave();
+  if(STRUCTURAL.has(k)){ renderContent(); return; }
+  // Targeted DOM updates — no full re-render, input keeps focus
+  if(k==='hFans'||k==='gFans'){
+    const tz=(parseInt(d.hFans)||0)+(parseInt(d.gFans)||0);
+    const el=document.getElementById('disp-totz');
+    if(el) el.textContent=tz?tz.toLocaleString('de-CH'):'—';
+  }
+  // pkAnz → sync pers array count when Personenkontrollen = Ja
+  if(k==='pkAnz' && d.pkJ) {
+    const n = Math.min(parseInt(v)||0, 50);
+    const emptyPers = () => ({ort:'',zeit:'',durch:'',nm:'',vnm:'',geb:'',ho:'',beruf:'',adr:'',tel:'',fanz:'',
+      gVM:false,gPR:false,gSB:false,gGW:false,gSL:false,gPV:false,gPY:false,
+      mPK:false,mAZ:false,mFP:false,mFS:false,mWG:false,mSV:false,mRV:false,sv:''});
+    while(pers.length < n) pers.push(emptyPers());
+    if(n > 0 && pers.length > n) pers.splice(n);
+    autoSave();
+    // Show hint without full re-render
+    const hint = document.getElementById('pers-hint');
+    if(hint) hint.textContent = n > 0 ? `✓ ${n} Personenmaske${n>1?'n':''} im Reiter 👤 Personen erstellt` : '';
+    return;
+  }
+  // anzS → sync spots array count
+  if(k==='anzS'){
+    const n=Math.min(Math.max(parseInt(v)||0,0),22);
+    const first=spots[0]||{};
+    while(spots.length<n) spots.push({id:'',n:'',von:first.von||'',bis:first.bis||'',rolle:'',rolleAndere:'',el:false});
+    if(n>0&&spots.length>n) spots.splice(n);
+    autoSave(); updateTotEZ(); renderContent(); return;
+  }
+  if(k==='heim'||k==='gast'){
+    const sub=document.getElementById('hdr-sub');
+    if(sub) sub.textContent=(d.heim&&d.gast)?`${d.heim} vs. ${d.gast}${d.tH!==''&&d.tG!==''?' — '+d.tH+':'+d.tG:''}` : 'Kurzmelderapport KMR';
+    const side = k==='heim'?'heim':'gast';
+    d[side+'Logo'] = ''; // clear old logo when name changes
+    // Update avatar directly in DOM — input keeps focus, no re-render
+    const wrap = document.getElementById('lw-'+side);
+    if(wrap) {
+      const av = `width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800`;
+      if(v) {
+        const col=teamColor(v), inits=teamInitials(v);
+        wrap.innerHTML=`<div style="${av};background:${col};color:#fff;font-size:11px">${inits}</div>`;
+      } else {
+        wrap.innerHTML=`<div style="${av};background:#f0f0f0;color:#bbb;font-size:9px">Logo</div>`;
+      }
+    }
+    // Stadium auto-fill for home team
+    if(k==='heim') {
+      const st = STADIEN[(v||'').toLowerCase().trim()];
+      if(st) {
+        d.stadion=st.stadion; d.plz=st.plz; d.kap=st.kap;
+        autoSave();
+        const sEl=document.getElementById('inp-stadion');
+        const pEl=document.getElementById('inp-plz');
+        const kEl=document.getElementById('inp-kap');
+        if(sEl) sEl.value=st.stadion;
+        if(pEl) pEl.value=st.plz;
+        if(kEl) kEl.value=st.kap;
+      }
+    }
+    if(v.length >= 2) fetchLogo(v, side);
+    if(k==='gast') fetchHistory();
+  }
+  if(k==='tH'||k==='tG'){
+    const sub=document.getElementById('hdr-sub');
+    if(sub&&d.heim&&d.gast) sub.textContent=`${d.heim} vs. ${d.gast}${d.tH!==''&&d.tG!==''?' — '+d.tH+':'+d.tG:''}`;
+  }
+};
+
+const tog = k => { d[k]=!d[k]; autoSave(); renderContent(); };
+
+const updateTotEZ = () => {
+  let totalMin = 0;
+  spots.forEach(sp => {
+    if(sp.von && sp.bis) {
+      const m = t => { const [h,mn]=t.split(':').map(Number); return h*60+mn; };
+      let diff = m(sp.bis)-m(sp.von); if(diff<0) diff+=1440;
+      totalMin += diff;
+    }
+  });
+  if(totalMin > 0) {
+    const h=Math.floor(totalMin/60), mn=totalMin%60;
+    d.totEZ = `${h}:${mn.toString().padStart(2,'0')} h`;
+  } else { d.totEZ=''; }
+  const el=document.getElementById('disp-totEZ');
+  if(el) el.textContent=d.totEZ||'—';
+};
+
+const setSpot = (i,k,v) => {
+  if(k==='id'){
+    const f=SPOTS_DB.find(x=>x.id===v);
+    spots[i].id=v;
+    if(f){ spots[i].n=f.n; const ne=document.getElementById(`sn${i}`); if(ne) ne.value=f.n; }
+  } else { spots[i][k]=v; }
+  autoSave();
+  // Update tag label
+  const tag=document.getElementById(`st${i}`);
+  if(tag) tag.textContent=`${spots[i].id||('#'+(i+1))} ${spots[i].n}${spots[i].rolle?' · '+(spots[i].rolle==='Anderes'?spots[i].rolleAndere||'Anderes':spots[i].rolle):''}`;
+  // Update hours display
+  if(k==='von'||k==='bis'){
+    const h=calcH(spots[i].von,spots[i].bis);
+    const hel=document.getElementById(`sh${i}`);
+    if(hel){ hel.textContent=h; hel.style.display=h?'flex':'none'; }
+    else if(h) renderContent();
+    // Auto-fill other spotters' times from spotter 0 FIRST
+    if(i===0) {
+      spots.forEach((sp,j) => {
+        if(j===0) return;
+        spots[j][k]=v;
+        const el=document.getElementById(`sp-${j}-${k}`);
+        if(el) el.value=v;
+        const hj=calcH(spots[j].von,spots[j].bis);
+        const hjelEl=document.getElementById(`sh${j}`);
+        if(hjelEl){ hjelEl.textContent=hj; hjelEl.style.display=hj?'flex':'none'; }
+      });
+    }
+    // THEN calculate total with all updated times
+    updateTotEZ();
+  }
+};
+const addSpot = () => { spots.push({id:'',n:'',von:'',bis:'',rolle:'',rolleAndere:'',el:false}); autoSave(); render(); };
+const setEL = i => { spots.forEach((sp,j)=>sp.el=(j===i?!sp.el:false)); autoSave(); renderContent(); };
+const rmSpot = i => { if(confirm('Spotter entfernen?')){ spots.splice(i,1); autoSave(); render(); }};
+const addPers = () => {
+  pers.push({ort:'',zeit:'',durch:'',nm:'',vnm:'',geb:'',ho:'',beruf:'',adr:'',tel:'',fanz:'',
+    gVM:false,gPR:false,gSB:false,gGW:false,gSL:false,gPV:false,gPY:false,
+    mPK:false,mAZ:false,mFP:false,mFS:false,mWG:false,mSV:false,mRV:false,sv:''});
+  autoSave(); render();
+};
+const rmPers = i => { if(confirm('Person entfernen?')){ pers.splice(i,1); autoSave(); render(); }};
+const setPers = (i,k,v) => { pers[i][k]=v; autoSave(); /* no re-render, input keeps focus */ };
+const togPers = (i,k) => { pers[i][k]=!pers[i][k]; autoSave(); renderContent(); };
+const clearAll = () => {
+  if(confirm('Neuen KMR starten?\n\nAlle aktuellen Daten werden gelöscht.')) {
+    d=JSON.parse(JSON.stringify(INIT_D));
+    spots=[{id:'LU02',n:'STADELMANN Thierry',von:'',bis:'',rolle:'',rolleAndere:'',el:false}];
+    pers=[];
+    autoSave(); render();
+  }
+};
+const doPrint = () => {
+  renderPrintView();
+  setTimeout(()=>window.print(),150);
+  exportToSheets();
+};
+
+// ── GOOGLE SHEETS EXPORT ─────────────────────────────────────
+const exportToSheets = async () => {
+  if (!SHEETS_URL) return;
+  showToast('📊 Statistik wird gespeichert…','info');
+
+  // Pyro-Daten aus Pyro-Counter laden (falls vorhanden)
+  const pyroKey = d.datum ? `pyro-${d.datum}` : 'pyro-v3';
+  let pyroEvents = [];
+  try {
+    const ps = await window.storage.get(pyroKey, true);
+    if (ps?.value) pyroEvents = JSON.parse(ps.value).events || [];
+  } catch(e) {}
+  if (!pyroEvents.length) {
+    try { const ps=localStorage.getItem(pyroKey); if(ps) pyroEvents=JSON.parse(ps).events||[]; } catch(e){}
+  }
+
+  const payload = {
+    ...d,
+    spotterEinsatz: spots,
+    persons: pers,
+    pyroEvents: pyroEvents
+  };
+
+  const form = new FormData();
+  form.append('data', JSON.stringify(payload));
+
+  try {
+    await fetch(SHEETS_URL, {method:'POST', mode:'no-cors', body: form});
+    setTimeout(()=>showToast('✓ Daten in Google Sheets gespeichert','success'), 1500);
+  } catch(e) {
+    showToast('⚠ Sheets: Verbindung fehlgeschlagen','error');
+  }
+};
+
+// ── TOAST NOTIFICATION ───────────────────────────────────────
+const showToast = (msg, type='info') => {
+  const colors = {info:'#1a3560', success:'#27ae60', error:'#c0392b'};
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position:'fixed', bottom:'80px', left:'50%', transform:'translateX(-50%)',
+    background: colors[type]||colors.info, color:'#fff',
+    padding:'10px 18px', borderRadius:'20px', fontSize:'13px', fontWeight:'700',
+    boxShadow:'0 4px 16px rgba(0,0,0,.3)', zIndex:9999,
+    transition:'opacity .4s', maxWidth:'90vw', textAlign:'center'
+  });
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),400); }, 3200);
+};
+
+// ── CONSTANTS ────────────────────────────────────────────────
+const ROLLEN = ['FCL','Gast Stadion','Gast Bahnhof','Hotspot','Anderes'];
+const BEWERTUNG = {
+  PROBLEMLOS:              {color:'#27ae60', icon:'🟢', label:'Ruhiger Verlauf'},
+  MITTLERE_PROBLEME:       {color:'#e67e22', icon:'🟡', label:'Zwischenfälle'},
+  SCHWERWIEGENDE_PROBLEME: {color:'#c0392b', icon:'🔴', label:'Gravierender Zwischenfall'},
+};
+
+// ── LOGO HELPERS ─────────────────────────────────────────────
+const teamInitials = name => {
+  const stop = new Set(['FC','SC','BSC','FK','AC','AS','SS','VfB','VfL','TSV','SV']);
+  const words = (name||'').trim().split(/\s+/).filter(w=>!stop.has(w.toUpperCase())&&w.length>0);
+  return (words.length>=2 ? words[0][0]+words[1][0] : (name||'?').substring(0,2)).toUpperCase();
+};
+const teamColor = name => {
+  let h=0; for(let c of (name||'')) h=(h*31+c.charCodeAt(0))&0x7fffffff;
+  return ['#1a3560','#c0392b','#27ae60','#8e44ad','#e67e22','#2980b9','#16a085','#d35400'][h%8];
+};
+
+const updateLogoWrap = (side, url) => {
+  d[side+'Logo'] = url;
+  autoSave();
+  const wrap = document.getElementById('lw-'+side);
+  if (!wrap) { renderContent(); return; }
+  const name = side==='heim'?d.heim:d.gast;
+  const av = `width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800`;
+  const col = teamColor(name), inits = teamInitials(name);
+  wrap.innerHTML = `<img src="${url}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;border:1px solid #eee;flex-shrink:0"
+    onerror="this.outerHTML='<div style=\\'${av};background:${col};color:#fff;font-size:11px\\'>${inits}</div>'">`;
+};
+
+// ── LOGO FETCH (Wikipedia API → TheSportsDB) ─────────────────
+const logoTimers = {};
+const fetchLogo = (name, side) => {
+  clearTimeout(logoTimers[side]);
+  logoTimers[side] = setTimeout(async () => {
+    if (!name || name.length < 2) return;
+
+    // 1. Wikipedia REST API (CORS-freundlich, kein API-Key)
+    try {
+      const title = name.trim().replace(/ /g,'_');
+      const r = await fetch(
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
+        {headers:{'Accept':'application/json'}}
+      );
+      if (r.ok) {
+        const j = await r.json();
+        const img = j.thumbnail?.source;
+        if (img) { updateLogoWrap(side, img); return; }
+      }
+    } catch(e) { console.warn('Logo Wikipedia:', e.message); }
+
+    // 2. TheSportsDB Fallback
+    try {
+      const r = await fetch(
+        `https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(name)}`
+      );
+      const j = await r.json();
+      const badge = j.teams?.[0]?.strBadge || j.teams?.[0]?.strTeamBadge;
+      if (badge) { updateLogoWrap(side, badge); }
+    } catch(e) { console.warn('Logo TheSportsDB:', e.message); }
+  }, 700);
+};
+
+// ── HISTORY FETCH (letztes Match gleiche Paarung) ────────────
+let histTimer = null;
+const fetchHistory = () => {
+  if (!SHEETS_URL || !d.heim || !d.gast) return;
+  clearTimeout(histTimer);
+  histTimer = setTimeout(async () => {
+    try {
+      const url = `${SHEETS_URL}?action=getHistory&heim=${encodeURIComponent(d.heim)}&gast=${encodeURIComponent(d.gast)}`;
+      const r = await fetch(url);
+      const j = await r.json();
+      if (j.success && j.data) { d.letzterMatch = {...j.data, _datum: j.matchDate}; renderContent(); }
+    } catch(e) {}
+  }, 1200);
+};
+
+// ── PYRO COUNTER IMPORT ──────────────────────────────────────
+const PYRO_PHASES = [
+  {id:'VOR', label:'Vor dem Spiel'},
+  {id:'WAHR',label:'Während dem Spiel'},
+  {id:'NACH',label:'Nach dem Spiel'},
+];
+const PYRO_TYPES = [
+  {id:'HLF',  label:'HLF',      emoji:'🔥'},
+  {id:'RAUCH',label:'Rauch',    emoji:'💨'},
+  {id:'FW',   label:'Feuerwerk',emoji:'✨'},
+  {id:'BOEL', label:'Böller',   emoji:'⚡'},
+  {id:'BLITZ',label:'Blitzer',  emoji:'💥'},
+];
+const pyroCnt = (team, type, phases) =>
+  (d.pyroEvents||[]).filter(e=>
+    !e.dupl && e.team===team && e.type===type &&
+    (!phases||phases.includes(e.phase))
+  ).length;
+
+const loadPyroFromCounter = async () => {
+  showToast('🎆 Pyro-Daten werden geladen…','info');
+  const key = d.datum ? `pyro-${d.datum}` : 'pyro-v3';
+  let pyroData = null;
+  try {
+    const s = await window.storage.get(key, true);
+    if(s?.value) pyroData = JSON.parse(s.value);
+  } catch(e) {}
+  if(!pyroData) {
+    try { const ls=localStorage.getItem(key); if(ls) pyroData=JSON.parse(ls); } catch(e) {}
+  }
+  if(pyroData?.events?.length) {
+    d.pyroEvents = pyroData.events;
+    autoSave(); renderContent();
+    const cnt = pyroData.events.filter(e=>!e.dupl).length;
+    showToast(`✓ ${cnt} Ereignisse geladen (${key})`,'success');
+  } else {
+    showToast(`⚠ Keine Daten gefunden für: ${key}`,'error');
+  }
+};
+
+const openPyroCounter = () => {
+  const base = 'PyroLiveCounter_LuPol.html';
+  const params = new URLSearchParams();
+  if(d.datum) params.set('datum', d.datum);
+  if(d.heim)  params.set('heim',  d.heim);
+  if(d.gast)  params.set('gast',  d.gast);
+  if(SHEETS_URL) params.set('sheets', SHEETS_URL);
+  const url = `${base}?${params.toString()}`;
+  window.open(url, '_blank');
+};
+const exportDraft = async () => {
+  if (!SHEETS_URL) { showToast('⚠ SHEETS_URL nicht konfiguriert','error'); return; }
+  showToast('☁️ Entwurf wird gespeichert…','info');
+  // Kompakte Version: leere Felder entfernen
+  const compact = obj => Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==''&&v!==false&&v!==null&&v!==undefined));
+  const payload = {
+    ...compact(d),
+    spotterEinsatz: spots,
+    persons: pers,
+  };
+  try {
+    // GET statt POST — umgeht das Apps Script Redirect-Problem
+    const params = new URLSearchParams({
+      action: 'saveDraft',
+      datum: d.datum || '',
+      data: JSON.stringify(payload)
+    });
+    const r = await fetch(`${SHEETS_URL}?${params.toString()}`);
+    const j = await r.json();
+    if(j.success) {
+      showToast(`✓ Gespeichert — Code: ${d.datum}`,'success');
+    } else {
+      showToast(`⚠ Fehler: ${j.error||j.message}`,'error');
+    }
+  } catch(e) { showToast('⚠ Verbindungsfehler beim Speichern','error'); }
+};
+
+const loadDraftByDate = async (date) => {
+  if (!SHEETS_URL) { showToast('⚠ SHEETS_URL nicht konfiguriert','error'); return; }
+  if (!date) { showToast('⚠ Bitte Datum eingeben','error'); return; }
+  showToast('📥 Entwurf wird geladen…','info');
+  try {
+    const r = await fetch(`${SHEETS_URL}?action=loadDraft&date=${encodeURIComponent(date)}`);
+    const j = await r.json();
+    if (j.success && j.data) {
+      const saved = j.data;
+      d = {...INIT_D, ...saved};
+      if (saved.spotterEinsatz) spots = saved.spotterEinsatz;
+      if (saved.persons) pers = saved.persons;
+      autoSave(); render();
+      showToast('✓ Entwurf geladen','success');
+    } else { showToast('⚠ Kein Entwurf gefunden für: '+date,'error'); }
+  } catch(e) { showToast('⚠ Fehler beim Laden','error'); }
+};
+
+// ===== HTML HELPERS =====
+const lbl = t => `<label class="lbl">${t}</label>`;
+const inp = (l,k,type='text',ph='',id='') =>
+  `<div class="mb">${l?lbl(l):''}<input ${id?`id="${id}" `:''}type="${type}" value="${escH(d[k]||'')}" oninput="set('${k}',this.value)" placeholder="${ph}"></div>`;
+const inpN = (l,k,ph='0',id='') => {
+  const hist = d.letzterMatch?.[k];
+  const hint = hist
+    ? `<div style="display:flex;align-items:center;gap:6px;margin-top:3px">
+        <span style="font-size:10px;color:#3498db">📊 Letzte Begegnung (${d.letzterMatch._datum||'?'}): <strong>${hist}</strong></span>
+        <button onclick="set('${k}','${hist}');document.getElementById('${id||k}').value='${hist}'" 
+          style="font-size:10px;padding:1px 7px;background:#3498db;color:#fff;border:none;border-radius:4px;cursor:pointer;white-space:nowrap">Übernehmen</button>
+      </div>` : '';
+  return `<div class="mb">${l?lbl(l):''}<input id="${id||k}" ${id?`id="${id}" `:''}type="number" inputmode="numeric" value="${d[k]||''}" oninput="set('${k}',this.value)" placeholder="${ph}">${hint}</div>`;
+};
+const inpTeam = (l, k, side) => {
+  const logo = d[side+'Logo'];
+  const name = d[k]||'';
+  const inits = name ? teamInitials(name) : '';
+  const col = teamColor(name);
+  const avSt = `width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800`;
+  const avatarHtml = logo
+    ? `<img src="${logo}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;border:1px solid #eee;flex-shrink:0"
+         onerror="this.outerHTML='<div style=\\'${avSt};background:${col};color:#fff;font-size:11px\\'>${inits}</div>'">`
+    : name
+      ? `<div style="${avSt};background:${col};color:#fff;font-size:11px">${inits}</div>`
+      : `<div style="${avSt};background:#f0f0f0;color:#bbb;font-size:9px">Logo</div>`;
+  return `<div class="mb">${lbl(l)}<div style="display:flex;align-items:center;gap:8px">
+    <span id="lw-${side}">${avatarHtml}</span>
+    <input type="text" value="${escH(name)}" oninput="set('${k}',this.value)" style="flex:1">
+  </div></div>`;
+};
+const ta = (l,k,rows=4,ph='') =>
+  `<div class="mb">${l?lbl(l):''}<textarea rows="${rows}" oninput="set('${k}',this.value)" placeholder="${ph}">${escH(d[k]||'')}</textarea></div>`;
+const yn = (l,k) => {
+  const v=d[k];
+  return `<div class="mb">${l?`<label class="lbl">${l}</label>`:''}<div class="yn-row">
+    <button class="yn-btn${v===true?' ja':''}" onclick="set('${k}',true)">Ja</button>
+    <button class="yn-btn${v===false?' nein':''}" onclick="set('${k}',false)">Nein</button>
+  </div></div>`;
+};
+const beh = (l,k) => {
+  const v=d[k];
+  return `<div class="mb">${lbl(l)}<div class="yn-row">
+    <button class="beh-btn${v===true?' normal':''}" onclick="set('${k}',true)">Normal</button>
+    <button class="beh-btn${v===false?' agg':''}" onclick="set('${k}',false)">Aggressiv</button>
+  </div></div>`;
+};
+const chk = (l,k) => {
+  const v=d[k];
+  return `<div class="chk-row" onclick="tog('${k}')">
+    <div class="chk-box${v?' on':''}"><span class="chk-mark">${v?'✓':''}</span></div>
+    <span class="chk-lbl">${l}</span></div>`;
+};
+const chkP = (pi,l,k) => {
+  const v=pers[pi][k];
+  return `<div class="chk-row" onclick="togPers(${pi},'${k}')">
+    <div class="chk-box${v?' on':''}"><span class="chk-mark">${v?'✓':''}</span></div>
+    <span class="chk-lbl" style="font-size:12px">${l}</span></div>`;
+};
+const card = (title,inner) => `<div class="card"><div class="card-title">${title}</div>${inner}</div>`;
+const row = (...cols) => `<div class="row">${cols.join('')}</div>`;
+const col = c => `<div>${c}</div>`;
+const divider = l => `<div class="divider">${l}</div>`;
+const timeRow = (l,vk,bk) => {
+  const h=calcH(d[vk],d[bk]);
+  return `<div class="mb">${lbl(l)}<div class="time-row">
+    <div>${lbl('Von')}<input type="time" value="${d[vk]||''}" oninput="set('${vk}',this.value)"></div>
+    <div>${lbl('Bis')}<input type="time" value="${d[bk]||''}" oninput="set('${bk}',this.value)"></div>
+    ${h?`<div class="calc-h">${h}</div>`:''}
+  </div></div>`;
+};
+
+// ===== TAB RENDERERS =====
+const T0 = () => {
+  return card('Spieldaten',`
+    ${inp('Ereignis-ID','ereignisId')}
+    ${row(col(inp('Datum','datum','date')),col(`<div class="mb">${lbl('Anpfiff')}<input type="time" value="${d.uhrzeit||''}" oninput="set('uhrzeit',this.value)"></div>`))}
+    <div class="mb">${lbl('Liga')}<select oninput="set('liga',this.value)">${LIGAS.map(l=>`<option${d.liga===l?' selected':''}>${l}</option>`).join('')}</select></div>
+    ${d.liga==='Andere'?`<div class="mb">${lbl('Welche Liga / Wettbewerb?')}<input type="text" value="${escH(d.ligaAndere||'')}" oninput="set('ligaAndere',this.value)" placeholder="z.B. UEFA Conference League, Testspiel..."></div>`:''}
+    ${row(col(inpTeam('Heimteam','heim','heim')),col(inpTeam('Gastteam','gast','gast')))}
+    ${d.letzterMatch?`<div style="background:#e8f4fd;border-radius:7px;padding:8px 12px;margin-bottom:10px;font-size:11px;color:#1a3560">
+      📊 Letzte Begegnung: <strong>${d.letzterMatch._datum||'?'}</strong> — Ergebnis: ${d.letzterMatch.ergebnis||'?'} · ${(parseInt(d.letzterMatch.hFans)||0)+(parseInt(d.letzterMatch.gFans)||0) > 0 ? ((parseInt(d.letzterMatch.hFans)||0)+(parseInt(d.letzterMatch.gFans)||0)).toLocaleString('de-CH')+' Zuschauer' : ''}
+    </div>`:''}
+    <div class="row mb">
+      <div>${lbl('Tore Heim')}<input class="score-inp" type="number" inputmode="numeric" value="${d.tH||''}" oninput="set('tH',this.value)"></div>
+      <div class="colon">:</div>
+      <div>${lbl('Tore Gast')}<input class="score-inp" type="number" inputmode="numeric" value="${d.tG||''}" oninput="set('tG',this.value)"></div>
+    </div>
+    ${inp('Stadion','stadion',undefined,'wird automatisch befüllt','inp-stadion')}
+    ${row(col(inp('PLZ, Ort, Strasse','plz','text','','inp-plz')),col(inpN('Kapazität','kap','0','inp-kap')))}
+  `);
+};
+
+const T1 = () => card('Zuschauer',`
+  ${row(col(inpN('Heim-Fans','hFans')),col(inpN('Gäste-Fans','gFans')))}
+  ${row(col(inpN('Risk-Fans Heim','riskH')),col(inpN('Risk-Fans Gast','riskG')))}
+  <div class="total-box"><div class="tot-lbl">Total Zuschauer</div>
+    <div class="tot-val" id="disp-totz">${totZ()?totZ().toLocaleString('de-CH'):'—'}</div></div>
+`) + card('Anreise Gästefans',`
+  ${divider('PW / Privatauto')}
+  ${row(col(inpN('Personen','pwP')),col(inpN('Fahrzeuge','pwF')))}
+  ${divider('Car / Bus')}
+  ${row(col(inpN('Personen','carP')),col(inpN('Fahrzeuge','carF')))}
+  ${ta('Kontrollschild / Angaben','carI',2,'Firma, Ort, Anzahl und Art der Passagiere...')}
+  ${divider('Zug / ÖV')}
+  ${row(col(inpN('Personen','zugP')),col(inpN('Anzahl Züge / Verbindungen','zugZ')))}
+`);
+
+const T2 = () => {
+  const isAway = d.heim && d.heim.toLowerCase().trim() !== 'fc luzern';
+  const spotsHtml = spots.map((sp,i)=>{
+    const h=calcH(sp.von,sp.bis);
+    const opts=SPOTS_DB.map(x=>`<option value="${x.id}"${sp.id===x.id?' selected':''}>${x.id} — ${x.n}</option>`).join('');
+    const rolleLabel = sp.rolle==='Anderes'?(sp.rolleAndere||'Anderes'):sp.rolle;
+    const tagLabel = `${sp.id||('#'+(i+1))} ${sp.n}${sp.rolle?' · '+rolleLabel:''}`;
+    const rolleOpts = ROLLEN.map(r=>`<option value="${r}"${sp.rolle===r?' selected':''}>${r}</option>`).join('');
+    return `<div class="spot-card">
+      <div class="spot-hdr">
+        <div class="spot-tag" id="st${i}">${tagLabel}</div>
+        <button class="btn-rm" onclick="rmSpot(${i})">✕</button>
+      </div>
+      <div class="row mb">
+        <div style="flex:0 0 130px">${lbl('LU-Nummer')}
+          <select oninput="setSpot(${i},'id',this.value)">
+            <option value="">— wählen —</option>${opts}
+            <option value="EXT"${sp.id==='EXT'?' selected':''}>Extern</option>
+          </select></div>
+        <div>${lbl('Name')}<input id="sn${i}" type="text" value="${escH(sp.n)}" oninput="setSpot(${i},'n',this.value)"></div>
+      </div>
+      <div class="mb" style="${isAway?'opacity:.4;pointer-events:none':''}">
+        ${lbl('Rolle / Auftrag'+(isAway?' (Auswärtsspiel — inaktiv)':''))}
+        <select ${isAway?'disabled':''} oninput="setSpot(${i},'rolle',this.value);toggleRolleAndere(${i},this.value)" style="${isAway?'background:#f5f5f5;color:#aaa':''}">
+          <option value="">— auswählen —</option>${rolleOpts}
+        </select>
+      </div>
+      <div id="ra-${i}" style="display:${sp.rolle==='Anderes'&&!isAway?'block':'none'}">
+        <div class="mb">${lbl('Welche Rolle?')}<input type="text" value="${escH(sp.rolleAndere||'')}" oninput="setSpot(${i},'rolleAndere',this.value)" placeholder="Freitext..."></div>
+      </div>
+      <div class="time-row">
+        <div>${lbl(i===0?'Einsatz von (gilt für alle)':'Einsatz von')}<input id="sp-${i}-von" type="time" value="${sp.von}" oninput="setSpot(${i},'von',this.value)"></div>
+        <div>${lbl('Einsatz bis')}<input id="sp-${i}-bis" type="time" value="${sp.bis}" oninput="setSpot(${i},'bis',this.value)"></div>
+        <div class="calc-h" id="sh${i}" style="${h?'display:flex':'display:none'}">${h}</div>
+      </div>
+      <div style="margin-top:6px">
+        <button onclick="setEL(${i})" style="width:100%;padding:7px;border:2px solid ${sp.el?'#e67e22':'#ddd'};border-radius:7px;background:${sp.el?'#fef3e8':'white'};color:${sp.el?'#e67e22':'#aaa'};font-size:12px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px">
+          <span style="font-size:16px">${sp.el?'⭐':'☆'}</span> Einsatzleiter Spotter
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return card('Personalaufgebot',`
+  ${row(col(inpN('Anzahl Spotter (passt Felder unten an)','anzS')),col(inpN('Polizeikräfte inkl. Spotter','anzP')))}
+  ${inpN('Anzahl Rechtshilfe Szenenkenner','anzR')}
+  `) + card(`Spotter im Einsatz (${spots.length})`,`
+    ${spots.length===0?`<div style="text-align:center;padding:20px;color:#aaa;font-size:13px">↑ Anzahl Spotter eingeben um Felder zu öffnen</div>`:''}
+    ${spotsHtml}
+    <button class="btn-add" onclick="addSpot()" style="margin-top:${spots.length?'8':'0'}px">+ Spotter manuell hinzufügen</button>
+  `) + card('Total Einsatzzeit Spotter',`
+  <div style="background:var(--lb);border-radius:8px;padding:12px 16px;text-align:center">
+    <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Einsatzzeit aller Spotter</div>
+    <div style="font-size:26px;font-weight:900;color:var(--b)" id="disp-totEZ">${d.totEZ||'—'}</div>
+    <div style="font-size:10px;color:#aaa;margin-top:3px">Wird automatisch aus den Einsatzzeiten berechnet</div>
+  </div>
+`);
+};
+
+const T3 = () => card('Sachverhalt',`
+  ${ta('⬆ Aufmarsch','aufm',5,'Beschreibung Aufmarsch / Anreise der Fans...')}
+  ${ta('⚽ Spielphase','spiel',5,'Beschreibung Spielphase, Pyrotechnik, Zwischenfälle...')}
+  ${ta('⬇ Abmarsch','abm',5,'Beschreibung Abmarsch / Abreise...')}
+`);
+
+const T4 = () => {
+  const events = d.pyroEvents||[];
+  const hasData = events.length > 0;
+  const validEvents = events.filter(e=>!e.dupl);
+  const hName = d.heim||'Heim', gName = d.gast||'Gast';
+
+  // Pyro table for one team
+  const pyroTable = (team, teamName) => {
+    const rows = PYRO_PHASES.map(ph => {
+      const pIds = [ph.id];
+      const cells = PYRO_TYPES.map(pt => {
+        const n = pyroCnt(team, pt.id, pIds);
+        return `<td style="text-align:center;padding:5px 4px;font-size:${n>0?'15px':'13px'};font-weight:${n>0?'900':'400'};color:${n>0?'var(--b)':'#ccc'}">${n}</td>`;
+      }).join('');
+      const total = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt(team,pt.id,pIds),0);
+      return `<tr style="border-bottom:1px solid #f0f0f0">
+        <td style="padding:5px 6px;font-size:11px;color:#555;white-space:nowrap">${ph.label}</td>
+        ${cells}
+        <td style="text-align:center;padding:5px 4px;font-size:13px;font-weight:700;color:#888">${total||'—'}</td>
+      </tr>`;
+    }).join('');
+    const totCells = PYRO_TYPES.map(pt=>{
+      const n=pyroCnt(team,pt.id,null);
+      return `<td style="text-align:center;padding:6px 4px;font-size:16px;font-weight:900;color:${n>0?'var(--b)':'#ccc'}">${n}</td>`;
+    }).join('');
+    const grandTotal = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt(team,pt.id,null),0);
+    return `<div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:800;color:var(--b);margin-bottom:6px">${teamName}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:var(--lb)">
+          <th style="text-align:left;padding:5px 6px;font-size:10px;color:#666"></th>
+          ${PYRO_TYPES.map(pt=>`<th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">${pt.emoji}<br>${pt.label}</th>`).join('')}
+          <th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">Total</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr style="background:#f8f9fa;font-weight:bold">
+          <td style="padding:6px;font-size:11px;color:#333">TOTAL</td>
+          ${totCells}
+          <td style="text-align:center;font-size:16px;font-weight:900;color:var(--b)">${grandTotal||'—'}</td>
+        </tr></tfoot>
+      </table>
+    </div>`;
+  };
+
+  // Manual entry table per phase
+  const manualTable = (team, teamName) => {
+    const mp = (d.mPyro||{})[team]||{};
+    const rows = PYRO_PHASES.map(ph => {
+      const phData = mp[ph.id]||{};
+      const cells = PYRO_TYPES.map(pt =>
+        `<td style="padding:3px"><input type="number" inputmode="numeric" min="0"
+          value="${phData[pt.id]||0}"
+          oninput="setMPyro('${team}','${ph.id}','${pt.id}',this.value)"
+          style="width:100%;text-align:center;border:1px solid #ddd;border-radius:5px;padding:4px 2px;font-size:13px;font-weight:700"></td>`
+      ).join('');
+      const tot = PYRO_TYPES.reduce((s,pt)=>s+(phData[pt.id]||0),0);
+      return `<tr style="border-bottom:1px solid #f0f0f0">
+        <td style="padding:5px 6px;font-size:11px;color:#555;white-space:nowrap">${ph.label}</td>
+        ${cells}
+        <td style="text-align:center;padding:5px 4px;font-size:13px;font-weight:700;color:#888">${tot||'—'}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:800;color:var(--b);margin-bottom:6px">${teamName}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:var(--lb)">
+          <th style="text-align:left;padding:5px 6px;font-size:10px;color:#666"></th>
+          ${PYRO_TYPES.map(pt=>`<th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">${pt.emoji}<br>${pt.label}</th>`).join('')}
+          <th style="text-align:center;padding:5px 3px;font-size:10px;color:#666">Total</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  };
+
+  return card('🎆 Pyrotechnik',`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:12px;color:${hasData?'var(--g)':'#888'}">
+        ${hasData
+          ? `✓ ${validEvents.length} Ereignisse aus Pyro Live Counter`
+          : 'Noch keine Daten aus Pyro Live Counter'}
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onclick="openPyroCounter()" style="padding:7px 10px;background:#1a3560;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">
+          🔗 Counter öffnen
+        </button>
+        <button onclick="loadPyroFromCounter()" style="padding:7px 10px;background:var(--b);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">
+          📥 Laden
+        </button>
+      </div>
+    </div>
+    ${d.datum?`<div style="font-size:10px;color:#aaa;margin-bottom:10px">Spiel-Key: <code style="background:#f0f0f0;padding:1px 5px;border-radius:3px">pyro-${d.datum}</code></div>`:''}
+    ${hasData
+      ? pyroTable('HEIM', hName) + pyroTable('GAST', gName)
+      : `<div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#e67e22">
+          Klicke "🔗 Counter öffnen" um den Pyro Live Counter für dieses Spiel zu starten.<br>
+          Oder manuelle Erfassung pro Phase:
+        </div>
+        ${manualTable('HEIM', hName)}
+        ${manualTable('GAST', gName)}`}
+  `);
+};
+
+const T5 = () => card('Anhaltungen & Festnahmen',`
+  <div style="margin-bottom:14px">
+    <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Personenkontrollen</p>
+    <div class="row"><div>${yn('','pkJ')}</div>${d.pkJ?`<div>${inpN('Anzahl','pkAnz')}</div>`:''}</div>
+    ${d.pkJ&&d.pkAnz?`<div id="pers-hint" style="font-size:11px;color:var(--g);margin-top:4px">✓ ${d.pkAnz} Personenmaske${parseInt(d.pkAnz)>1?'n':''} im Reiter 👤 Personen erstellt</div>`:`<div id="pers-hint"></div>`}
+  </div>
+  ${['h','g'].map(p=>{
+    const lbl2=p==='h'?`Festnahmen — Heim (${d.heim||'Heim'})`:`Festnahmen — Gast (${d.gast||'Gast'})`;
+    const ak=`f${p}Anz`,pk=`f${p}PG`,sk=`f${p}SP`;
+    return `<div style="margin-bottom:14px">
+      <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">${lbl2}</p>
+      <div class="row"><div>${inpN('Anzahl',ak)}</div>
+      <div style="padding-top:3px">${chk('Pol G',pk)}${chk('StPO',sk)}</div></div>
+    </div>`;
+  }).join('')}
+`) + card('Anzeigen',['h','g'].map(p=>{
+  const lbl2=p==='h'?`Heim (${d.heim||'Heim'})`:`Gast (${d.gast||'Gast'})`;
+  return `<div style="margin-bottom:10px">
+    <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">${lbl2}</p>
+    ${row(`<div style="width:80px">${inpN('Anzahl',`az${p.toUpperCase()}Anz`)}</div>`,col(inp('Artikel',`az${p.toUpperCase()}Art`,undefined,'Art. ...')))}
+  </div>`;
+}).join('')) + card('Verursachte Schäden',`
+  <div style="margin-bottom:14px">
+    <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Personen</p>
+    ${yn('','dPJ')}${d.dPJ?inpN('Anzahl','dPAnz')+ta('Beschreibung','dPB',2):''}
+  </div>
+  <div style="margin-bottom:14px">
+    <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Sachen</p>
+    ${yn('','dSJ')}${d.dSJ?inpN('Anzahl','dSAnz')+inp('Schadensumme (CHF)','dSSm',undefined,'0.00')+ta('Beschreibung Sachschaden','dSB',2):''}
+  </div>
+  <div>
+    <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">Polizei</p>
+    ${yn('','dPoJ')}${d.dPoJ?inpN('Anzahl','dPoAnz')+ta('Beschreibung Polizeischaden','dPoB',2):''}
+  </div>
+`);
+
+const T6 = () => card(`Kontrollierte Personen (${pers.length})`,`
+  ${pers.length===0?`<div class="empty-state"><div class="empty-ico">👤</div><div>Noch keine Personen erfasst</div></div>`:''}
+  ${pers.map((p,i)=>{
+    const fi=(l,k,t='text',ph='')=>`<div class="mb">${lbl(l)}<input type="${t}" value="${escH(p[k]||'')}" oninput="setPers(${i},'${k}',this.value)" placeholder="${ph}"></div>`;
+    const gründe=[['gVM','Vermummung'],['gPR','Provokation'],['gSB','Sachbeschädigung'],['gGW','Gewalt g. Polizei/Sidi'],['gSL','Schlägerei/KV'],['gPV','Präventiv-Kontrolle'],['gPY','Pyro/Feuerwerk']];
+    const masss=[['mPK','Pers. K.'],['mAZ','Anzeige'],['mFP','Festnahme PolG'],['mFS','Festnahme StPO'],['mWG','Wegweisung'],['mSV','SV'],['mRV','RV']];
+    return `<div class="pers-card">
+      <div class="pers-hdr">
+        <div class="pers-tag">Person ${i+1}</div>
+        <button class="btn-rm" onclick="rmPers(${i})">✕ Entfernen</button>
+      </div>
+      ${row(col(fi('Name','nm')),col(fi('Vorname','vnm')))}
+      ${row(col(fi('Geburtsdatum','geb','date')),col(fi('Heimatort','ho')))}
+      ${fi('Beruf','beruf')}
+      ${fi('Adresse (PLZ, Ort, Strasse)','adr',undefined,'6000 Luzern, Musterstrasse 1')}
+      ${row(col(fi('Telefon','tel','tel')),col(fi('Fanzugehörigkeit','fanz')))}
+      <div class="row mb">
+        <div>${fi('Kontrollort','ort')}</div>
+        <div>${lbl('Kontrollzeit')}<input type="time" value="${p.zeit||''}" oninput="setPers(${i},'zeit',this.value)"></div>
+      </div>
+      ${fi('Kontrolliert durch','durch')}
+      <div class="divider">Kontrollgrund</div>
+      <div class="grid2">${gründe.map(([k,l])=>chkP(i,l,k)).join('')}</div>
+      <div class="divider">Massnahme</div>
+      <div class="grid2">${masss.map(([k,l])=>chkP(i,l,k)).join('')}</div>
+      <div class="mb"><label class="lbl">Sachverhalt</label>
+        <textarea rows="3" oninput="setPers(${i},'sv',this.value)">${escH(p.sv||'')}</textarea></div>
+    </div>`;
+  }).join('')}
+  <button class="btn-add" onclick="addPers()">+ Person hinzufügen</button>
+`);
+
+const T7 = () => {
+  const bw = BEWERTUNG[d.einsatzBewertung] || BEWERTUNG.PROBLEMLOS;
+  const erstelltDurch = spots[0] ? `${spots[0].id} ${spots[0].n}` : '—';
+  const el = spots.find(sp=>sp.el);
+  const elName = el ? `${el.id} ${el.n}` : '—';
+  return card('Abschluss — Erstellt durch',`
+    <div style="background:var(--lb);border-radius:8px;padding:10px 14px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Erstellt durch (1. Spotter)</div>
+      <div style="font-size:15px;font-weight:800;color:var(--b)">${escH(erstelltDurch)}</div>
+    </div>
+    <div style="background:${el?'#fef3e8':'#f8f8f8'};border:1px solid ${el?'#e67e22':'#ddd'};border-radius:8px;padding:10px 14px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px">Einsatzleiter Spotter</div>
+      <div style="font-size:15px;font-weight:800;color:${el?'#e67e22':'#aaa'}">${escH(elName)}</div>
+      ${!el?`<div style="font-size:10px;color:#aaa;margin-top:2px">Beim Reiter 👮 Personal beim jeweiligen Spotter ⭐ setzen</div>`:''}
+    </div>
+    <div class="mb">${lbl('Erstellt am')}<input type="text" value="${fmtDate(d.datum)}" readonly style="background:#f8f8f8;color:#666"></div>
+  `) + card('Einsatz-Bewertung',`
+    ${Object.entries(BEWERTUNG).map(([k,v])=>`
+      <button onclick="set('einsatzBewertung','${k}')" style="width:100%;padding:12px;margin-bottom:6px;border:2px solid ${d.einsatzBewertung===k?v.color:'#e0e0e0'};border-radius:9px;background:${d.einsatzBewertung===k?v.color+'18':'white'};color:${d.einsatzBewertung===k?v.color:'#666'};font-size:14px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px">
+        <span style="font-size:22px;width:28px;text-align:center">${d.einsatzBewertung===k?v.icon:'○'}</span>${v.label}
+      </button>`).join('')}
+    <div style="background:${bw.color}18;border:1px solid ${bw.color}44;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-top:4px">
+      <span style="font-size:20px">${bw.icon}</span>
+      <span style="font-size:13px;font-weight:700;color:${bw.color}">Diese Bewertung erscheint als farbiger Badge oben im PDF</span>
+    </div>
+  `) + card('Geht an — Verteiler (fix)',`
+    <div class="vert-list">${VERTEILER.map(e=>`<div><span class="vert-ok">✓</span>${e}</div>`).join('')}</div>
+  `) + card('☁️ Cross-Device Sync',`
+    <div style="background:#e8f4fd;border-radius:8px;padding:10px 14px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Dein Sync-Code</div>
+      <div style="font-size:22px;font-weight:900;color:var(--b);letter-spacing:2px;font-family:monospace">${d.datum||'(Datum setzen)'}</div>
+      <div style="font-size:10px;color:#888;margin-top:2px">Auf dem anderen Gerät diesen Code eingeben</div>
+    </div>
+    <button onclick="exportDraft()" style="width:100%;padding:11px;background:#e8eef7;color:var(--b);border:1px solid #c5d5e8;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px">
+      ☁️ Entwurf jetzt speichern
+    </button>
+    ${divider('Entwurf laden')}
+    <button onclick="loadDraftByDate('${d.datum||today}')" style="width:100%;padding:11px;background:var(--b);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px">
+      📥 Heutigen Entwurf laden (${d.datum||today})
+    </button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div style="flex:1"><label class="lbl">Anderes Datum</label><input type="date" id="ld" value="${d.datum||today}"></div>
+      <div style="display:flex;align-items:flex-end"><button onclick="loadDraftByDate(document.getElementById('ld').value)" style="padding:9px 14px;background:#888;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer">Laden</button></div>
+    </div>
+    ${!SHEETS_URL?`<div style="font-size:11px;color:#e74c3c;padding:6px 0;margin-top:6px">⚠ SHEETS_URL nicht konfiguriert</div>`:
+    `<div style="font-size:10px;color:var(--g);margin-top:6px">✓ Verbunden mit Google Sheets</div>`}
+  `) + card('Google Sheets Statistik',`
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0 8px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${SHEETS_URL?'#27ae60':'#ccc'};flex-shrink:0"></div>
+      <div style="font-size:12px;color:${SHEETS_URL?'#27ae60':'#888'}">
+        ${SHEETS_URL?'Verbunden — Export beim PDF-Klick automatisch':'Nicht konfiguriert — SHEETS_URL eintragen'}
+      </div>
+    </div>
+    ${SHEETS_URL?`<button onclick="exportToSheets()" style="width:100%;padding:10px;background:#e8eef7;color:var(--b);border:1px solid #c5d5e8;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">📊 Jetzt manuell exportieren</button>`:''}
+  `) + `<div style="margin:0 12px 40px">
+    <button class="btn-pdf-main" onclick="doPrint()">📄 KMR als PDF erstellen</button>
+    <button class="btn-neu" onclick="clearAll()">🔄 Neuen KMR starten</button>
+    <div class="pdf-hint">
+      iPhone Safari: Drucken → Vorschau lange drücken → Teilen → Mail<br>
+      Android Chrome: Drucken → PDF speichern → Teilen
+    </div>
+  </div>`;
+};
+
+// ===== PRINT VIEW =====
+const prChk = (l,v) => `<div class="pr-check"><span style="color:${v?'#27ae60':'#ccc'};font-weight:900;font-size:8pt">${v?'✓':'○'}</span><span style="font-size:9pt"> ${l}</span></div>`;
+const prF = (l,v) => v ? `<div class="pr-field"><span class="pr-lbl">${l}</span><span class="pr-val">${escH(String(v))}</span></div>` : '';
+
+const renderPrintView = () => {
+  const tz=totZ();
+  const bw = BEWERTUNG[d.einsatzBewertung] || BEWERTUNG.PROBLEMLOS;
+
+  // Pyro totals
+  const mPyroCnt = (team,type) => Object.values((d.mPyro||{})[team]||{}).reduce((s,ph)=>s+(ph[type]||0),0);
+  const pyroTotal = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt('HEIM',pt.id,null)+pyroCnt('GAST',pt.id,null),0)
+    || PYRO_TYPES.reduce((s,pt)=>s+mPyroCnt('HEIM',pt.id)+mPyroCnt('GAST',pt.id),0);
+  const festTotal = (parseInt(d.fhAnz)||0)+(parseInt(d.fgAnz)||0);
+  const anzTotal  = (parseInt(d.azHAnz)||0)+(parseInt(d.azGAnz)||0);
+
+  const logoImg = (url, alt) => url
+    ? `<img src="${url}" alt="${escH(alt)}" style="height:48px;width:48px;object-fit:contain;border-radius:4px" onerror="this.style.display='none'">`
+    : `<div style="width:48px;height:48px;background:#e8eef7;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9pt;color:#aaa;font-weight:700">${escH((alt||'?').substring(0,3).toUpperCase())}</div>`;
+
+  const persBlock = pers.length>0?`<div class="pr-pb"></div>
+    <div class="pr-h2">Kontrollierte Personen (${pers.length})</div>
+    ${pers.map((p,i)=>{
+      const g=[['gVM','Vermummung'],['gPR','Provokation'],['gSB','Sachbeschädigung'],['gGW','Gewalt'],['gSL','Schlägerei'],['gPV','Präventiv'],['gPY','Pyro']];
+      const m=[['mPK','Pers.K.'],['mAZ','Anzeige'],['mFP','Festnahme PolG'],['mFS','Festnahme StPO'],['mWG','Wegweisung'],['mSV','SV'],['mRV','RV']];
+      return `<div class="pr-pers-card">
+        <div class="pr-pers-hdr">
+          <strong style="color:#1a3560;font-size:9pt">Person ${i+1}: ${escH(p.nm)} ${escH(p.vnm)}</strong>
+          <span style="font-size:7pt;color:#555">${escH(p.ort)}${p.zeit?' · '+p.zeit:''}${p.durch?' · '+escH(p.durch):''}</span>
+        </div>
+        <div class="pr-grid">
+          ${prF('Geburtsdatum',p.geb&&fmtDate(p.geb))}${prF('Heimatort',p.ho)}
+          ${prF('Beruf',p.beruf)}${prF('Adresse',p.adr)}
+          ${prF('Telefon',p.tel)}${prF('Fanzugehörigkeit',p.fanz)}
+        </div>
+        <div style="margin:1mm 0">${g.filter(([k])=>p[k]).map(([,l])=>`<span class="pr-badge">${l}</span>`).join('')}</div>
+        <div style="margin:1mm 0">${m.filter(([k])=>p[k]).map(([,l])=>`<span class="pr-badge pr-badge-m">${l}</span>`).join('')}</div>
+        ${p.sv?`<div class="pr-sb">${escH(p.sv)}</div>`:''}
+      </div>`;
+    }).join('')}` : '';
+
+  const spotterBlock = spots.length ? `
+    <div class="pr-h2">Spotter im Einsatz</div>
+    <div class="pr-spots">${spots.map(s=>`<div class="pr-spot">
+      <div class="pr-spot-id">${s.id} ${escH(s.n)}</div>
+      ${s.rolle?`<div style="font-size:6pt;color:#3498db;font-weight:700">${s.rolle}</div>`:''}
+      ${s.von?`<div class="pr-spot-t">${s.von}–${s.bis}${calcH(s.von,s.bis)?' ('+calcH(s.von,s.bis)+')':''}</div>`:''}
+    </div>`).join('')}</div>` : '';
+
+  document.getElementById('print-view').innerHTML=`<div class="pr">
+
+    <!-- ══ HEADER ══ -->
+    <div class="pr-hdr">
+      <div>
+        <div class="pr-org">LUZERNER POLIZEI</div>
+        <div class="pr-title">Kurzmelderapport (KMR) Sportveranstaltung</div>
+        <div style="margin-top:4px">
+          <span style="background:#c0392b;color:#fff;font-size:8pt;font-weight:900;padding:2px 10px;border-radius:3px;letter-spacing:2px">INTERN</span>
+        </div>
+        <div style="font-size:7pt;color:#666;margin-top:2px">
+          ${d.ereignisId?`Ereignis-ID: <strong>${d.ereignisId}</strong>`:''}
+        </div>
+      </div>
+      <!-- TRAFFIC LIGHT BADGE -->
+      <div style="text-align:right">
+        <div style="background:${bw.color};color:#fff;border-radius:5mm;padding:3mm 6mm;font-weight:900;font-size:11pt;display:inline-block;letter-spacing:.3px">
+          ${bw.icon} ${bw.label.toUpperCase()}
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MATCH HERO ══ -->
+    <div class="pr-hero">
+      <div style="font-size:7.5pt;color:#666;text-align:center;margin-bottom:3mm">${escH(d.liga==='Andere'?(d.ligaAndere||'Andere'):d.liga)} · ${fmtDate(d.datum)}${d.uhrzeit?' · Anpfiff '+d.uhrzeit+' Uhr':''}</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:4mm">
+        ${logoImg(d.heimLogo, d.heim||'H')}
+        <div style="flex:1;text-align:right">
+          <div style="font-size:13pt;font-weight:900;color:#1a3560;line-height:1.1">${escH(d.heim||'—')}</div>
+        </div>
+        <div style="font-size:20pt;font-weight:900;color:#1a3560;padding:0 4mm;letter-spacing:2px">
+          ${d.tH!==''&&d.tG!==''?`${escH(d.tH)} : ${escH(d.tG)}`:'—'}
+        </div>
+        <div style="flex:1;text-align:left">
+          <div style="font-size:13pt;font-weight:900;color:#1a3560;line-height:1.1">${escH(d.gast||'—')}</div>
+        </div>
+        ${logoImg(d.gastLogo, d.gast||'G')}
+      </div>
+      <div style="font-size:7.5pt;color:#555;text-align:center;margin-top:3mm;border-top:0.5pt solid #ddd;padding-top:2mm">
+        ${escH(d.stadion)} · ${escH(d.plz)} · Kapazität: ${parseInt(d.kap)>0?parseInt(d.kap).toLocaleString('de-CH'):'—'}
+      </div>
+    </div>
+
+    <!-- ══ EXECUTIVE SUMMARY BAR ══ -->
+    <div class="pr-stats-bar">
+      ${[
+        ['Zuschauer', tz>0?tz.toLocaleString('de-CH'):'—'],
+        ['Spotter', d.anzS||'—'],
+        ['Pyro Total', pyroTotal||'0'],
+        ['Festnahmen', festTotal||'0'],
+        ['Anzeigen', anzTotal||'0'],
+      ].map(([label,val])=>`<div class="pr-stat">
+        <div style="font-size:6pt;opacity:.7;text-transform:uppercase;margin-bottom:1.5mm;letter-spacing:.3px">${label}</div>
+        <div style="font-size:14pt;font-weight:900;line-height:1">${val}</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- ══ SPOTTER ══ -->
+    ${spotterBlock}
+
+    <!-- ══ ZUSCHAUER ══ -->
+    <div class="pr-h2">Zuschauer</div>
+    <div class="pr-grid" style="margin-bottom:4mm">
+      ${prF('Heim-Fans',d.hFans&&parseInt(d.hFans).toLocaleString('de-CH'))}
+      ${prF('Gäste-Fans',d.gFans&&parseInt(d.gFans).toLocaleString('de-CH'))}
+      ${prF('Risk-Fans Heim',d.riskH)}${prF('Risk-Fans Gast',d.riskG)}
+      <div class="pr-full" style="background:#e8eef7;padding:2mm 3mm;border-radius:2mm;text-align:center">
+        <span style="font-size:8pt;color:#555">Total Zuschauer: </span>
+        <strong style="font-size:13pt;color:#1a3560">${tz.toLocaleString('de-CH')}</strong>
+      </div>
+    </div>
+
+    <!-- ══ ANREISE ══ -->
+    ${(d.pwP||d.carP||d.zugP)?`<div class="pr-h2">Anreise Gästefans</div>
+    <div class="pr-grid" style="margin-bottom:4mm">
+      ${prF('PW — Personen',d.pwP)}${prF('PW — Fahrzeuge',d.pwF)}
+      ${prF('Car — Personen',d.carP)}${prF('Car — Fahrzeuge',d.carF)}
+      ${prF('Zug — Personen',d.zugP)}${prF('Zug — Anzahl Züge',d.zugZ)}
+      ${d.carI?`<div class="pr-full">${prF('Angaben Car',d.carI)}</div>`:''}
+    </div>`:''}
+
+    <!-- ══ PERSONAL ══ -->
+    <div class="pr-h2">Personalaufgebot</div>
+    <div class="pr-grid" style="margin-bottom:4mm">
+      ${prF('Spotter',d.anzS)}${prF('Polizeikräfte inkl. Spotter',d.anzP)}
+      ${prF('Rechtshilfe Szenenkenner',d.anzR)}
+      ${d.totEZ?`<div class="pr-full">${prF('Total Einsatzzeit Spotter',d.totEZ)}</div>`:''}
+    </div>
+
+    <!-- ══ SACHVERHALT ══ -->
+    ${(d.aufm||d.spiel||d.abm)?`<div class="pr-h2">Sachverhalt</div>
+      ${d.aufm?`<div style="margin-bottom:3mm"><div style="font-weight:800;font-size:8pt;color:#27ae60;margin-bottom:1mm">Aufmarsch</div><div class="pr-sb">${escH(d.aufm)}</div></div>`:''}
+      ${d.spiel?`<div style="margin-bottom:3mm"><div style="font-weight:800;font-size:8pt;color:#1a3560;margin-bottom:1mm">Spielphase</div><div class="pr-sb">${escH(d.spiel)}</div></div>`:''}
+      ${d.abm?`<div style="margin-bottom:4mm"><div style="font-weight:800;font-size:8pt;color:#e67e22;margin-bottom:1mm">Abmarsch</div><div class="pr-sb">${escH(d.abm)}</div></div>`:''}
+    `:''}
+
+    <!-- ══ PYROTECHNIK ══ -->
+    <div class="pr-h2">Pyrotechnik</div>
+    ${(()=>{
+      const events = d.pyroEvents||[];
+      const hasData = events.filter(e=>!e.dupl).length > 0;
+      const phLabels = {AUFM:'Aufmarsch',HZ1:'1. HZ',PAUSE:'Pause',HZ2:'2. HZ',VL:'Verlängerung',ABML:'Abmarsch'};
+      const typeLabels = {HLF:'HLF',RAUCH:'Rauch',FW:'Feuerwerk',BOEL:'Böller',BLITZ:'Böller'};
+      if(hasData){
+        return ['HEIM','GAST'].map(team=>{
+          const tName = team==='HEIM'?(d.heim||'Heim'):(d.gast||'Gast');
+          const rows = Object.entries(phLabels).map(([pid,plbl])=>{
+            const types = ['HLF','RAUCH','FW','BOEL'].map(t=>pyroCnt(team,t,[pid]));
+            const tot = types.reduce((a,b)=>a+b,0);
+            if(tot===0) return '';
+            return `<tr><td style="font-size:7pt;padding:1mm 2mm;color:#555">${plbl}</td>${types.map(n=>`<td style="text-align:center;font-size:8pt;font-weight:${n>0?'bold':'400'};color:${n>0?'#1a3560':'#ccc'};padding:1mm">${n||'—'}</td>`).join('')}<td style="text-align:center;font-size:8pt;font-weight:bold;padding:1mm">${tot}</td></tr>`;
+          }).filter(Boolean).join('');
+          const tots = ['HLF','RAUCH','FW','BOEL'].map(t=>pyroCnt(team,t,null));
+          const grand = tots.reduce((a,b)=>a+b,0);
+          return `<div style="margin-bottom:3mm"><strong style="font-size:9pt;color:#1a3560">${escH(tName)}</strong>
+            <table style="width:100%;border-collapse:collapse;margin-top:1mm">
+              <tr style="background:#e8eef7"><th style="font-size:6pt;padding:1mm 2mm;text-align:left"></th><th style="font-size:6pt;padding:1mm;text-align:center">🔥HLF</th><th style="font-size:6pt;padding:1mm;text-align:center">💨Rauch</th><th style="font-size:6pt;padding:1mm;text-align:center">✨FW</th><th style="font-size:6pt;padding:1mm;text-align:center">⚡Böller</th><th style="font-size:6pt;padding:1mm;text-align:center">Total</th></tr>
+              ${rows}
+              <tr style="background:#f0f4f9;font-weight:bold"><td style="font-size:7pt;padding:1mm 2mm">TOTAL</td>${tots.map(n=>`<td style="text-align:center;font-size:9pt;font-weight:900;color:#1a3560;padding:1mm">${n||'—'}</td>`).join('')}<td style="text-align:center;font-size:10pt;font-weight:900;color:#1a3560;padding:1mm">${grand||'—'}</td></tr>
+            </table></div>`;
+        }).join('');
+      }
+      // Manual fallback
+      const mPyroCntP = (team,type) => Object.values((d.mPyro||{})[team]||{}).reduce((s,ph)=>s+(ph[type]||0),0);
+      return ['HEIM','GAST'].map(team=>{
+        const tName=team==='HEIM'?(d.heim||'Heim'):(d.gast||'Gast');
+        const tots=PYRO_TYPES.map(pt=>mPyroCntP(team,pt.id));
+        const grand=tots.reduce((a,b)=>a+b,0);
+        if(!grand) return '';
+        return `<div style="margin-bottom:3mm"><strong style="font-size:9pt;color:#1a3560">${escH(tName)}</strong>
+          <div style="font-size:8pt">${PYRO_TYPES.map((pt,i)=>tots[i]?`${pt.emoji} ${pt.label}: ${tots[i]}`:''). filter(Boolean).join(' · ')}</div>
+        </div>`;
+      }).join('');
+    })()}
+
+    <!-- ══ KONTROLLEN ══ -->
+    <div class="pr-h2">Anhaltungen & Anzeigen</div>
+    <div class="pr-grid" style="margin-bottom:4mm">
+      ${d.pkJ?prF('Personenkontrollen',d.pkAnz||'Ja'):''}
+      ${d.fhAnz?prF('Festnahmen Heim',d.fhAnz+(d.fhPG?' (PolG)':'')+(d.fhSP?' (StPO)':'')):''}
+      ${d.fgAnz?prF('Festnahmen Gast',d.fgAnz+(d.fgPG?' (PolG)':'')+(d.fgSP?' (StPO)':'')):''}
+      ${d.azHAnz?prF('Anzeigen Heim',d.azHAnz+'x — '+d.azHArt):''}
+      ${d.azGAnz?prF('Anzeigen Gast',d.azGAnz+'x — '+d.azGArt):''}
+    </div>
+
+    <!-- ══ SCHÄDEN ══ -->
+    ${(d.dPJ||d.dSJ||d.dPoJ)?`<div class="pr-h2">Verursachte Schäden</div>
+    <div style="margin-bottom:4mm">
+      ${d.dPJ?`<div style="margin-bottom:2mm">${prF('Personen',`Anzahl: ${d.dPAnz||'—'}${d.dPB?' — '+d.dPB:''}`)}</div>`:''}
+      ${d.dSJ?`<div style="margin-bottom:2mm">${prF('Sachen',`Anzahl: ${d.dSAnz||'—'}${d.dSSm?' · CHF '+d.dSSm:''}${d.dSB?' — '+d.dSB:''}`)}</div>`:''}
+      ${d.dPoJ?`<div style="margin-bottom:2mm">${prF('Polizei',`Anzahl: ${d.dPoAnz||'—'}${d.dPoB?' — '+d.dPoB:''}`)}</div>`:''}
+    </div>`:''}
+
+    <!-- ══ KONTROLLIERTE PERSONEN ══ -->
+    ${persBlock}
+
+    <!-- ══ FOOTER ══ -->
+    <div class="pr-footer">
+      <div>Erstellt durch: ${escH(spots[0]?spots[0].id+' '+spots[0].n:'—')}${(()=>{const el=spots.find(s=>s.el);return el?' · EL: '+el.id+' '+el.n:'';})()}</div>
+      <div>${fmtDate(d.datum||today)}</div>
+    </div>
+    <div class="pr-verteiler">Geht an: ${VERTEILER.join(' · ')}</div>
+
+  </div>`;
+};
+// ===== RENDER ENGINE =====
+const renderContent = () => {
+  const renders=[T0,T1,T2,T3,T4,T5,T6,T7];
+  const mc=document.getElementById('main-content');
+  if(mc) mc.innerHTML=renders[activeTab]();
+};
+
+const buildAppShell = () => {
+  const app = document.getElementById('app');
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  app.innerHTML = `
+    <div class="hdr no-print">
+      <div style="min-width:0">
+        <div class="hdr-title">🚔 LUZERNER POLIZEI</div>
+        <div class="hdr-sub" id="hdr-sub">Kurzmelderapport KMR</div>
+      </div>
+      <div class="hdr-btns">
+        <span class="save-badge" id="save-badge" style="display:none">✓</span>
+        <button class="btn-hdr" onclick="clearAll()">Neu</button>
+        <button class="btn-pdf" onclick="doPrint()">📄 PDF</button>
+      </div>
+    </div>
+    <div class="tabs no-print" id="tabs-bar"></div>
+    <div class="install-banner no-print" id="install-banner" style="${isStandalone?'display:none':''}">
+      <div class="install-ico">📲</div>
+      <div class="install-txt">
+        <strong>Als App installieren</strong>
+        Safari → Teilen → «Zum Home-Bildschirm»
+      </div>
+      <button class="install-close" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
+    </div>
+    <div class="content no-print" id="main-content"></div>
+    <div class="print-only" id="print-view"></div>`;
+};
+
+const render = () => {
+  if (!authenticated) { renderLogin(); return; }
+
+  // Rebuild full structure if needed (e.g. right after login)
+  if (!document.getElementById('main-content')) buildAppShell();
+
+  // Update header subtitle
+  const sub = document.getElementById('hdr-sub');
+  if(sub) sub.textContent = (d.heim&&d.gast)
+    ? `${d.heim} vs. ${d.gast}${d.tH!==''&&d.tG!==''?' — '+d.tH+':'+d.tG:''}`
+    : 'Kurzmelderapport KMR';
+
+  // Update tabs
+  document.getElementById('tabs-bar').innerHTML = TABS.map((t,i)=>
+    `<button class="tab${activeTab===i?' active':''}" onclick="setTab(${i})">
+      <span class="tab-icon">${t.i}</span>${t.l}
+     </button>`).join('');
+
+  // Update content
+  renderContent();
+};
+
+const setTab = i => { activeTab=i; render(); };
+window.checkPW = checkPW;
+window.toggleRolleAndere = (i, rolle) => {
+  const el=document.getElementById(`ra-${i}`);
+  if(el) el.style.display=rolle==='Anderes'?'block':'none';
+};
+window.loadPyroFromCounter = loadPyroFromCounter;
+window.openPyroCounter = openPyroCounter;
+window.setMPyro = (team, phase, type, val) => {
+  if(!d.mPyro) d.mPyro={HEIM:{},GAST:{}};
+  if(!d.mPyro[team]) d.mPyro[team]={};
+  if(!d.mPyro[team][phase]) d.mPyro[team][phase]={};
+  d.mPyro[team][phase][type] = parseInt(val)||0;
+  autoSave();
+};
+window.setEL = setEL;
+
+// ===== BOOT =====
+loadSaved();
+</script>
+</body>
+</html>
