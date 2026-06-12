@@ -140,24 +140,48 @@ let pollT=null,clockT=null,flashIds=new Set();
 const uid=()=>`${Date.now()}-${Math.random().toString(36).substr(2,6)}`;
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-// STORAGE
-const save=async()=>{try{await window.storage.set(KEY,JSON.stringify({events:S.events,heim:S.heim,gast:S.gast,ts:Date.now()}),true);}catch(e){try{localStorage.setItem(KEY,JSON.stringify({events:S.events,heim:S.heim,gast:S.gast,ts:Date.now()}));}catch(e2){}}};
-const load=async()=>{
-  try{
-    let raw;
-    try{const r=await window.storage.get(KEY,true);raw=r?.value;}catch(e){raw=localStorage.getItem(KEY);}
-    if(raw){
-      const d=JSON.parse(raw);
-      const remote=d.events||[];
-      const lids=new Set(S.events.map(e=>e.id));
-      remote.forEach(e=>{if(!lids.has(e.id))S.events.push(e);});
-      S.events.forEach(e=>{const r=remote.find(x=>x.id===e.id);if(r)e.dupl=r.dupl;});
-      S.events.sort((a,b)=>b.ts-a.ts);
-      if(d.heim&&!S.gast)S.heim=d.heim;
-      if(d.gast&&!S.gast)S.gast=d.gast;
-      S.lastSync=Date.now();
+// Apps Script URL — aus URL-Parameter oder hardcoded
+const SHEETS_URL = urlParams.get('sheets') || 'https://script.google.com/macros/s/AKfycbz3voR-WzgqQbaic_GAiwWkeqME0UaPkl3G_jEl-PCKQMhEP1w2SmDrrZAtJu5QRocp/exec';
+
+// Lokalen Zustand speichern (inkl. Spieluhr)
+const saveLocal = () => {
+  try {
+    localStorage.setItem(KEY, JSON.stringify({
+      events: S.events,
+      heim: S.heim, gast: S.gast,
+      clock: S.clock, ts: Date.now()
+    }));
+  } catch(e) {}
+};
+
+// Einzelnes Event an Apps Script senden (GET — kein CORS-Problem)
+const syncEvent = (ev) => {
+  if (!SHEETS_URL) return;
+  fetch(`${SHEETS_URL}?action=addPyroEvent&key=${encodeURIComponent(KEY)}&event=${encodeURIComponent(JSON.stringify(ev))}`)
+    .catch(()=>{});
+};
+
+// Alle Events vom Server laden und mergen
+const load = async () => {
+  if (!SHEETS_URL) { render(); return; }
+  try {
+    const r = await fetch(`${SHEETS_URL}?action=loadPyro&key=${encodeURIComponent(KEY)}`);
+    if (r.ok) {
+      const remote = JSON.parse(await r.text());
+      if (Array.isArray(remote) && remote.length > 0) {
+        const lids = new Set(S.events.map(e => e.id));
+        remote.forEach(e => { if (!lids.has(e.id)) S.events.push(e); });
+        // Dupl-Flags synchronisieren
+        S.events.forEach(e => {
+          const rv = remote.find(x => x.id === e.id);
+          if (rv) e.dupl = rv.dupl;
+        });
+        S.events.sort((a,b) => b.ts - a.ts);
+        S.lastSync = Date.now();
+        saveLocal();
+      }
     }
-  }catch(e){}
+  } catch(e) {}
   render();
 };
 
@@ -170,21 +194,33 @@ const clockMin=()=>{
 const startClock=ph=>{
   const p=PHASES.find(x=>x.id===ph);
   S.clock={running:true,startTs:Date.now(),off:p?.offset||0,manual:''};
+  saveLocal();
   if(clockT)clearInterval(clockT);
   clockT=setInterval(()=>{if(S.view==='COUNT')renderContent();},10000);
 };
-const stopClock=()=>{S.clock.running=false;if(clockT){clearInterval(clockT);clockT=null;}};
+const stopClock=()=>{
+  if(S.clock.running){
+    // Freeze current minute so it persists
+    S.clock.off=clockMin()||0;
+    S.clock.startTs=null;
+    S.clock.running=false;
+  }
+  if(clockT){clearInterval(clockT);clockT=null;}
+  saveLocal();
+};
 
 // EVENTS
 const addEvent=type=>{
   const m=clockMin();
   const ev={id:uid(),type,team:S.team,phase:S.phase,minute:m!=null?String(m):'—',spotter:S.myId,spotterName:S.myName,ts:Date.now(),dupl:false};
   S.events.unshift(ev);
+  saveLocal();
+  syncEvent(ev);   // einzelnes Event → Apps Script
   flashIds.add(ev.id);
   setTimeout(()=>{flashIds.delete(ev.id);renderContent();},500);
-  save();render();
+  render();
 };
-const togDupl=id=>{const e=S.events.find(x=>x.id===id);if(e){e.dupl=!e.dupl;save();render();}};
+const togDupl=id=>{const ev=S.events.find(x=>x.id===id);if(ev){ev.dupl=!ev.dupl;saveLocal();syncEvent(ev);render();}};
 const clearAll=()=>{if(confirm('Alle Pyro-Ereignisse löschen?')){S.events=[];save();render();}};
 const cnt=(team,type,phases)=>S.events.filter(e=>!e.dupl&&e.team===team&&(!type||e.type===type)&&(!phases||phases.includes(e.phase))).length;
 
@@ -381,7 +417,29 @@ const render=()=>{
 
 window.selSpot=el=>{const[id,...r]=el.value.split('|');S.myId=id;S.myName=r.join('|');const b=document.getElementById('sb');if(b)b.disabled=!id;};
 window.checkPyroPW = checkPyroPW;
-window.go=()=>{if(!S.myId)return;S.setup=false;load();pollT=setInterval(load,3000);render();};
+window.go=()=>{
+  if(!S.myId)return;
+  S.setup=false;
+  // Lokalen Zustand wiederherstellen (Spieluhr + bisherige Events)
+  try {
+    const local=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(local){
+      if(local.events?.length) S.events=local.events;
+      if(local.heim) S.heim=local.heim;
+      if(local.gast) S.gast=local.gast;
+      // Spieluhr wiederherstellen
+      if(local.clock?.running){
+        S.clock=local.clock;
+        if(clockT) clearInterval(clockT);
+        clockT=setInterval(()=>{if(S.view==='COUNT')renderContent();},10000);
+      }
+    }
+  }catch(e){}
+  // Dann Server-Daten laden (mergt neue Events von anderen Geräten)
+  load();
+  pollT=setInterval(load,3000);
+  render();
+};
 window.setPhase=id=>{S.phase=id;render();};
 window.setTeam=id=>{S.team=id;render();};
 window.setView=id=>{S.view=id;render();};
