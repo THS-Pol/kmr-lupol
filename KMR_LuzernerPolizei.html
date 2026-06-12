@@ -113,66 +113,57 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   body{background:#fff!important;margin:0;padding:0}
   .app{max-width:none}
-  /* ── PAGE BREAK RULES ── */
-  .pr-h2{
-    break-after:avoid;page-break-after:avoid;
-    break-inside:avoid;page-break-inside:avoid;
-  }
-  /* Keep section headings with their content */
-  .pr-h2 + *{break-before:avoid;page-break-before:avoid;}
-  /* Keep these blocks intact */
-  .pr-beh,.pr-spot,.pr-pers-card,.pr-field,.pr-check,
-  .pr-einsatz,.pr-2col,.pr-spots,.pr-grid{
-    break-inside:avoid;page-break-inside:avoid;
-  }
-  /* Executive stats bar always stays together */
-  .pr-stats-bar{break-inside:avoid;page-break-inside:avoid;}
-  /* Hero match block stays together */
-  .pr-hero{break-inside:avoid;page-break-inside:avoid;}
-  /* Header stays together */
-  .pr-hdr{break-inside:avoid;page-break-inside:avoid;}
-  /* Footer stays together */
-  .pr-footer,.pr-verteiler{break-inside:avoid;page-break-inside:avoid;}
-  /* Prevent widows/orphans in text blocks */
-  .pr-sb{orphans:3;widows:3;word-break:break-word;}
-  .pr-val{orphans:2;widows:2;}
-  /* Long text blocks: allow internal breaks but avoid short orphans */
-  p,div{orphans:2;widows:2;}
+  .pr-section{break-inside:avoid;page-break-inside:avoid}
+  .pr-h2{break-after:avoid;page-break-after:avoid}
+  .pr-h2+*{break-before:avoid;page-break-before:avoid}
+  .pr-pers-card{break-inside:avoid;page-break-inside:avoid}
+  .pr-pb{break-before:page;page-break-before:always}
+  .pr-sb{orphans:3;widows:3}
 }
 .print-only{display:none}
-/* Print styles */
-.pr{font-family:Arial,Helvetica,sans-serif;font-size:9pt;line-height:1.4;padding:10mm 12mm;max-width:190mm;margin:0 auto;color:#111}
-.pr-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5mm;border-bottom:2pt solid #1a3560;padding-bottom:3mm;break-inside:avoid;page-break-inside:avoid}
+/* ── PRINT BASE ── */
+.pr{font-family:Arial,Helvetica,sans-serif;font-size:9pt;line-height:1.45;padding:10mm 12mm;max-width:190mm;margin:0 auto;color:#111}
+/* ── HEADER ── */
+.pr-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4mm;border-bottom:2pt solid #1a3560;padding-bottom:3mm}
 .pr-org{font-size:15pt;font-weight:900;color:#1a3560;letter-spacing:.5px}
-.pr-title{font-size:10pt;font-weight:700;margin-top:1px}
-.pr-ids{font-size:7pt;color:#555;text-align:right;line-height:1.8}
-.pr-hero{border:1.5pt solid #1a3560;border-radius:3mm;padding:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
-.pr-stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:2mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
-.pr-stat{background:#1a3560;color:#fff;border-radius:2mm;padding:2.5mm 1mm;text-align:center;break-inside:avoid;page-break-inside:avoid}
-.pr-h2{font-weight:800;font-size:10pt;color:#1a3560;border-bottom:1pt solid #e8eef7;padding-bottom:3px;margin:5mm 0 3px;break-after:avoid;page-break-after:avoid}
-.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
-.pr-field{margin-bottom:4px;break-inside:avoid;page-break-inside:avoid}
-.pr-lbl{font-size:7pt;font-weight:700;color:#555;display:block;margin-bottom:1px}
-.pr-val{font-size:9pt;display:block}
-.pr-full{grid-column:1/-1}
-.pr-check{display:flex;align-items:center;gap:4px;margin-bottom:2px;break-inside:avoid;page-break-inside:avoid}
-.pr-spots{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
-.pr-spot{background:#e8eef7;border-radius:2mm;padding:2mm 3mm;break-inside:avoid;page-break-inside:avoid}
-.pr-spot-id{font-weight:800;color:#1a3560;font-size:7pt}
+.pr-title{font-size:9.5pt;font-weight:700;margin-top:1px}
+/* ── HERO ── */
+.pr-hero{border:1.5pt solid #1a3560;border-radius:3mm;padding:3.5mm;margin-bottom:4mm}
+/* ── STATS BAR ── */
+.pr-stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:1.5mm;margin-bottom:4mm}
+.pr-stat{background:#1a3560;color:#fff;border-radius:2mm;padding:2mm 1mm;text-align:center}
+/* ── SECTION ── */
+.pr-section{margin-bottom:4mm}
+.pr-h2{font-weight:800;font-size:10pt;color:#1a3560;background:#e8eef7;padding:2px 5px;margin:4mm 0 2mm;border-left:3pt solid #1a3560}
+/* ── KEY-VALUE TABLE ── */
+.pr-tbl{width:100%;border-collapse:collapse;font-size:8.5pt}
+.pr-tbl td{padding:2px 4px;vertical-align:top}
+.pr-tbl td:first-child{color:#555;font-weight:700;width:42mm;white-space:nowrap}
+.pr-tbl td:last-child{color:#111}
+.pr-tbl tr{border-bottom:0.5pt solid #f0f0f0}
+/* ── PYRO TABLE ── */
+.pr-pyro-tbl{width:100%;border-collapse:collapse;font-size:8pt;margin-top:2mm}
+.pr-pyro-tbl th{background:#e8eef7;color:#1a3560;font-weight:800;padding:2px 4px;text-align:center;font-size:7.5pt}
+.pr-pyro-tbl th:first-child{text-align:left}
+.pr-pyro-tbl td{padding:2px 4px;text-align:center;border-bottom:0.5pt solid #f0f0f0;font-size:8.5pt}
+.pr-pyro-tbl td:first-child{text-align:left;color:#555;font-weight:600}
+.pr-pyro-tbl tr.total-row{background:#f0f4f9;font-weight:900}
+.pr-pyro-tbl tr.total-row td{color:#1a3560;font-size:9pt}
+/* ── SPOTTER GRID ── */
+.pr-spots{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-top:2mm}
+.pr-spot{background:#e8eef7;border-radius:2mm;padding:2mm 3mm}
+.pr-spot-id{font-weight:800;color:#1a3560;font-size:7.5pt}
 .pr-spot-t{font-size:6pt;color:#555;margin-top:1px}
-.pr-beh{background:#e8eef7;padding:3mm;border-radius:2mm;break-inside:avoid;page-break-inside:avoid}
-.pr-beh-title{font-weight:800;font-size:9pt;color:#1a3560;margin-bottom:3px}
-.pr-2col{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
-.pr-einsatz{display:grid;grid-template-columns:1fr 2fr;gap:4mm;margin-bottom:4mm;break-inside:avoid;page-break-inside:avoid}
-.pr-em-grid{display:grid;grid-template-columns:1fr 1fr}
-.pr-footer{margin-top:6mm;border-top:1pt solid #1a3560;padding-top:3mm;display:flex;justify-content:space-between;font-size:7pt;color:#555;break-inside:avoid;page-break-inside:avoid}
+/* ── MISC ── */
+.pr-footer{margin-top:5mm;border-top:1pt solid #1a3560;padding-top:2mm;display:flex;justify-content:space-between;font-size:7pt;color:#555}
 .pr-verteiler{margin-top:1.5mm;font-size:6pt;color:#aaa}
-.pr-sb{font-size:9pt;font-style:italic;white-space:pre-wrap;line-height:1.6;word-break:break-word;orphans:3;widows:3}
+.pr-sb{font-size:9pt;font-style:italic;white-space:pre-wrap;line-height:1.6;word-break:break-word;background:#fafafa;padding:2mm 3mm;border-left:2pt solid #ddd;margin:1mm 0}
 .pr-badge{display:inline-block;background:#e8eef7;color:#1a3560;border-radius:2px;padding:1mm 2mm;font-size:6pt;font-weight:800;margin:1px}
 .pr-badge-m{background:#fff3e0;color:#e67e22}
 .pr-pb{break-before:page;page-break-before:always}
-.pr-pers-card{border:1pt solid #ddd;border-radius:2mm;padding:3mm;margin-bottom:3mm;break-inside:avoid;page-break-inside:avoid}
+.pr-pers-card{border:1pt solid #ddd;border-radius:2mm;padding:3mm;margin-bottom:3mm}
 .pr-pers-hdr{display:flex;justify-content:space-between;margin-bottom:3px}
+
 </style>
 </head>
 <body>
@@ -547,12 +538,19 @@ const clearAll = () => {
     autoSave(); render();
   }
 };
-const doPrint = () => {
+const doPrint = async () => {
   // Toast ausblenden damit er nicht auf dem PDF erscheint
   const t = document.getElementById('toast');
   if(t) { t.style.opacity='0'; t.style.pointerEvents='none'; }
+  // Pyro-Verlauf für Chart laden
+  if(SHEETS_URL && !d.pyroChart) {
+    try {
+      const r = await fetch(`${SHEETS_URL}?action=getPyroHistory`);
+      if(r.ok) { const j=await r.json(); if(j.success) d.pyroChart=j.data; }
+    } catch(e) {}
+  }
   renderPrintView();
-  setTimeout(()=>{ window.print(); exportToSheets(); },150);
+  setTimeout(()=>{ window.print(); exportToSheets(); },200);
 };
 
 // ── GOOGLE SHEETS EXPORT ─────────────────────────────────────
@@ -737,30 +735,27 @@ const openPyroCounter = () => {
 const exportDraft = async () => {
   if (!SHEETS_URL) { showToast('⚠ SHEETS_URL nicht konfiguriert','error'); return; }
   showToast('☁️ Entwurf wird gespeichert…','info');
-  const {pyroEvents, heimLogo, gastLogo, letzterMatch, ...dClean} = d;
-  const payload = JSON.stringify({
-    action: 'saveDraft',
-    ...dClean,
-    spotterEinsatz: spots,
-    persons: pers,
-  });
+  const datum = d.datum || today;
+  const {pyroEvents,heimLogo,gastLogo,letzterMatch,pyroChart,...dClean} = d;
+
+  const saveField = async (field, obj) => {
+    const data = encodeURIComponent(JSON.stringify(obj));
+    const r = await fetch(`${SHEETS_URL}?action=saveDraftField&datum=${encodeURIComponent(datum)}&field=${encodeURIComponent(field)}&data=${data}`);
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const j = await r.json();
+    if(!j.success) throw new Error(j.error||j.message||'Fehler');
+  };
+
   try {
-    // iframe-Form POST: umgeht CORS + Redirect-Problem, beliebige Datengrösse
-    const form = document.getElementById('save-form');
-    const inp  = document.getElementById('save-payload');
-    form.action = SHEETS_URL;
-    inp.value   = payload;
-    form.submit();
-    // Nach 2.5 Sek prüfen ob gespeichert wurde
-    setTimeout(async () => {
-      try {
-        const r = await fetch(`${SHEETS_URL}?action=loadDraft&date=${encodeURIComponent(d.datum||today)}`);
-        const j = await r.json();
-        if(j.success) showToast(`✓ Gespeichert — Code: ${d.datum}`,'success');
-        else showToast('⚠ Speichern fehlgeschlagen — erneut versuchen','error');
-      } catch(e) { showToast(`✓ Gesendet — Code: ${d.datum}`,'success'); }
-    }, 2500);
-  } catch(e) { showToast('⚠ Fehler beim Speichern','error'); }
+    await saveField('main', dClean);
+    await saveField('spots', spots);
+    for(let i=0; i<pers.length; i++) await saveField('person_'+i, pers[i]);
+    // Personen-Anzahl speichern damit Load weiss wieviele es gibt
+    await saveField('meta', {persCount: pers.length, savedAt: new Date().toISOString()});
+    showToast(`✓ Gespeichert — Code: ${datum}`,'success');
+  } catch(e) {
+    showToast(`⚠ Fehler: ${e.message}`,'error');
+  }
 };
 
 const loadDraftByDate = async (date) => {
@@ -1197,211 +1192,263 @@ const renderPrintView = () => {
   const tz=totZ();
   const bw = BEWERTUNG[d.einsatzBewertung] || BEWERTUNG.PROBLEMLOS;
 
-  // Pyro totals
-  const mPyroCnt = (team,type) => Object.values((d.mPyro||{})[team]||{}).reduce((s,ph)=>s+(ph[type]||0),0);
-  const pyroTotal = PYRO_TYPES.reduce((s,pt)=>s+pyroCnt('HEIM',pt.id,null)+pyroCnt('GAST',pt.id,null),0)
-    || PYRO_TYPES.reduce((s,pt)=>s+mPyroCnt('HEIM',pt.id)+mPyroCnt('GAST',pt.id),0);
+  // Pyro helpers
+  const mPyroCnt = (team,type,phase) => {
+    const mp = (d.mPyro||{})[team]||{};
+    if(phase) return (mp[phase]||{})[type]||0;
+    return Object.values(mp).reduce((s,ph)=>s+(ph[type]||0),0);
+  };
+  const pCnt = (team,type,phases) => {
+    const fromCtr = pyroCnt(team,type,phases?[phases]:null);
+    if(fromCtr>0||(d.pyroEvents||[]).length>0) return fromCtr;
+    return mPyroCnt(team,type,phases);
+  };
+  const pyroPhases = [{id:'VOR',l:'Vor dem Spiel'},{id:'WAHR',l:'Während dem Spiel'},{id:'NACH',l:'Nach dem Spiel'}];
+  const pyroTypes  = PYRO_TYPES;
+
   const festTotal = (parseInt(d.fhAnz)||0)+(parseInt(d.fgAnz)||0);
   const anzTotal  = (parseInt(d.azHAnz)||0)+(parseInt(d.azGAnz)||0);
+  const pyroTotal = pyroTypes.reduce((s,pt)=>s+pCnt('HEIM',pt.id,null)+pCnt('GAST',pt.id,null),0);
 
-  const logoImg = (url, alt) => url
-    ? `<img src="${url}" alt="${escH(alt)}" style="height:48px;width:48px;object-fit:contain;border-radius:4px" onerror="this.style.display='none'">`
-    : `<div style="width:48px;height:48px;background:#e8eef7;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9pt;color:#aaa;font-weight:700">${escH((alt||'?').substring(0,3).toUpperCase())}</div>`;
+  const logoImg = (url,alt) => url
+    ? `<img src="${url}" style="height:44px;width:44px;object-fit:contain;border-radius:3px" onerror="this.outerHTML='<div style=width:44px;height:44px;background:#e8eef7;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7pt;color:#aaa;font-weight:700>${escH((alt||'?').substring(0,3).toUpperCase())}</div>'">`
+    : `<div style="width:44px;height:44px;background:#e8eef7;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7pt;color:#aaa;font-weight:700">${escH((alt||'?').substring(0,3).toUpperCase())}</div>`;
 
-  const persBlock = pers.length>0?`<div class="pr-pb"></div>
+  const row = (l,v) => v?`<tr><td>${escH(l)}</td><td><strong>${escH(String(v))}</strong></td></tr>`:'';
+
+  // Pyro table for one team
+  const pyroTable = (team, name) => {
+    const totals = pyroTypes.map(pt => pCnt(team,pt.id,null));
+    const grand = totals.reduce((a,b)=>a+b,0);
+    if(!grand) return `<div style="font-size:8pt;color:#aaa;padding:2mm 0">${escH(name)}: keine Pyrotechnik erfasst</div>`;
+    return `<div style="margin-bottom:3mm">
+      <div style="font-weight:800;font-size:8.5pt;color:#1a3560;margin-bottom:1mm">${escH(name)}</div>
+      <table class="pr-pyro-tbl">
+        <thead><tr>
+          <th style="width:35mm"></th>
+          ${pyroTypes.map(pt=>`<th>${pt.emoji} ${pt.label}</th>`).join('')}
+          <th>Total</th>
+        </tr></thead>
+        <tbody>
+        ${pyroPhases.map(ph=>{
+          const vals = pyroTypes.map(pt=>pCnt(team,pt.id,ph.id));
+          const phTotal = vals.reduce((a,b)=>a+b,0);
+          return `<tr>
+            <td>${ph.l}</td>
+            ${vals.map(n=>`<td style="color:${n>0?'#1a3560':'#ccc'};font-weight:${n>0?'700':'400'}">${n||'—'}</td>`).join('')}
+            <td style="color:${phTotal>0?'#1a3560':'#ccc'};font-weight:${phTotal>0?'700':'400'}">${phTotal||'—'}</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+        <tfoot><tr class="total-row">
+          <td>TOTAL</td>
+          ${totals.map(n=>`<td>${n||'—'}</td>`).join('')}
+          <td>${grand}</td>
+        </tr></tfoot>
+      </table>
+    </div>`;
+  };
+
+  // Pyro history chart (if available)
+  const pyroChart = () => {
+    const hist = d.pyroChart;
+    if(!hist||hist.length<2) return '';
+    const last = hist.slice(-12);
+    const maxV = Math.max(...last.map(m=>m.total),1);
+    const W=166, H=35, bW=Math.floor((W-8)/last.length)-1, pad=4;
+    const bars = last.map((m,i)=>{
+      const bH = Math.max(1, Math.round((m.total/maxV)*(H-pad*2)));
+      const x = pad + i*(bW+1);
+      const y = H-pad-bH;
+      const label = m.datum?.substring(5)||'';
+      return `<rect x="${x}" y="${y}" width="${bW}" height="${bH}" fill="#1a3560" rx="1"/>
+        <text x="${x+bW/2}" y="${H-1}" text-anchor="middle" font-size="4" fill="#888">${label}</text>
+        ${m.total>0?`<text x="${x+bW/2}" y="${y-1}" text-anchor="middle" font-size="4.5" fill="#1a3560" font-weight="bold">${m.total}</text>`:''}`;
+    }).join('');
+    return `<div class="pr-section" style="margin-top:3mm">
+      <div class="pr-h2">Pyrotechnik-Verlauf (letzte ${last.length} Spiele)</div>
+      <svg width="100%" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:2mm 0">
+        <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad}" stroke="#ddd" stroke-width="0.5"/>
+        <line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="#ddd" stroke-width="0.5"/>
+        ${bars}
+      </svg>
+      <div style="font-size:6pt;color:#aaa;text-align:center">Pyros total pro Spiel</div>
+    </div>`;
+  };
+
+  document.getElementById('print-view').innerHTML=`<div class="pr">
+
+  <!-- ══ HEADER ══ -->
+  <div class="pr-hdr">
+    <div>
+      <div class="pr-org">LUZERNER POLIZEI</div>
+      <div class="pr-title">Kurzmelderapport (KMR) Sportveranstaltung</div>
+      <div style="margin-top:3px;display:flex;gap:4px;align-items:center">
+        <span style="background:#c0392b;color:#fff;font-size:7.5pt;font-weight:900;padding:1px 8px;border-radius:2px;letter-spacing:2px">INTERN</span>
+        ${d.ereignisId?`<span style="font-size:7pt;color:#666">Ereignis-ID: <strong>${escH(d.ereignisId)}</strong></span>`:''}
+      </div>
+    </div>
+    <div style="background:${bw.color};color:#fff;border-radius:4mm;padding:2.5mm 5mm;font-weight:900;font-size:10pt;text-align:center;letter-spacing:.2px">
+      ${bw.icon} ${escH(bw.label.toUpperCase())}
+    </div>
+  </div>
+
+  <!-- ══ MATCH HERO ══ -->
+  <div class="pr-hero">
+    <div style="font-size:7pt;color:#666;text-align:center;margin-bottom:2mm">${escH(d.liga==='Andere'?(d.ligaAndere||'Andere'):d.liga)} · ${fmtDate(d.datum)}${d.uhrzeit?' · Anpfiff '+d.uhrzeit+' Uhr':''}</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:4mm">
+      ${logoImg(d.heimLogo,d.heim||'H')}
+      <div style="flex:1;text-align:right;font-size:12pt;font-weight:900;color:#1a3560">${escH(d.heim||'—')}</div>
+      <div style="font-size:18pt;font-weight:900;color:#1a3560;padding:0 3mm;letter-spacing:2px">${d.tH!==''&&d.tG!==''?`${escH(String(d.tH))} : ${escH(String(d.tG))}`:'— : —'}</div>
+      <div style="flex:1;text-align:left;font-size:12pt;font-weight:900;color:#1a3560">${escH(d.gast||'—')}</div>
+      ${logoImg(d.gastLogo,d.gast||'G')}
+    </div>
+    <div style="font-size:7pt;color:#555;text-align:center;margin-top:2mm;border-top:0.5pt solid #ddd;padding-top:1.5mm">
+      ${escH(d.stadion||'—')} · ${escH(d.plz||'—')} · Kapazität: ${parseInt(d.kap)>0?parseInt(d.kap).toLocaleString('de-CH'):'—'}
+    </div>
+  </div>
+
+  <!-- ══ STATS BAR ══ -->
+  <div class="pr-stats-bar">
+    ${[['Zuschauer',tz>0?tz.toLocaleString('de-CH'):'—'],['Spotter',d.anzS||'—'],['Pyro Total',pyroTotal||'0'],['Festnahmen',festTotal||'0'],['Anzeigen',anzTotal||'0']]
+      .map(([l,v])=>`<div class="pr-stat"><div style="font-size:5.5pt;opacity:.75;text-transform:uppercase;margin-bottom:1mm">${l}</div><div style="font-size:13pt;font-weight:900;line-height:1">${v}</div></div>`).join('')}
+  </div>
+
+  <!-- ══ SPIELDATEN ══ -->
+  <div class="pr-section">
+    <div class="pr-h2">Spieldaten</div>
+    <table class="pr-tbl">
+      ${row('Liga', d.liga==='Andere'?(d.ligaAndere||'Andere'):d.liga)}
+      ${row('Datum', fmtDate(d.datum))}
+      ${d.uhrzeit?row('Anpfiff', d.uhrzeit+' Uhr'):''}
+      ${row('Stadion', d.stadion)}
+      ${d.plz?row('Adresse', d.plz):''}
+      ${d.kap?row('Kapazität', parseInt(d.kap).toLocaleString('de-CH')):''}
+    </table>
+  </div>
+
+  <!-- ══ SPOTTER ══ -->
+  ${spots.length?`<div class="pr-section">
+    <div class="pr-h2">Spotter im Einsatz (${spots.length})</div>
+    <div class="pr-spots">
+      ${spots.map(s=>{
+        const el=s.el?'⭐ EL':'';
+        const rolle=s.rolle==='Anderes'?(s.rolleAndere||'Anderes'):s.rolle;
+        return `<div class="pr-spot">
+          <div class="pr-spot-id">${escH(s.id||'')} ${escH(s.n||'')} ${el?`<span style="color:#e67e22">${el}</span>`:''}</div>
+          ${rolle?`<div style="font-size:6pt;color:#3498db;font-weight:700">${escH(rolle)}</div>`:''}
+          ${s.von?`<div class="pr-spot-t">${s.von}–${s.bis}${calcH(s.von,s.bis)?' ('+calcH(s.von,s.bis)+')':''}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+    ${d.totEZ?`<div style="font-size:8pt;color:#555;margin-top:1mm">Total Einsatzzeit: <strong>${escH(d.totEZ)}</strong></div>`:''}
+  </div>`:''}
+
+  <!-- ══ ZUSCHAUER ══ -->
+  <div class="pr-section">
+    <div class="pr-h2">Zuschauer & Personalaufgebot</div>
+    <table class="pr-tbl">
+      ${row('Heim-Fans', d.hFans&&parseInt(d.hFans).toLocaleString('de-CH'))}
+      ${row('Gäste-Fans', d.gFans&&parseInt(d.gFans).toLocaleString('de-CH'))}
+      ${row('Risk-Fans Heim', d.riskH)}
+      ${row('Risk-Fans Gast', d.riskG)}
+      ${tz?`<tr><td>Total Zuschauer</td><td><strong style="font-size:11pt;color:#1a3560">${tz.toLocaleString('de-CH')}</strong></td></tr>`:''}
+    </table>
+  </div>
+
+  <!-- ══ ANREISE ══ -->
+  ${(d.pwP||d.carP||d.zugP)?`<div class="pr-section">
+    <div class="pr-h2">Anreise Gästefans</div>
+    <table class="pr-tbl">
+      ${d.pwP?row('PW', `${d.pwP} Personen / ${d.pwF||0} Fahrzeuge`):''}
+      ${d.carP?row('Car', `${d.carP} Personen / ${d.carF||0} Fahrzeuge${d.carI?' — '+d.carI:''}`):''}
+      ${d.zugP?row('Zug / ÖV', `${d.zugP} Personen${d.zugZ?' / '+d.zugZ+' Verbindungen':''}`):''}
+    </table>
+  </div>`:''}
+
+  <!-- ══ PERSONAL ══ -->
+  <div class="pr-section">
+    <div class="pr-h2">Personalaufgebot</div>
+    <table class="pr-tbl">
+      ${row('Spotter', d.anzS)}
+      ${row('Polizeikräfte inkl. Spotter', d.anzP)}
+      ${row('Rechtshilfe Szenenkenner', d.anzR)}
+      ${row('Total Einsatzzeit Spotter', d.totEZ)}
+    </table>
+  </div>
+
+  <!-- ══ SACHVERHALT ══ -->
+  ${(d.aufm||d.spiel||d.abm)?`<div class="pr-section">
+    <div class="pr-h2">Sachverhalt</div>
+    ${d.aufm?`<div style="margin-bottom:2mm"><div style="font-weight:800;font-size:7.5pt;color:#27ae60;margin-bottom:1mm">Aufmarsch</div><div class="pr-sb">${escH(d.aufm)}</div></div>`:''}
+    ${d.spiel?`<div style="margin-bottom:2mm"><div style="font-weight:800;font-size:7.5pt;color:#1a3560;margin-bottom:1mm">Spielphase</div><div class="pr-sb">${escH(d.spiel)}</div></div>`:''}
+    ${d.abm?`<div style="margin-bottom:2mm"><div style="font-weight:800;font-size:7.5pt;color:#e67e22;margin-bottom:1mm">Abmarsch</div><div class="pr-sb">${escH(d.abm)}</div></div>`:''}
+  </div>`:''}
+
+  <!-- ══ PYROTECHNIK ══ -->
+  <div class="pr-section">
+    <div class="pr-h2">Pyrotechnik</div>
+    ${pyroTable('HEIM', d.heim||'Heim')}
+    ${pyroTable('GAST', d.gast||'Gast')}
+    ${pyroChart()}
+  </div>
+
+  <!-- ══ KONTROLLEN ══ -->
+  <div class="pr-section">
+    <div class="pr-h2">Anhaltungen, Festnahmen & Anzeigen</div>
+    <table class="pr-tbl">
+      ${d.pkJ?row('Personenkontrollen', d.pkAnz||'Ja'):''}
+      ${d.fhAnz?row('Festnahmen Heim', d.fhAnz+(d.fhPG?' (PolG)':'')+(d.fhSP?' (StPO)':'')):''}
+      ${d.fgAnz?row('Festnahmen Gast', d.fgAnz+(d.fgPG?' (PolG)':'')+(d.fgSP?' (StPO)':'')):''}
+      ${d.azHAnz?row('Anzeigen Heim', d.azHAnz+'× — '+d.azHArt):''}
+      ${d.azGAnz?row('Anzeigen Gast', d.azGAnz+'× — '+d.azGArt):''}
+    </table>
+  </div>
+
+  <!-- ══ SCHÄDEN ══ -->
+  ${(d.dPJ||d.dSJ||d.dPoJ)?`<div class="pr-section">
+    <div class="pr-h2">Verursachte Schäden</div>
+    <table class="pr-tbl">
+      ${d.dPJ?row('Personen', 'Anzahl: '+(d.dPAnz||'—')+(d.dPB?' — '+d.dPB:'')):''}
+      ${d.dSJ?row('Sachen', 'Anzahl: '+(d.dSAnz||'—')+(d.dSSm?' · CHF '+d.dSSm:'')+(d.dSB?' — '+d.dSB:'')):''}
+      ${d.dPoJ?row('Polizei', 'Anzahl: '+(d.dPoAnz||'—')+(d.dPoB?' — '+d.dPoB:'')):''}
+    </table>
+  </div>`:''}
+
+  <!-- ══ PERSONEN ══ -->
+  ${pers.length?`<div class="pr-pb"></div>
+  <div class="pr-section">
     <div class="pr-h2">Kontrollierte Personen (${pers.length})</div>
     ${pers.map((p,i)=>{
       const g=[['gVM','Vermummung'],['gPR','Provokation'],['gSB','Sachbeschädigung'],['gGW','Gewalt'],['gSL','Schlägerei'],['gPV','Präventiv'],['gPY','Pyro']];
       const m=[['mPK','Pers.K.'],['mAZ','Anzeige'],['mFP','Festnahme PolG'],['mFS','Festnahme StPO'],['mWG','Wegweisung'],['mSV','SV'],['mRV','RV']];
       return `<div class="pr-pers-card">
         <div class="pr-pers-hdr">
-          <strong style="color:#1a3560;font-size:9pt">Person ${i+1}: ${escH(p.nm)} ${escH(p.vnm)}</strong>
-          <span style="font-size:7pt;color:#555">${escH(p.ort)}${p.zeit?' · '+p.zeit:''}${p.durch?' · '+escH(p.durch):''}</span>
+          <strong style="color:#1a3560;font-size:9pt">Person ${i+1}: ${escH(p.nm||'')} ${escH(p.vnm||'')}</strong>
+          <span style="font-size:7pt;color:#555">${escH(p.ort||'')}${p.zeit?' · '+p.zeit:''}${p.durch?' · '+escH(p.durch):''}</span>
         </div>
-        <div class="pr-grid">
-          ${prF('Geburtsdatum',p.geb&&fmtDate(p.geb))}${prF('Heimatort',p.ho)}
-          ${prF('Beruf',p.beruf)}${prF('Adresse',p.adr)}
-          ${prF('Telefon',p.tel)}${prF('Fanzugehörigkeit',p.fanz)}
-        </div>
-        <div style="margin:1mm 0">${g.filter(([k])=>p[k]).map(([,l])=>`<span class="pr-badge">${l}</span>`).join('')}</div>
+        <table class="pr-tbl" style="font-size:8pt">
+          ${row('Geburtsdatum',p.geb&&fmtDate(p.geb))}${row('Heimatort',p.ho)}
+          ${row('Beruf',p.beruf)}${row('Adresse',p.adr)}
+          ${row('Telefon',p.tel)}${row('Fanzugehörigkeit',p.fanz)}
+        </table>
+        <div style="margin:1.5mm 0">${g.filter(([k])=>p[k]).map(([,l])=>`<span class="pr-badge">${l}</span>`).join('')}</div>
         <div style="margin:1mm 0">${m.filter(([k])=>p[k]).map(([,l])=>`<span class="pr-badge pr-badge-m">${l}</span>`).join('')}</div>
         ${p.sv?`<div class="pr-sb">${escH(p.sv)}</div>`:''}
       </div>`;
-    }).join('')}` : '';
+    }).join('')}
+  </div>`:''}
 
-  const spotterBlock = spots.length ? `
-    <div class="pr-h2">Spotter im Einsatz</div>
-    <div class="pr-spots">${spots.map(s=>`<div class="pr-spot">
-      <div class="pr-spot-id">${s.id} ${escH(s.n)}</div>
-      ${s.rolle?`<div style="font-size:6pt;color:#3498db;font-weight:700">${s.rolle}</div>`:''}
-      ${s.von?`<div class="pr-spot-t">${s.von}–${s.bis}${calcH(s.von,s.bis)?' ('+calcH(s.von,s.bis)+')':''}</div>`:''}
-    </div>`).join('')}</div>` : '';
-
-  document.getElementById('print-view').innerHTML=`<div class="pr">
-
-    <!-- ══ HEADER ══ -->
-    <div class="pr-hdr">
-      <div>
-        <div class="pr-org">LUZERNER POLIZEI</div>
-        <div class="pr-title">Kurzmelderapport (KMR) Sportveranstaltung</div>
-        <div style="margin-top:4px">
-          <span style="background:#c0392b;color:#fff;font-size:8pt;font-weight:900;padding:2px 10px;border-radius:3px;letter-spacing:2px">INTERN</span>
-        </div>
-        <div style="font-size:7pt;color:#666;margin-top:2px">
-          ${d.ereignisId?`Ereignis-ID: <strong>${d.ereignisId}</strong>`:''}
-        </div>
-      </div>
-      <!-- TRAFFIC LIGHT BADGE -->
-      <div style="text-align:right">
-        <div style="background:${bw.color};color:#fff;border-radius:5mm;padding:3mm 6mm;font-weight:900;font-size:11pt;display:inline-block;letter-spacing:.3px">
-          ${bw.icon} ${bw.label.toUpperCase()}
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ MATCH HERO ══ -->
-    <div class="pr-hero">
-      <div style="font-size:7.5pt;color:#666;text-align:center;margin-bottom:3mm">${escH(d.liga==='Andere'?(d.ligaAndere||'Andere'):d.liga)} · ${fmtDate(d.datum)}${d.uhrzeit?' · Anpfiff '+d.uhrzeit+' Uhr':''}</div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:4mm">
-        ${logoImg(d.heimLogo, d.heim||'H')}
-        <div style="flex:1;text-align:right">
-          <div style="font-size:13pt;font-weight:900;color:#1a3560;line-height:1.1">${escH(d.heim||'—')}</div>
-        </div>
-        <div style="font-size:20pt;font-weight:900;color:#1a3560;padding:0 4mm;letter-spacing:2px">
-          ${d.tH!==''&&d.tG!==''?`${escH(d.tH)} : ${escH(d.tG)}`:'—'}
-        </div>
-        <div style="flex:1;text-align:left">
-          <div style="font-size:13pt;font-weight:900;color:#1a3560;line-height:1.1">${escH(d.gast||'—')}</div>
-        </div>
-        ${logoImg(d.gastLogo, d.gast||'G')}
-      </div>
-      <div style="font-size:7.5pt;color:#555;text-align:center;margin-top:3mm;border-top:0.5pt solid #ddd;padding-top:2mm">
-        ${escH(d.stadion)} · ${escH(d.plz)} · Kapazität: ${parseInt(d.kap)>0?parseInt(d.kap).toLocaleString('de-CH'):'—'}
-      </div>
-    </div>
-
-    <!-- ══ EXECUTIVE SUMMARY BAR ══ -->
-    <div class="pr-stats-bar">
-      ${[
-        ['Zuschauer', tz>0?tz.toLocaleString('de-CH'):'—'],
-        ['Spotter', d.anzS||'—'],
-        ['Pyro Total', pyroTotal||'0'],
-        ['Festnahmen', festTotal||'0'],
-        ['Anzeigen', anzTotal||'0'],
-      ].map(([label,val])=>`<div class="pr-stat">
-        <div style="font-size:6pt;opacity:.7;text-transform:uppercase;margin-bottom:1.5mm;letter-spacing:.3px">${label}</div>
-        <div style="font-size:14pt;font-weight:900;line-height:1">${val}</div>
-      </div>`).join('')}
-    </div>
-
-    <!-- ══ SPOTTER ══ -->
-    ${spotterBlock}
-
-    <!-- ══ ZUSCHAUER ══ -->
-    <div class="pr-h2">Zuschauer</div>
-    <div class="pr-grid" style="margin-bottom:4mm">
-      ${prF('Heim-Fans',d.hFans&&parseInt(d.hFans).toLocaleString('de-CH'))}
-      ${prF('Gäste-Fans',d.gFans&&parseInt(d.gFans).toLocaleString('de-CH'))}
-      ${prF('Risk-Fans Heim',d.riskH)}${prF('Risk-Fans Gast',d.riskG)}
-      <div class="pr-full" style="background:#e8eef7;padding:2mm 3mm;border-radius:2mm;text-align:center">
-        <span style="font-size:8pt;color:#555">Total Zuschauer: </span>
-        <strong style="font-size:13pt;color:#1a3560">${tz.toLocaleString('de-CH')}</strong>
-      </div>
-    </div>
-
-    <!-- ══ ANREISE ══ -->
-    ${(d.pwP||d.carP||d.zugP)?`<div class="pr-h2">Anreise Gästefans</div>
-    <div class="pr-grid" style="margin-bottom:4mm">
-      ${prF('PW — Personen',d.pwP)}${prF('PW — Fahrzeuge',d.pwF)}
-      ${prF('Car — Personen',d.carP)}${prF('Car — Fahrzeuge',d.carF)}
-      ${prF('Zug — Personen',d.zugP)}${prF('Zug — Anzahl Züge',d.zugZ)}
-      ${d.carI?`<div class="pr-full">${prF('Angaben Car',d.carI)}</div>`:''}
-    </div>`:''}
-
-    <!-- ══ PERSONAL ══ -->
-    <div class="pr-h2">Personalaufgebot</div>
-    <div class="pr-grid" style="margin-bottom:4mm">
-      ${prF('Spotter',d.anzS)}${prF('Polizeikräfte inkl. Spotter',d.anzP)}
-      ${prF('Rechtshilfe Szenenkenner',d.anzR)}
-      ${d.totEZ?`<div class="pr-full">${prF('Total Einsatzzeit Spotter',d.totEZ)}</div>`:''}
-    </div>
-
-    <!-- ══ SACHVERHALT ══ -->
-    ${(d.aufm||d.spiel||d.abm)?`<div class="pr-h2">Sachverhalt</div>
-      ${d.aufm?`<div style="margin-bottom:3mm"><div style="font-weight:800;font-size:8pt;color:#27ae60;margin-bottom:1mm">Aufmarsch</div><div class="pr-sb">${escH(d.aufm)}</div></div>`:''}
-      ${d.spiel?`<div style="margin-bottom:3mm"><div style="font-weight:800;font-size:8pt;color:#1a3560;margin-bottom:1mm">Spielphase</div><div class="pr-sb">${escH(d.spiel)}</div></div>`:''}
-      ${d.abm?`<div style="margin-bottom:4mm"><div style="font-weight:800;font-size:8pt;color:#e67e22;margin-bottom:1mm">Abmarsch</div><div class="pr-sb">${escH(d.abm)}</div></div>`:''}
-    `:''}
-
-    <!-- ══ PYROTECHNIK ══ -->
-    <div class="pr-h2">Pyrotechnik</div>
-    ${(()=>{
-      const events = d.pyroEvents||[];
-      const hasData = events.filter(e=>!e.dupl).length > 0;
-      const phLabels = {AUFM:'Aufmarsch',HZ1:'1. HZ',PAUSE:'Pause',HZ2:'2. HZ',VL:'Verlängerung',ABML:'Abmarsch'};
-      const typeLabels = {HLF:'HLF',RAUCH:'Rauch',FW:'Feuerwerk',BOEL:'Böller',BLITZ:'Böller'};
-      if(hasData){
-        return ['HEIM','GAST'].map(team=>{
-          const tName = team==='HEIM'?(d.heim||'Heim'):(d.gast||'Gast');
-          const rows = Object.entries(phLabels).map(([pid,plbl])=>{
-            const types = ['HLF','RAUCH','FW','BOEL'].map(t=>pyroCnt(team,t,[pid]));
-            const tot = types.reduce((a,b)=>a+b,0);
-            if(tot===0) return '';
-            return `<tr><td style="font-size:7pt;padding:1mm 2mm;color:#555">${plbl}</td>${types.map(n=>`<td style="text-align:center;font-size:8pt;font-weight:${n>0?'bold':'400'};color:${n>0?'#1a3560':'#ccc'};padding:1mm">${n||'—'}</td>`).join('')}<td style="text-align:center;font-size:8pt;font-weight:bold;padding:1mm">${tot}</td></tr>`;
-          }).filter(Boolean).join('');
-          const tots = ['HLF','RAUCH','FW','BOEL'].map(t=>pyroCnt(team,t,null));
-          const grand = tots.reduce((a,b)=>a+b,0);
-          return `<div style="margin-bottom:3mm"><strong style="font-size:9pt;color:#1a3560">${escH(tName)}</strong>
-            <table style="width:100%;border-collapse:collapse;margin-top:1mm">
-              <tr style="background:#e8eef7"><th style="font-size:6pt;padding:1mm 2mm;text-align:left"></th><th style="font-size:6pt;padding:1mm;text-align:center">🔥HLF</th><th style="font-size:6pt;padding:1mm;text-align:center">💨Rauch</th><th style="font-size:6pt;padding:1mm;text-align:center">✨FW</th><th style="font-size:6pt;padding:1mm;text-align:center">⚡Böller</th><th style="font-size:6pt;padding:1mm;text-align:center">Total</th></tr>
-              ${rows}
-              <tr style="background:#f0f4f9;font-weight:bold"><td style="font-size:7pt;padding:1mm 2mm">TOTAL</td>${tots.map(n=>`<td style="text-align:center;font-size:9pt;font-weight:900;color:#1a3560;padding:1mm">${n||'—'}</td>`).join('')}<td style="text-align:center;font-size:10pt;font-weight:900;color:#1a3560;padding:1mm">${grand||'—'}</td></tr>
-            </table></div>`;
-        }).join('');
-      }
-      // Manual fallback
-      const mPyroCntP = (team,type) => Object.values((d.mPyro||{})[team]||{}).reduce((s,ph)=>s+(ph[type]||0),0);
-      return ['HEIM','GAST'].map(team=>{
-        const tName=team==='HEIM'?(d.heim||'Heim'):(d.gast||'Gast');
-        const tots=PYRO_TYPES.map(pt=>mPyroCntP(team,pt.id));
-        const grand=tots.reduce((a,b)=>a+b,0);
-        if(!grand) return '';
-        return `<div style="margin-bottom:3mm"><strong style="font-size:9pt;color:#1a3560">${escH(tName)}</strong>
-          <div style="font-size:8pt">${PYRO_TYPES.map((pt,i)=>tots[i]?`${pt.emoji} ${pt.label}: ${tots[i]}`:''). filter(Boolean).join(' · ')}</div>
-        </div>`;
-      }).join('');
-    })()}
-
-    <!-- ══ KONTROLLEN ══ -->
-    <div class="pr-h2">Anhaltungen & Anzeigen</div>
-    <div class="pr-grid" style="margin-bottom:4mm">
-      ${d.pkJ?prF('Personenkontrollen',d.pkAnz||'Ja'):''}
-      ${d.fhAnz?prF('Festnahmen Heim',d.fhAnz+(d.fhPG?' (PolG)':'')+(d.fhSP?' (StPO)':'')):''}
-      ${d.fgAnz?prF('Festnahmen Gast',d.fgAnz+(d.fgPG?' (PolG)':'')+(d.fgSP?' (StPO)':'')):''}
-      ${d.azHAnz?prF('Anzeigen Heim',d.azHAnz+'x — '+d.azHArt):''}
-      ${d.azGAnz?prF('Anzeigen Gast',d.azGAnz+'x — '+d.azGArt):''}
-    </div>
-
-    <!-- ══ SCHÄDEN ══ -->
-    ${(d.dPJ||d.dSJ||d.dPoJ)?`<div class="pr-h2">Verursachte Schäden</div>
-    <div style="margin-bottom:4mm">
-      ${d.dPJ?`<div style="margin-bottom:2mm">${prF('Personen',`Anzahl: ${d.dPAnz||'—'}${d.dPB?' — '+d.dPB:''}`)}</div>`:''}
-      ${d.dSJ?`<div style="margin-bottom:2mm">${prF('Sachen',`Anzahl: ${d.dSAnz||'—'}${d.dSSm?' · CHF '+d.dSSm:''}${d.dSB?' — '+d.dSB:''}`)}</div>`:''}
-      ${d.dPoJ?`<div style="margin-bottom:2mm">${prF('Polizei',`Anzahl: ${d.dPoAnz||'—'}${d.dPoB?' — '+d.dPoB:''}`)}</div>`:''}
-    </div>`:''}
-
-    <!-- ══ KONTROLLIERTE PERSONEN ══ -->
-    ${persBlock}
-
-    <!-- ══ FOOTER ══ -->
-    <div class="pr-footer">
-      <div>Erstellt durch: ${escH(spots[0]?spots[0].id+' '+spots[0].n:'—')}${(()=>{const el=spots.find(s=>s.el);return el?' · EL: '+el.id+' '+el.n:'';})()}</div>
-      <div>${fmtDate(d.datum||today)}</div>
-    </div>
-    <div class="pr-verteiler">Geht an: ${VERTEILER.join(' · ')}</div>
+  <!-- ══ FOOTER ══ -->
+  <div class="pr-footer">
+    <div>Erstellt durch: <strong>${escH(spots[0]?spots[0].id+' '+spots[0].n:'—')}</strong>${(()=>{const el=spots.find(s=>s.el);return el?' · EL: <strong>'+el.id+' '+el.n+'</strong>':'';})()}</div>
+    <div>${fmtDate(d.datum||today)}</div>
+  </div>
+  <div class="pr-verteiler">Geht an: ${VERTEILER.join(' · ')}</div>
 
   </div>`;
 };
+
 // ===== RENDER ENGINE =====
 const renderContent = () => {
   const renders=[T0,T1,T2,T3,T4,T5,T6,T7];
