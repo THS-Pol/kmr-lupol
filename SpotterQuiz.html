@@ -203,7 +203,7 @@ const saveG = async () => {
     G.ts = Date.now();
     const controller = new AbortController();
     setTimeout(() => controller.abort(), 4000);
-    await fetch(`${SHEETS_URL}?action=saveGame&session=${encodeURIComponent(SESSION)}&state=${encodeURIComponent(JSON.stringify(G))}`, {signal: controller.signal});
+    await fetch(`${SHEETS_URL}?action=saveGame&session=${encodeURIComponent(SESSION)}&state=${encodeURIComponent(JSON.stringify(G))}&_=${G.ts}`, {signal: controller.signal});
   } catch(e) {}
 };
 
@@ -211,7 +211,7 @@ const loadG = async () => {
   try {
     const controller = new AbortController();
     setTimeout(() => controller.abort(), 3000);
-    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(SESSION)}`, {signal: controller.signal});
+    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(SESSION)}&_=${Date.now()}`, {signal: controller.signal});
     if (!r.ok) return;
     const raw = await r.text();
     if (!raw || raw === 'null') return;
