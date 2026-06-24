@@ -226,7 +226,7 @@ const loadG = async () => {
 
 const startPoll = () => {
   if (pollT) clearInterval(pollT);
-  pollT = setInterval(loadG, 1500);
+  pollT = setInterval(loadG, 1000); // 1 Sekunde für schnellere Sync
 };
 
 // ── ACTIONS (host only) ───────────────────────────────────
@@ -362,7 +362,8 @@ const renderLobby = () => `
   </div>
   ${local.isHost && G.teams.A && G.teams.B ?
     `<button class="host-btn" onclick="startGame()">▶ Spiel starten</button>` :
-    `<div style="color:#8899bb;font-size:14px">${local.isHost?'Warte auf beide Teams...':'Warte auf Host...'}</div>`}
+    `<div style="color:#8899bb;font-size:14px;margin-bottom:12px">${local.isHost?'Warte auf beide Teams...':'Warte auf Host...'}</div>
+     <button onclick="loadG()" style="padding:8px 18px;background:#2a3a5c;border:none;border-radius:8px;color:#8899bb;font-size:13px;cursor:pointer">🔄 Manuell aktualisieren</button>`}
   <div style="margin-top:30px;font-size:12px;color:#444">Fragen: 3 Runden × 15 = <strong style="color:#fff">45 Fragen</strong> · Jeder Punkt = 30 Sek. Vorsprung beim Stadtspiel</div>
 </div>`;
 
