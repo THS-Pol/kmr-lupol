@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Szenenkenner Challenge</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Arial',sans-serif;background:#0a0f1e;color:#fff;min-height:100vh;overflow-x:hidden}
+  
+  /* SETUP */
+  .setup{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;text-align:center}
+  .setup-logo{font-size:48px;margin-bottom:16px}
+  .setup-title{font-size:32px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-1px}
+  .setup-sub{font-size:14px;color:#8899bb;margin-bottom:40px}
+  .setup-card{background:#1a2440;border-radius:16px;padding:32px;width:100%;max-width:400px;border:1px solid #2a3a5c}
+  .setup-label{font-size:11px;font-weight:700;color:#8899bb;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;text-align:left}
+  .setup-input{width:100%;padding:14px 16px;background:#0d1428;border:2px solid #2a3a5c;border-radius:10px;color:#fff;font-size:16px;margin-bottom:20px;outline:none;transition:border-color .2s}
+  .setup-input:focus{border-color:#3d7bff}
+  .team-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+  .team-btn{padding:20px;background:#0d1428;border:3px solid #2a3a5c;border-radius:12px;color:#8899bb;font-size:18px;font-weight:800;cursor:pointer;transition:all .2s}
+  .team-btn.active{background:#1a3a7a;border-color:#3d7bff;color:#fff}
+  .start-btn{width:100%;padding:16px;background:linear-gradient(135deg,#3d7bff,#2055cc);border:none;border-radius:12px;color:#fff;font-size:18px;font-weight:800;cursor:pointer;transition:transform .1s}
+  .start-btn:hover{transform:scale(1.02)}
+  .start-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+  /* LOBBY */
+  .lobby{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;text-align:center}
+  .lobby-title{font-size:28px;font-weight:900;margin-bottom:8px}
+  .lobby-sub{font-size:14px;color:#8899bb;margin-bottom:40px}
+  .teams-row{display:flex;gap:20px;margin-bottom:40px}
+  .team-status{background:#1a2440;border-radius:16px;padding:24px 32px;border:2px solid #2a3a5c;text-align:center;min-width:140px}
+  .team-status.connected{border-color:#27ae60}
+  .team-circle{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900}
+  .team-A .team-circle{background:#1a3560}
+  .team-B .team-circle{background:#8e1a1a}
+  .team-name{font-size:13px;font-weight:700;color:#8899bb}
+  .team-ready{font-size:12px;margin-top:6px}
+  .team-ready.yes{color:#27ae60}
+  .team-ready.no{color:#e74c3c}
+  .host-btn{padding:14px 32px;background:#27ae60;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px}
+
+  /* ROUND INTRO */
+  .round-intro{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px}
+  .round-emoji{font-size:80px;margin-bottom:20px;animation:bounce .6s ease}
+  .round-label{font-size:14px;font-weight:700;color:#8899bb;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+  .round-title{font-size:36px;font-weight:900;margin-bottom:40px}
+  @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+  /* SCOREBOARD HEADER */
+  .score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#1a2440;position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:1px solid #2a3a5c}
+  .score-team{display:flex;align-items:center;gap:10px}
+  .score-badge{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900}
+  .score-badge-A{background:#1a3560}
+  .score-badge-B{background:#8e1a1a}
+  .score-pts{font-size:24px;font-weight:900}
+  .score-info{text-align:center}
+  .score-qnum{font-size:12px;color:#8899bb}
+  .score-round{font-size:11px;color:#3d7bff;font-weight:700}
+
+  /* QUESTION */
+  .question-screen{padding:80px 20px 20px;max-width:700px;margin:0 auto;min-height:100vh}
+  .q-text{font-size:26px;font-weight:800;line-height:1.35;margin:20px 0 30px;text-align:center}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:30px}
+  .opt{padding:18px 16px;background:#1a2440;border:2px solid #2a3a5c;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:left;transition:all .15s;line-height:1.35}
+  .opt:hover{border-color:#3d7bff;background:#1a2f5c}
+  .opt.correct{background:#1a4a2a;border-color:#27ae60;color:#7dffaa}
+  .opt.wrong{background:#4a1a1a;border-color:#e74c3c;color:#ff7070}
+  .opt.selected{border-color:#3d7bff}
+  .opt-letter{font-weight:900;color:#3d7bff;margin-right:8px;font-size:13px}
+  .buzz-btn{width:100%;padding:28px;background:linear-gradient(135deg,#e74c3c,#c0392b);border:none;border-radius:20px;color:#fff;font-size:32px;font-weight:900;cursor:pointer;letter-spacing:1px;transition:transform .1s;box-shadow:0 8px 30px rgba(231,76,60,.4)}
+  .buzz-btn:hover{transform:scale(1.03)}
+  .buzz-btn:active{transform:scale(.97)}
+  .buzz-btn:disabled{background:#2a3a5c;box-shadow:none;cursor:not-allowed;transform:none}
+  .buzzed-info{text-align:center;padding:20px;background:#1a2440;border-radius:14px;margin-bottom:20px;border:2px solid #e67e22}
+  .buzzed-name{font-size:28px;font-weight:900;color:#e67e22}
+  .timer-bar{height:6px;background:#2a3a5c;border-radius:3px;margin:16px 0;overflow:hidden}
+  .timer-fill{height:100%;background:linear-gradient(90deg,#27ae60,#e67e22,#e74c3c);border-radius:3px;transition:width .1s linear}
+
+  /* REVEAL */
+  .reveal-correct{color:#7dffaa;font-size:18px;font-weight:800;text-align:center;padding:14px;background:#1a4a2a;border-radius:12px;margin:16px 0}
+  .reveal-wrong{color:#ff7070;font-size:18px;font-weight:800;text-align:center;padding:14px;background:#4a1a1a;border-radius:12px;margin:16px 0}
+  .reveal-pts{text-align:center;padding:16px;border-radius:12px;background:#1a2440;margin:16px 0;font-size:22px;font-weight:800}
+  .next-btn{width:100%;padding:18px;background:#3d7bff;border:none;border-radius:14px;color:#fff;font-size:18px;font-weight:800;cursor:pointer;margin-top:16px}
+  .next-btn:hover{background:#2055cc}
+  .host-only{font-size:11px;color:#8899bb;text-align:center;margin-top:8px}
+
+  /* FINAL */
+  .final{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center}
+  .final-trophy{font-size:80px;margin-bottom:20px}
+  .final-title{font-size:36px;font-weight:900;margin-bottom:8px}
+  .final-sub{font-size:16px;color:#8899bb;margin-bottom:40px}
+  .final-scores{display:flex;gap:20px;margin-bottom:40px;flex-wrap:wrap;justify-content:center}
+  .final-team{background:#1a2440;border-radius:20px;padding:32px;min-width:200px;border:2px solid #2a3a5c}
+  .final-team.winner{border-color:#ffd700;background:#1a2a10}
+  .final-pts-big{font-size:72px;font-weight:900;line-height:1}
+  .final-winner-badge{font-size:24px;margin-top:8px;color:#ffd700}
+  .advantage-box{background:#1a3a2a;border:2px solid #27ae60;border-radius:16px;padding:24px 32px;margin-bottom:30px}
+  .advantage-label{font-size:12px;font-weight:700;color:#27ae60;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .advantage-value{font-size:48px;font-weight:900;color:#7dffaa}
+  .advantage-sub{font-size:13px;color:#8899bb;margin-top:4px}
+
+  /* STATUS BAR (non-host) */
+  .waiting-overlay{text-align:center;padding:40px 20px}
+  .waiting-spin{font-size:40px;animation:spin 2s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .waiting-txt{font-size:16px;color:#8899bb;margin-top:12px}
+
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz3voR-WzgqQbaic_GAiwWkeqME0UaPkl3G_jEl-PCKQMhEP1w2SmDrrZAtJu5QRocp/exec';
+
+const ROUNDS = [
+  { title:"Runde 1 — Fanszenen Schweiz", emoji:"🏟️", color:"#1a3560", questions:[
+    {q:"Wie lautet der Name der höchsten Schweizer Fussballliga?",opts:["Axpo Super League","Brack.ch Super League","Raiffeisen Super League","Swiss Football League"],a:1},
+    {q:"In welchem Stadion spielen die BSC Young Boys ihre Heimspiele?",opts:["Letzigrund","kybunpark","Wankdorf Stadion","swissporarena"],a:2},
+    {q:"Welche Kapazität hat die swissporarena in Luzern?",opts:["14'000","17'000","21'000","26'000"],a:1},
+    {q:"Welcher Schweizer Club spielt im kybunpark?",opts:["FC Luzern","FC Winterthur","FC St. Gallen","FC Vaduz"],a:2},
+    {q:"Wie nennt man Fans, die als gewalttätig oder risikobehaftet eingestuft werden?",opts:["Ultras","Risk-Fans","Hooligans","Capos"],a:1},
+    {q:"Was bedeutet die Abkürzung «HOOGAN»?",opts:["Hooliganismus-Datenbank der Schweiz","Hotspot-Organisation für Gefahrenabwehr","Hooligan-Observationsgruppe Agenda Null","Hohe Organisierte Gegen Anarchie Netzwerk"],a:0},
+    {q:"Was ist ein «Capo» in der Fanszene?",opts:["Sicherheitsbeauftragter des Clubs","Vorsänger / Anführer der Kurve","Pyrotechniker","Ordnungsdienst-Chef"],a:1},
+    {q:"Was ist ein «Tifo»?",opts:["Krawallgesang der Ultras","Choreographie in der Fankurve","Fanausweis","Verbotene Fahne"],a:1},
+    {q:"Welches Schweizer Stadion hat die grösste Kapazität?",opts:["Wankdorf Stadion","St. Jakob-Park","Letzigrund","Stade de Suisse"],a:1},
+    {q:"In welcher Stadt spielt Servette FC?",opts:["Lausanne","Bern","Genf","Zürich"],a:2},
+    {q:"Was ist ein «Gästeblock»?",opts:["VIP-Sektor","Sektor für Fans des Gastteams","Pressetribüne","Stehplatz Heimsektor"],a:1},
+    {q:"Wie nennt man die Anreise der Fans vor dem Spiel?",opts:["Vorabend","Aufmarsch","Einmarsch","Zugang"],a:1},
+    {q:"Was sind «Pyros» im Stadionkontext?",opts:["Feuerwerk am Spielende","Pyrotechnische Gegenstände (Fackeln, Böller etc.)","Laserpointer","Rauchgranaten der Polizei"],a:1},
+    {q:"Welche Farben hat der FC Luzern?",opts:["Rot-Weiss","Grün-Weiss","Blau-Weiss","Gelb-Schwarz"],a:2},
+    {q:"Was ist ein «Derby» im Fussball?",opts:["Spiel zwischen lokalen Rivalen","Auswärtsspiel in einer anderen Stadt","Pokalspiel","Finalspiel"],a:0}
+  ]},
+  { title:"Runde 2 — Pyrotechnik & Ausrüstung", emoji:"🎆", color:"#c0392b", questions:[
+    {q:"Wofür steht «HLF» in der Pyrotechnik?",opts:["Hochleistungsfeuer","Handlichtfackel","Hellleuchtflair","Horizontalleuchtfackel"],a:1},
+    {q:"Was ist der Hauptunterschied zwischen «Böller» und «HLF»?",opts:["Böller ist grösser","Böller erzeugt Knall, HLF erzeugt Licht","HLF ist verboten, Böller nicht","HLF wird geworfen, Böller nicht"],a:1},
+    {q:"Ist das Abbrennen von Pyrotechnik in Schweizer Stadien erlaubt?",opts:["Ja, mit Bewilligung","Nur in der Halbzeit","Nein, generell verboten","Ja, im Gästeblock"],a:2},
+    {q:"Was ist ein «Blitzknaller»?",opts:["Leuchtrakete","Kombination aus Blitz und Knall ohne dauerndes Licht","Bengalisches Feuer","Rauchbombe mit Blitz"],a:1},
+    {q:"Was produziert eine Rauchbombe hauptsächlich?",opts:["Funken","Farbigen Rauch","Knall","Helles Licht"],a:1},
+    {q:"Wie viele Spotter-Nummern gibt es bei der Luzerner Polizei (LU01–LU…)?",opts:["10","15","22","30"],a:2},
+    {q:"Was ist ein «Bengalo»?",opts:["Böller","Anderer Begriff für Handlichtfackel","Rauchbombe","Feuerwerk"],a:1},
+    {q:"Welche der folgenden Pyro-Typen gibt es NICHT im KMR?",opts:["HLF","Rauch","Laser","Böller"],a:2},
+    {q:"Was bedeutet «Pyro-Phase» in der Spotter-Erfassung?",opts:["Intensität der Pyro","Zeitraum (vor/während/nach dem Spiel)","Anzahl Fackeln","Art der Pyrotechnik"],a:1},
+    {q:"Auf welchem Weg koordinieren sich Spotter hauptsächlich?",opts:["Social Media","Funk / Radio / Telefon","Brief","Handsignale"],a:1},
+    {q:"Was ist der «Ordnungsdienst» (OD) im Stadion?",opts:["Polizei in Zivil","Private Sicherheitskräfte des Clubs","Pyrotechnik-Kontrolle","Fanbeauftragter"],a:1},
+    {q:"Wo werden Pyros im Stadion am häufigsten gezündet?",opts:["Pressetribüne","VIP-Sektor","Fankurven","Spielfeld"],a:2},
+    {q:"Was ist «Aufmarsch» in der Pyro-Statistik?",opts:["Zündphase beim Einlauf","Zeitraum vor dem Spiel","Erste Halbzeit","Matchbeginn"],a:1},
+    {q:"Was ist «Feuerwerk» im KMR-Kontext?",opts:["Offizielle Stadionshow","Fanpyro mit Funken und Licht","Polizeiausrüstung","Gasgranate"],a:1},
+    {q:"Wofür nutzt man den «Pyro Live Counter» im KMR-System?",opts:["Pyros kaufen","Echtzeit-Erfassung durch mehrere Spotter gleichzeitig","Automatische Alarmierung","Videopflicht im Stadion"],a:1}
+  ]},
+  { title:"Runde 3 — Taktik & KMR", emoji:"🚔", color:"#27ae60", questions:[
+    {q:"Was ist das Ziel des KMR (Kurzmelderapport)?",opts:["Strafanzeige einreichen","Dokumentation des Polizeieinsatzes","Meldung ans Ausland","Fanregistrierung"],a:1},
+    {q:"Was bedeutet «OBV» in einem Polizeirapport?",opts:["Ohne Besonderen Vorfall","Ohne Besondere Vorkommnisse","Offen Beurteilter Vorgang","Offizieller Bericht Vorhanden"],a:1},
+    {q:"Was ist eine «Wegweisung»?",opts:["Schriftliche Anzeige","Person wird aus einem Bereich verwiesen","Fernhaltemassnahme für 1 Jahr","Hausdurchsuchung"],a:1},
+    {q:"Was ist ein «Rayonverbot» (RV)?",opts:["Stadionverbot","Verbot, ein geografisches Gebiet zu betreten","Reiseverbot ins Ausland","Social-Media-Verbot"],a:1},
+    {q:"Was ist eine «Meldeauflage» (MA)?",opts:["Pflicht, einen Rapport zu schreiben","Person muss sich zu bestimmten Zeiten bei Polizei melden","Meldung an Interpol","Benachrichtigung des Clubs"],a:1},
+    {q:"Was ist der Unterschied zwischen Festnahme nach PolG und StPO?",opts:["PolG für Ausländer, StPO für Schweizer","PolG = präventiv/polizeilich, StPO = strafrechtlich","PolG ist länger, StPO kürzer","Kein Unterschied"],a:1},
+    {q:"Was ist die erste Aufgabe eines Spotters bei Ankunft der Gästefans?",opts:["Pyro konfiszieren","Zählen, identifizieren, melden","Sofort Verstärkung anfordern","Fotos machen und teilen"],a:1},
+    {q:"Was ist ein «Hotspot» im Fussball-Kontext?",opts:["Stadion-WLAN","Treffpunkt oder Risikoort für Fans","Polizeikontrollpunkt","VIP-Bereich"],a:1},
+    {q:"Was ist «Auswärtsspiel» aus Spotter-Perspektive?",opts:["Luzern spielt auswärts, Spotter reisen mit","Gäste kommen nach Luzern","Jedes Spiel ausserhalb der Schweiz","Freundschaftsspiel"],a:0},
+    {q:"Was ist der «Einsatzleiter Spotter»?",opts:["Ranghöchster Polizist im Stadion","Koordinator der Spotter im Einsatz","Schiedsrichter-Assistent","Ordnungsdienst-Chef"],a:1},
+    {q:"Was ist eine «Personenkontrolle» (PK)?",opts:["Taschencheck im Stadion","Identitätskontrolle einer Person","Verhör auf dem Posten","Durchsuchung eines Fahrzeugs"],a:1},
+    {q:"Was bedeutet «Präventiv» im Polizeieinsatz?",opts:["Massnahme nach einer Tat","Vorbeugend, um Straftaten zu verhindern","Repressiver Einsatz","Undercover-Operation"],a:1},
+    {q:"Wann gilt ein Einsatz als «Ruhiger Verlauf»?",opts:["Weniger als 5 Pyros","Keine Festnahmen und keine besonderen Vorfälle","Unter 1000 Zuschauer","Keine Gästefans"],a:1},
+    {q:"Was ist «Abmarsch» im Spotter-Kontext?",opts:["Polizeiformation nach dem Spiel","Abreise der Fans nach dem Spiel","Mannschaft verlässt das Feld","Rückzug des Ordnungsdienstes"],a:1},
+    {q:"Wie viele Minuten Vorsprung gibt ein Punkt beim Stadtspiel?",opts:["15 Sekunden","30 Sekunden","1 Minute","2 Minuten"],a:1}
+  ]}
+];
+
+const SESSION = new URLSearchParams(location.search).get('session') || new Date().toISOString().split('T')[0];
+const SECS_PER_POINT = 30;
+
+// ── STATE ──────────────────────────────────────────────────
+let local = {
+  team: null,   // 'A' or 'B'
+  isHost: false,
+  lastTs: 0
+};
+
+let G = {
+  phase: 'lobby',    // lobby|round_intro|question|buzzed|reveal|round_end|final
+  round: 0,          // 0-2
+  qIdx: 0,           // 0-14 within round
+  scores: {A:0, B:0},
+  buzzed: null,       // 'A'|'B'|null
+  answeredCorrect: null, // true|false|null
+  otherChance: false,    // second team gets a chance
+  teams: {A:false, B:false}, // who joined
+  host: null,        // 'A'|'B'
+  ts: 0
+};
+
+let pollT = null;
+let timerT = null;
+let timerSecs = 10;
+
+// ── SYNC ──────────────────────────────────────────────────
+const saveG = async () => {
+  try {
+    G.ts = Date.now();
+    await fetch(`${SHEETS_URL}?action=saveGame&session=${encodeURIComponent(SESSION)}&state=${encodeURIComponent(JSON.stringify(G))}`);
+  } catch(e) {}
+};
+
+const loadG = async () => {
+  try {
+    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(SESSION)}`);
+    if (!r.ok) return;
+    const raw = await r.text();
+    if (!raw || raw === 'null') return;
+    const remote = JSON.parse(raw);
+    if (remote && remote.ts > local.lastTs) {
+      local.lastTs = remote.ts;
+      G = remote;
+      render();
+    }
+  } catch(e) {}
+};
+
+const startPoll = () => {
+  if (pollT) clearInterval(pollT);
+  pollT = setInterval(loadG, 1500);
+};
+
+// ── ACTIONS (host only) ───────────────────────────────────
+const hostAction = async (fn) => {
+  if (!local.isHost) return;
+  fn();
+  await saveG();
+  render();
+};
+
+const startGame = () => hostAction(() => {
+  G.phase = 'round_intro';
+  G.round = 0; G.qIdx = 0;
+  G.scores = {A:0, B:0};
+});
+
+const startQuestion = () => hostAction(() => {
+  G.phase = 'question';
+  G.buzzed = null;
+  G.answeredCorrect = null;
+  G.otherChance = false;
+});
+
+const doBuzz = async (team) => {
+  if (G.phase !== 'question') return;
+  if (G.buzzed) return;
+  G.phase = 'buzzed';
+  G.buzzed = team;
+  G.ts = Date.now();
+  await saveG();
+  render();
+};
+
+const markAnswer = async (optIdx) => {
+  if (G.phase !== 'buzzed') return;
+  const q = ROUNDS[G.round].questions[G.qIdx];
+  const correct = optIdx === q.a;
+  if (correct) {
+    G.scores[G.buzzed]++;
+    G.answeredCorrect = true;
+    G.phase = 'reveal';
+  } else if (!G.otherChance) {
+    // Other team gets a chance
+    G.otherChance = true;
+    G.buzzed = G.buzzed === 'A' ? 'B' : 'A';
+    G.answeredCorrect = false;
+  } else {
+    // Both wrong
+    G.answeredCorrect = false;
+    G.phase = 'reveal';
+  }
+  G.ts = Date.now();
+  await saveG();
+  render();
+};
+
+const nextQuestion = () => hostAction(() => {
+  const totalQ = ROUNDS[G.round].questions.length;
+  if (G.qIdx + 1 < totalQ) {
+    G.qIdx++;
+    G.phase = 'question';
+    G.buzzed = null;
+    G.answeredCorrect = null;
+    G.otherChance = false;
+  } else if (G.round + 1 < ROUNDS.length) {
+    G.round++;
+    G.qIdx = 0;
+    G.phase = 'round_intro';
+    G.buzzed = null;
+    G.answeredCorrect = null;
+  } else {
+    G.phase = 'final';
+  }
+});
+
+// ── RENDER ────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+const teamLabel = t => t === 'A' ? '🔵 Team A' : '🔴 Team B';
+const teamColor = t => t === 'A' ? '#3d7bff' : '#e74c3c';
+const opts4 = ['A','B','C','D'];
+
+const render = () => {
+  const app = document.getElementById('app');
+  if (!local.team) { app.innerHTML = renderSetup(); return; }
+
+  switch(G.phase) {
+    case 'lobby':      app.innerHTML = renderLobby(); break;
+    case 'round_intro': app.innerHTML = renderRoundIntro(); break;
+    case 'question':   app.innerHTML = renderQuestion(); break;
+    case 'buzzed':     app.innerHTML = renderBuzzed(); break;
+    case 'reveal':     app.innerHTML = renderReveal(); break;
+    case 'final':      app.innerHTML = renderFinal(); break;
+    default:           app.innerHTML = renderLobby();
+  }
+};
+
+const renderSetup = () => `
+<div class="setup">
+  <div class="setup-logo">🚔</div>
+  <div class="setup-title">Szenenkenner Challenge</div>
+  <div class="setup-sub">Luzerner Polizei — Ausbildungstag 2026</div>
+  <div class="setup-card">
+    <div class="setup-label">Session-Code</div>
+    <input class="setup-input" id="sid" value="${esc(SESSION)}" placeholder="z.B. 2026-06-20">
+    <div class="setup-label">Team wählen</div>
+    <div class="team-btns">
+      <button class="team-btn ${local.teamChoice==='A'?'active':''}" onclick="chooseTeam('A')">🔵<br>Team A</button>
+      <button class="team-btn ${local.teamChoice==='B'?'active':''}" onclick="chooseTeam('B')">🔴<br>Team B</button>
+    </div>
+    <button class="start-btn" id="join-btn" onclick="joinGame()" ${!local.teamChoice?'disabled':''}>
+      Beitreten →
+    </button>
+  </div>
+</div>`;
+
+const renderLobby = () => `
+<div class="lobby">
+  <div class="lobby-title">Warteraum</div>
+  <div class="lobby-sub">Session: <strong>${esc(SESSION)}</strong></div>
+  <div class="teams-row">
+    <div class="team-status ${G.teams.A?'connected':''} team-A">
+      <div class="team-circle">🔵</div>
+      <div class="team-name">Team A</div>
+      <div class="team-ready ${G.teams.A?'yes':'no'}">${G.teams.A?'✓ Bereit':'⏳ Warten...'}</div>
+    </div>
+    <div class="team-status ${G.teams.B?'connected':''} team-B">
+      <div class="team-circle">🔴</div>
+      <div class="team-name">Team B</div>
+      <div class="team-ready ${G.teams.B?'yes':'no'}">${G.teams.B?'✓ Bereit':'⏳ Warten...'}</div>
+    </div>
+  </div>
+  ${local.isHost && G.teams.A && G.teams.B ?
+    `<button class="host-btn" onclick="startGame()">▶ Spiel starten</button>` :
+    `<div style="color:#8899bb;font-size:14px">${local.isHost?'Warte auf beide Teams...':'Warte auf Host...'}</div>`}
+  <div style="margin-top:30px;font-size:12px;color:#444">Fragen: 3 Runden × 15 = <strong style="color:#fff">45 Fragen</strong> · Jeder Punkt = 30 Sek. Vorsprung beim Stadtspiel</div>
+</div>`;
+
+const renderRoundIntro = () => {
+  const r = ROUNDS[G.round];
+  return `
+<div class="round-intro">
+  <div class="round-emoji">${r.emoji}</div>
+  <div class="round-label">Runde ${G.round+1} von ${ROUNDS.length}</div>
+  <div class="round-title" style="color:${r.color}">${r.title}</div>
+  ${renderScoreBar(true)}
+  ${local.isHost ?
+    `<button class="host-btn" onclick="startQuestion()">▶ Los!</button>` :
+    `<div style="color:#8899bb">Warte auf Host...</div>`}
+</div>`;
+};
+
+const renderQuestion = () => {
+  const r = ROUNDS[G.round];
+  const q = r.questions[G.qIdx];
+  const canBuzz = local.team && !G.buzzed;
+  return `
+${renderScoreBar(false)}
+<div class="question-screen">
+  <div style="text-align:center;margin-top:8px">
+    <span style="font-size:11px;color:#8899bb;font-weight:700;text-transform:uppercase;letter-spacing:1px">
+      ${r.emoji} ${G.round+1}/3 · Frage ${G.qIdx+1}/${r.questions.length}
+    </span>
+  </div>
+  <div class="q-text">${esc(q.q)}</div>
+  <div class="opts">
+    ${q.opts.map((o,i)=>`<div class="opt"><span class="opt-letter">${opts4[i]}</span>${esc(o)}</div>`).join('')}
+  </div>
+  <button class="buzz-btn" onclick="doBuzz('${local.team}')" ${canBuzz?'':'disabled'}>
+    ${canBuzz ? `🔔 BUZZ! — ${teamLabel(local.team)}` : '⏳ Warte...'}
+  </button>
+</div>`;
+};
+
+const renderBuzzed = () => {
+  const r = ROUNDS[G.round];
+  const q = r.questions[G.qIdx];
+  const isMyTurn = G.buzzed === local.team;
+  return `
+${renderScoreBar(false)}
+<div class="question-screen">
+  <div class="q-text">${esc(q.q)}</div>
+  <div class="buzzed-info">
+    <div style="font-size:13px;color:#8899bb;margin-bottom:4px">${G.otherChance?'Zweite Chance:':'Gebuzzert:'}</div>
+    <div class="buzzed-name" style="color:${teamColor(G.buzzed)}">${teamLabel(G.buzzed)}</div>
+  </div>
+  <div class="opts">
+    ${q.opts.map((o,i)=>`
+      <div class="opt ${isMyTurn?'':'disabled'}" 
+           style="${isMyTurn?'cursor:pointer':''}"
+           onclick="${isMyTurn?`markAnswer(${i})`:''}"
+           onmouseover="${isMyTurn?`this.style.borderColor='#3d7bff'`:''}"
+           onmouseout="${isMyTurn?`this.style.borderColor='#2a3a5c'`:''}">
+        <span class="opt-letter">${opts4[i]}</span>${esc(o)}
+      </div>`).join('')}
+  </div>
+  ${!isMyTurn?`<div style="text-align:center;color:#8899bb;margin-top:16px;font-size:14px">${teamLabel(G.buzzed)} wählt die Antwort...</div>`:''}
+</div>`;
+};
+
+const renderReveal = () => {
+  const r = ROUNDS[G.round];
+  const q = r.questions[G.qIdx];
+  const correct = q.a;
+  return `
+${renderScoreBar(false)}
+<div class="question-screen">
+  <div class="q-text">${esc(q.q)}</div>
+  <div class="opts">
+    ${q.opts.map((o,i)=>`
+      <div class="opt ${i===correct?'correct':''}" style="cursor:default">
+        <span class="opt-letter">${opts4[i]}</span>${esc(o)}
+        ${i===correct?'<span style="float:right">✓</span>':''}
+      </div>`).join('')}
+  </div>
+  ${G.answeredCorrect?
+    `<div class="reveal-correct">✓ ${teamLabel(G.buzzed)} antwortet richtig! +1 Punkt</div>`:
+    `<div class="reveal-wrong">✗ Keine richtige Antwort — kein Punkt</div>`}
+  ${local.isHost?
+    `<button class="next-btn" onclick="nextQuestion()">${G.qIdx+1 < r.questions.length ? '→ Nächste Frage' : G.round+1 < ROUNDS.length ? '→ Nächste Runde' : '🏁 Ergebnis'}</button>
+     <div class="host-only">Nur du siehst diesen Button (Host)</div>`:
+    `<div style="text-align:center;color:#8899bb;margin-top:16px">Host geht zur nächsten Frage...</div>`}
+</div>`;
+};
+
+const renderFinal = () => {
+  const A = G.scores.A, B = G.scores.B;
+  const winner = A > B ? 'A' : B > A ? 'B' : null;
+  const total = A + B;
+  const diff = Math.abs(A - B);
+  const advSecs = diff * SECS_PER_POINT;
+  const advMin = Math.floor(advSecs / 60);
+  const advSec = advSecs % 60;
+  const advStr = advMin > 0 ? `${advMin} Min. ${advSec > 0 ? advSec+'Sek.' : ''}` : `${advSec} Sek.`;
+  return `
+<div class="final">
+  <div class="final-trophy">${winner ? '🏆' : '🤝'}</div>
+  <div class="final-title">${winner ? `Team ${winner} gewinnt!` : 'Unentschieden!'}</div>
+  <div class="final-sub">${total} Punkte insgesamt · ${ROUNDS.length} Runden · 45 Fragen</div>
+  <div class="final-scores">
+    <div class="final-team ${winner==='A'?'winner':''}">
+      <div style="font-size:20px;margin-bottom:8px">🔵 Team A</div>
+      <div class="final-pts-big" style="color:#3d7bff">${A}</div>
+      <div style="font-size:14px;color:#8899bb;margin-top:4px">Punkte</div>
+      ${winner==='A'?`<div class="final-winner-badge">🏆 Sieger!</div>`:''}
+    </div>
+    <div class="final-team ${winner==='B'?'winner':''}">
+      <div style="font-size:20px;margin-bottom:8px">🔴 Team B</div>
+      <div class="final-pts-big" style="color:#e74c3c">${B}</div>
+      <div style="font-size:14px;color:#8899bb;margin-top:4px">Punkte</div>
+      ${winner==='B'?`<div class="final-winner-badge">🏆 Sieger!</div>`:''}
+    </div>
+  </div>
+  ${winner ? `
+  <div class="advantage-box">
+    <div class="advantage-label">⏱️ Vorsprung beim Stadtspiel</div>
+    <div class="advantage-value">${advStr}</div>
+    <div class="advantage-sub">Team ${winner} startet früher · ${diff} Punkt${diff!==1?'e':''} × ${SECS_PER_POINT} Sekunden</div>
+  </div>` : `<div class="advantage-box"><div class="advantage-label">Gleichstand</div><div class="advantage-value">0 Sek.</div><div class="advantage-sub">Beide Teams starten gleichzeitig!</div></div>`}
+  <div style="color:#8899bb;font-size:13px">Auf zum Stadtspiel! 🏃</div>
+</div>`;
+};
+
+const renderScoreBar = (inline) => `
+<div class="score-bar" ${inline?'style="position:relative;margin-bottom:20px;border-radius:12px"':''}>
+  <div class="score-team">
+    <div class="score-badge score-badge-A">🔵</div>
+    <div>
+      <div class="score-pts" style="color:#3d7bff">${G.scores.A}</div>
+      <div style="font-size:10px;color:#8899bb">Team A</div>
+    </div>
+  </div>
+  <div class="score-info">
+    <div class="score-round">${ROUNDS[G.round||0]?.emoji||''} R${(G.round||0)+1}</div>
+    <div class="score-qnum">${G.qIdx+1||1} / ${ROUNDS[G.round||0]?.questions.length||15}</div>
+  </div>
+  <div class="score-team">
+    <div>
+      <div class="score-pts" style="color:#e74c3c;text-align:right">${G.scores.B}</div>
+      <div style="font-size:10px;color:#8899bb;text-align:right">Team B</div>
+    </div>
+    <div class="score-badge score-badge-B">🔴</div>
+  </div>
+</div>`;
+
+// ── SETUP ACTIONS ─────────────────────────────────────────
+window.chooseTeam = (t) => {
+  local.teamChoice = t;
+  render();
+};
+
+window.joinGame = async () => {
+  const sid = $('sid')?.value?.trim() || SESSION;
+  local.team = local.teamChoice;
+  local.isHost = !G.teams[local.team]; // first to join that team = host? No — A is always host
+  
+  // Load current state first
+  try {
+    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(sid)}`);
+    const raw = await r.text();
+    if (raw && raw !== 'null') {
+      const remote = JSON.parse(raw);
+      if (remote) { G = remote; local.lastTs = remote.ts; }
+    }
+  } catch(e) {}
+
+  // Mark team as present
+  G.teams[local.team] = true;
+  if (!G.host) { G.host = local.team; local.isHost = true; }
+  else { local.isHost = (G.host === local.team); }
+  
+  await saveG();
+  startPoll();
+  render();
+};
+
+window.startGame = () => {
+  G.phase = 'round_intro'; G.round=0; G.qIdx=0;
+  G.scores={A:0,B:0}; G.ts=Date.now();
+  saveG(); render();
+};
+window.startQuestion = () => {
+  G.phase='question'; G.buzzed=null; G.answeredCorrect=null; G.otherChance=false; G.ts=Date.now();
+  saveG(); render();
+};
+window.doBuzz = doBuzz;
+window.markAnswer = markAnswer;
+window.nextQuestion = nextQuestion;
+
+// Init
+render();
+</script>
+</body>
+</html>
