@@ -201,18 +201,22 @@ let timerSecs = 10;
 const saveG = async () => {
   try {
     G.ts = Date.now();
-    await fetch(`${SHEETS_URL}?action=saveGame&session=${encodeURIComponent(SESSION)}&state=${encodeURIComponent(JSON.stringify(G))}`);
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 4000);
+    await fetch(`${SHEETS_URL}?action=saveGame&session=${encodeURIComponent(SESSION)}&state=${encodeURIComponent(JSON.stringify(G))}`, {signal: controller.signal});
   } catch(e) {}
 };
 
 const loadG = async () => {
   try {
-    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(SESSION)}`);
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 3000);
+    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(SESSION)}`, {signal: controller.signal});
     if (!r.ok) return;
     const raw = await r.text();
     if (!raw || raw === 'null') return;
     const remote = JSON.parse(raw);
-    if (remote && remote.ts > local.lastTs) {
+    if (remote && remote.phase && remote.ts > local.lastTs) {
       local.lastTs = remote.ts;
       G = remote;
       render();
@@ -509,33 +513,53 @@ const renderScoreBar = (inline) => `
   </div>
 </div>`;
 
-// ── SETUP ACTIONS ─────────────────────────────────────────
 window.chooseTeam = (t) => {
   local.teamChoice = t;
   render();
 };
 
 window.joinGame = async () => {
-  const sid = $('sid')?.value?.trim() || SESSION;
-  local.team = local.teamChoice;
-  local.isHost = !G.teams[local.team]; // first to join that team = host? No — A is always host
+  if (!local.teamChoice) return;
   
-  // Load current state first
-  try {
-    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(sid)}`);
-    const raw = await r.text();
-    if (raw && raw !== 'null') {
-      const remote = JSON.parse(raw);
-      if (remote) { G = remote; local.lastTs = remote.ts; }
-    }
-  } catch(e) {}
+  // Sofortige visuelle Rückmeldung
+  const btn = document.getElementById('join-btn');
+  if (btn) { btn.textContent = '⏳ Verbinde...'; btn.disabled = true; }
 
-  // Mark team as present
+  local.team = local.teamChoice;
+
+  // Aktuellen State laden (mit Timeout)
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const r = await fetch(`${SHEETS_URL}?action=loadGame&session=${encodeURIComponent(SESSION)}`, {signal: controller.signal});
+    clearTimeout(timeout);
+    if (r.ok) {
+      const raw = await r.text();
+      if (raw && raw !== 'null') {
+        const remote = JSON.parse(raw);
+        // Nur übernehmen wenn es wirklich ein Game-State ist
+        if (remote && remote.phase && remote.teams && remote.scores) {
+          G = remote;
+          local.lastTs = remote.ts || 0;
+        }
+      }
+    }
+  } catch(e) {
+    // Offline/Deploy-Problem → trotzdem weitermachen
+    console.warn('Game sync nicht verfügbar:', e.message);
+  }
+
+  // Team anmelden
+  if (!G.teams) G.teams = {A:false, B:false};
+  if (!G.scores) G.scores = {A:0, B:0};
   G.teams[local.team] = true;
   if (!G.host) { G.host = local.team; local.isHost = true; }
   else { local.isHost = (G.host === local.team); }
-  
-  await saveG();
+  if (!G.phase) G.phase = 'lobby';
+
+  // Speichern (fire-and-forget)
+  saveG().catch(() => {});
+
   startPoll();
   render();
 };
