@@ -82,6 +82,89 @@ textarea{min-height:90px}
     </div>
   </div>
 
+  <!-- Ausbildungstag Allgemein -->
+  <div class="card">
+    <div class="section-title">📅 Ausbildungstag — Allgemein</div>
+
+    <div class="field">
+      <label>Wie bewertest du den Ausbildungstag insgesamt? <span class="required">*</span></label>
+      <div class="stars" id="tag_gesamt">
+        <button class="star-btn" onclick="setStar('tag_gesamt',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('tag_gesamt',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('tag_gesamt',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('tag_gesamt',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('tag_gesamt',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Wie bewertest du den theoretischen Teil (KMR-Test)? <span class="required">*</span></label>
+      <div class="stars" id="tag_theorie">
+        <button class="star-btn" onclick="setStar('tag_theorie',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('tag_theorie',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('tag_theorie',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('tag_theorie',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('tag_theorie',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Wie bewertest du den praktischen Teil (Stadtspiel)? <span class="required">*</span></label>
+      <div class="stars" id="tag_praxis">
+        <button class="star-btn" onclick="setStar('tag_praxis',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('tag_praxis',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('tag_praxis',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('tag_praxis',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('tag_praxis',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>War die Dauer des Ausbildungstages angemessen?</label>
+      <div class="radio-group" id="tag_dauer">
+        <label class="radio-opt" onclick="setRadio('tag_dauer','Zu kurz')"><span>⏩ Zu kurz</span></label>
+        <label class="radio-opt" onclick="setRadio('tag_dauer','Genau richtig')"><span>✅ Genau richtig</span></label>
+        <label class="radio-opt" onclick="setRadio('tag_dauer','Zu lang')"><span>⏪ Zu lang</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Wie war die Teamstimmung / der Zusammenhalt? <span class="required">*</span></label>
+      <div class="stars" id="tag_stimmung">
+        <button class="star-btn" onclick="setStar('tag_stimmung',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('tag_stimmung',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('tag_stimmung',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('tag_stimmung',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('tag_stimmung',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Was hat dir am Ausbildungstag besonders gut gefallen? <span>(optional)</span></label>
+      <textarea id="tag_gut" placeholder="z.B. die Mischung aus Theorie und Praxis, das Quiz war lustig…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Was würdest du für den nächsten Ausbildungstag anders machen? <span>(optional)</span></label>
+      <textarea id="tag_anders" placeholder="z.B. mehr Zeit für den praktischen Teil, andere Aktivität…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Welche Themen wünschst du dir für den nächsten Ausbildungstag? <span>(optional)</span></label>
+      <textarea id="tag_themen" placeholder="z.B. Rechtliche Grundlagen, Kommunikation, Deeskalation…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Würdest du dieses Format des Ausbildungstages weiterempfehlen?</label>
+      <div class="radio-group" id="tag_empfehlung">
+        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Ja, auf jeden Fall')"><span>👍 Ja, auf jeden Fall</span></label>
+        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Eher ja')"><span>🙂 Eher ja</span></label>
+        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Eher nein')"><span>😐 Eher nein</span></label>
+        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Nein')"><span>👎 Nein</span></label>
+      </div>
+    </div>
+  </div>
+
   <!-- KMR -->
   <div class="card">
     <div class="section-title">📋 KMR — Kurzmelderapport</div>
@@ -204,7 +287,7 @@ const setRadio = (field, val) => {
 };
 
 const submitForm = async () => {
-  const required = ['gesamt','kmr_ux','kmr_rel','counter_ux','quiz','einsatz'];
+  const required = ['gesamt','tag_gesamt','tag_theorie','tag_praxis','tag_stimmung','kmr_ux','kmr_rel','counter_ux','quiz','einsatz'];
   const missing = required.filter(f => !vals[f]);
   if (missing.length > 0) {
     alert('Bitte alle Pflichtfelder (⭐ und Auswahl) ausfüllen.');
@@ -219,6 +302,15 @@ const submitForm = async () => {
     action: 'saveFeedback',
     spotter: document.getElementById('spotter').value,
     gesamt: vals.gesamt||'',
+    tag_gesamt: vals.tag_gesamt||'',
+    tag_theorie: vals.tag_theorie||'',
+    tag_praxis: vals.tag_praxis||'',
+    tag_dauer: vals.tag_dauer||'',
+    tag_stimmung: vals.tag_stimmung||'',
+    tag_gut: document.getElementById('tag_gut').value,
+    tag_anders: document.getElementById('tag_anders').value,
+    tag_themen: document.getElementById('tag_themen').value,
+    tag_empfehlung: vals.tag_empfehlung||'',
     kmr_ux: vals.kmr_ux||'',
     kmr_rel: vals.kmr_rel||'',
     kmr_gut: document.getElementById('kmr_gut').value,
