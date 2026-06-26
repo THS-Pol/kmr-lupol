@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback — Ausbildungstag Luzerner Polizei</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Arial',sans-serif;background:#f3f4f6;color:#1f2937;min-height:100vh;padding:24px 16px}
+.card{background:#fff;border-radius:16px;padding:28px 24px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.header{background:linear-gradient(135deg,#1a3560,#2c5282);color:#fff;border-radius:16px;padding:28px 24px;margin-bottom:20px;text-align:center}
+.header-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#90cdf4;margin-bottom:8px}
+.header-title{font-size:24px;font-weight:900;margin-bottom:6px}
+.header-sub{font-size:13px;color:#bee3f8;line-height:1.5}
+.section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1a3560;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #e5e7eb}
+.field{margin-bottom:20px}
+label{display:block;font-size:14px;font-weight:700;color:#374151;margin-bottom:8px}
+label span{font-weight:400;color:#9ca3af;font-size:12px;margin-left:4px}
+.stars{display:flex;gap:8px;flex-wrap:wrap}
+.star-btn{padding:10px 16px;background:#f3f4f6;border:2px solid #e5e7eb;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;color:#6b7280}
+.star-btn:hover{border-color:#1a3560;color:#1a3560}
+.star-btn.active{background:#1a3560;border-color:#1a3560;color:#fff}
+.radio-group{display:flex;flex-direction:column;gap:10px}
+.radio-opt{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f9fafb;border:2px solid #e5e7eb;border-radius:10px;cursor:pointer;transition:all .15s;font-size:14px;font-weight:600}
+.radio-opt:hover{border-color:#1a3560}
+.radio-opt.active{background:#eff6ff;border-color:#1a3560;color:#1a3560}
+.radio-opt input{display:none}
+textarea,select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;font-size:14px;font-family:Arial,sans-serif;resize:vertical;outline:none;transition:border-color .2s;background:#f9fafb;color:#1f2937}
+textarea:focus,select:focus{border-color:#1a3560;background:#fff}
+textarea{min-height:90px}
+.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,#1a3560,#2c5282);border:none;border-radius:12px;color:#fff;font-size:18px;font-weight:800;cursor:pointer;margin-top:8px;transition:transform .1s}
+.submit-btn:hover{transform:scale(1.01)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.success{display:none;text-align:center;padding:40px 24px}
+.success-icon{font-size:64px;margin-bottom:16px}
+.success-title{font-size:24px;font-weight:900;color:#1a3560;margin-bottom:8px}
+.success-sub{font-size:14px;color:#6b7280}
+.required{color:#ef4444}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">🚔 Luzerner Polizei</div>
+  <div class="header-title">Feedback Ausbildungstag</div>
+  <div class="header-sub">Dein anonymes Feedback hilft uns, den KMR und zukünftige Ausbildungstage zu verbessern.<br>Dauert ca. 3 Minuten.</div>
+</div>
+
+<div id="form-content">
+
+  <!-- Allgemein -->
+  <div class="card">
+    <div class="section-title">👤 Allgemein</div>
+
+    <div class="field">
+      <label>Meine Spotter-Nummer <span>(optional)</span></label>
+      <select id="spotter">
+        <option value="">— Keine Angabe —</option>
+        <option>LU01 BUHOLZER Marc</option><option>LU02 STADELMANN Thierry</option>
+        <option>LU03 GARATTONI Roger</option><option>LU04 MAURER Jonas</option>
+        <option>LU05 MARBACHER Reto</option><option>LU06 KERBER Philippe</option>
+        <option>LU07 WICKI Daniel</option><option>LU08 BERTSCHI Silas</option>
+        <option>LU09 BAUR Leandro</option><option>LU10 STIRNIMANN Christian</option>
+        <option>LU11 BAUMANN Mario</option><option>LU12 LINDEGGER Patrick</option>
+        <option>LU13 KOLLER Marco</option><option>LU14 STANGER Andreas</option>
+        <option>LU15 AEMMER Silvan</option><option>LU16 LUSTENBERGER Fabian</option>
+        <option>LU17 SIDLER Nicholas</option><option>LU18 HAAS Aaron</option>
+        <option>LU19 GÄRTNER Pascal</option><option>LU20 TESSAROLO Nicola</option>
+        <option>LU21 BUCHER Nathan</option><option>LU22 MERZ Patrick</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Gesamteindruck des Ausbildungstages <span class="required">*</span></label>
+      <div class="stars" id="gesamt">
+        <button class="star-btn" onclick="setStar('gesamt',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('gesamt',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('gesamt',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('gesamt',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('gesamt',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KMR -->
+  <div class="card">
+    <div class="section-title">📋 KMR — Kurzmelderapport</div>
+
+    <div class="field">
+      <label>Benutzerfreundlichkeit des KMR <span class="required">*</span></label>
+      <div class="stars" id="kmr_ux">
+        <button class="star-btn" onclick="setStar('kmr_ux',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('kmr_ux',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('kmr_ux',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('kmr_ux',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('kmr_ux',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Zuverlässigkeit / technische Stabilität <span class="required">*</span></label>
+      <div class="stars" id="kmr_rel">
+        <button class="star-btn" onclick="setStar('kmr_rel',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('kmr_rel',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('kmr_rel',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('kmr_rel',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('kmr_rel',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Was hat gut funktioniert? <span>(optional)</span></label>
+      <textarea id="kmr_gut" placeholder="z.B. Entwurf speichern und laden hat super geklappt…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Was muss verbessert werden? <span>(optional)</span></label>
+      <textarea id="kmr_verbesserung" placeholder="z.B. Pyro-Erfassung war unklar…"></textarea>
+    </div>
+  </div>
+
+  <!-- Counter -->
+  <div class="card">
+    <div class="section-title">🎆 Pyro Live Counter</div>
+
+    <div class="field">
+      <label>Benutzerfreundlichkeit des Counters <span class="required">*</span></label>
+      <div class="stars" id="counter_ux">
+        <button class="star-btn" onclick="setStar('counter_ux',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('counter_ux',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('counter_ux',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('counter_ux',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('counter_ux',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Bemerkungen zum Counter <span>(optional)</span></label>
+      <textarea id="counter_bem" placeholder="z.B. Sync war verzögert, Reset-Button gut…"></textarea>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="card">
+    <div class="section-title">🏆 Szenenkenner-Quiz</div>
+
+    <div class="field">
+      <label>Wie hat dir das Quiz gefallen? <span class="required">*</span></label>
+      <div class="stars" id="quiz">
+        <button class="star-btn" onclick="setStar('quiz',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('quiz',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('quiz',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('quiz',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('quiz',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Einsatz -->
+  <div class="card">
+    <div class="section-title">🚔 Einsatztauglichkeit</div>
+
+    <div class="field">
+      <label>Würdest du den KMR im echten Einsatz nutzen wollen? <span class="required">*</span></label>
+      <div class="radio-group" id="einsatz">
+        <label class="radio-opt" onclick="setRadio('einsatz','Ja, auf jeden Fall')"><span>👍 Ja, auf jeden Fall</span></label>
+        <label class="radio-opt" onclick="setRadio('einsatz','Eher ja')"><span>🙂 Eher ja</span></label>
+        <label class="radio-opt" onclick="setRadio('einsatz','Eher nein')"><span>😐 Eher nein</span></label>
+        <label class="radio-opt" onclick="setRadio('einsatz','Nein')"><span>👎 Nein</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Weitere Bemerkungen / Wünsche <span>(optional)</span></label>
+      <textarea id="bemerkungen" placeholder="Alles was du noch loswerden möchtest…"></textarea>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="submitForm()">✓ Feedback absenden</button>
+
+</div>
+
+<div class="success" id="success-msg">
+  <div class="success-icon">✅</div>
+  <div class="success-title">Danke für dein Feedback!</div>
+  <div class="success-sub">Deine Antworten wurden gespeichert.<br>Das hilft uns, den nächsten Ausbildungstag noch besser zu machen.</div>
+</div>
+
+<script>
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz3voR-WzgqQbaic_GAiwWkeqME0UaPkl3G_jEl-PCKQMhEP1w2SmDrrZAtJu5QRocp/exec';
+const vals = {};
+
+const setStar = (field, val) => {
+  vals[field] = String(val);
+  const btns = document.querySelectorAll(`#${field} .star-btn`);
+  btns.forEach((b,i) => b.classList.toggle('active', i < val));
+};
+
+const setRadio = (field, val) => {
+  vals[field] = val;
+  document.querySelectorAll(`#${field} .radio-opt`).forEach(o => {
+    o.classList.toggle('active', o.querySelector('span').textContent.trim() === val);
+  });
+};
+
+const submitForm = async () => {
+  const required = ['gesamt','kmr_ux','kmr_rel','counter_ux','quiz','einsatz'];
+  const missing = required.filter(f => !vals[f]);
+  if (missing.length > 0) {
+    alert('Bitte alle Pflichtfelder (⭐ und Auswahl) ausfüllen.');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Wird gespeichert…';
+
+  const params = new URLSearchParams({
+    action: 'saveFeedback',
+    spotter: document.getElementById('spotter').value,
+    gesamt: vals.gesamt||'',
+    kmr_ux: vals.kmr_ux||'',
+    kmr_rel: vals.kmr_rel||'',
+    kmr_gut: document.getElementById('kmr_gut').value,
+    kmr_verbesserung: document.getElementById('kmr_verbesserung').value,
+    counter_ux: vals.counter_ux||'',
+    counter_bem: document.getElementById('counter_bem').value,
+    quiz: vals.quiz||'',
+    einsatz: vals.einsatz||'',
+    bemerkungen: document.getElementById('bemerkungen').value,
+    _: Date.now()
+  });
+
+  try {
+    await fetch(`${SHEETS_URL}?${params}`);
+  } catch(e) {}
+
+  document.getElementById('form-content').style.display = 'none';
+  document.getElementById('success-msg').style.display = 'block';
+};
+</script>
+</body>
+</html>
