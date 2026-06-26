@@ -7,35 +7,45 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Arial',sans-serif;background:#f3f4f6;color:#1f2937;min-height:100vh;padding:24px 16px}
-.card{background:#fff;border-radius:16px;padding:28px 24px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .header{background:linear-gradient(135deg,#1a3560,#2c5282);color:#fff;border-radius:16px;padding:28px 24px;margin-bottom:20px;text-align:center}
 .header-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#90cdf4;margin-bottom:8px}
 .header-title{font-size:24px;font-weight:900;margin-bottom:6px}
 .header-sub{font-size:13px;color:#bee3f8;line-height:1.5}
+.card{background:#fff;border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1a3560;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #e5e7eb}
 .field{margin-bottom:20px}
+.field:last-child{margin-bottom:0}
 label{display:block;font-size:14px;font-weight:700;color:#374151;margin-bottom:8px}
-label span{font-weight:400;color:#9ca3af;font-size:12px;margin-left:4px}
+label .opt-hint{font-weight:400;color:#9ca3af;font-size:12px;margin-left:4px}
+.required{color:#ef4444}
+
+/* STARS */
 .stars{display:flex;gap:8px;flex-wrap:wrap}
-.star-btn{padding:10px 16px;background:#f3f4f6;border:2px solid #e5e7eb;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;color:#6b7280}
-.star-btn:hover{border-color:#1a3560;color:#1a3560}
+.star-btn{padding:10px 16px;background:#f3f4f6;border:2px solid #e5e7eb;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;color:#6b7280;-webkit-tap-highlight-color:transparent}
+.star-btn:hover,.star-btn:active{border-color:#1a3560;color:#1a3560}
 .star-btn.active{background:#1a3560;border-color:#1a3560;color:#fff}
-.radio-group{display:flex;flex-direction:column;gap:10px}
-.radio-opt{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#f9fafb;border:2px solid #e5e7eb;border-radius:10px;cursor:pointer;transition:all .15s;font-size:14px;font-weight:600}
-.radio-opt:hover{border-color:#1a3560}
-.radio-opt.active{background:#eff6ff;border-color:#1a3560;color:#1a3560}
-.radio-opt input{display:none}
+
+/* RADIO — using div+button for reliable iOS tap */
+.radio-group{display:flex;flex-direction:column;gap:8px}
+.radio-btn{padding:12px 16px;background:#f9fafb;border:2px solid #e5e7eb;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;text-align:left;width:100%;transition:all .15s;-webkit-tap-highlight-color:transparent;color:#374151}
+.radio-btn:hover,.radio-btn:active{border-color:#1a3560}
+.radio-btn.active{background:#eff6ff;border-color:#1a3560;color:#1a3560;font-weight:700}
+
+/* TEXT INPUTS */
 textarea,select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;font-size:14px;font-family:Arial,sans-serif;resize:vertical;outline:none;transition:border-color .2s;background:#f9fafb;color:#1f2937}
 textarea:focus,select:focus{border-color:#1a3560;background:#fff}
 textarea{min-height:90px}
-.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,#1a3560,#2c5282);border:none;border-radius:12px;color:#fff;font-size:18px;font-weight:800;cursor:pointer;margin-top:8px;transition:transform .1s}
-.submit-btn:hover{transform:scale(1.01)}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.success{display:none;text-align:center;padding:40px 24px}
+
+/* SUBMIT */
+.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,#1a3560,#2c5282);border:none;border-radius:12px;color:#fff;font-size:18px;font-weight:800;cursor:pointer;margin-top:8px;-webkit-tap-highlight-color:transparent}
+.submit-btn:active{opacity:.85}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:60px 24px}
 .success-icon{font-size:64px;margin-bottom:16px}
 .success-title{font-size:24px;font-weight:900;color:#1a3560;margin-bottom:8px}
-.success-sub{font-size:14px;color:#6b7280}
-.required{color:#ef4444}
+.success-sub{font-size:14px;color:#6b7280;line-height:1.6}
 </style>
 </head>
 <body>
@@ -43,17 +53,17 @@ textarea{min-height:90px}
 <div class="header">
   <div class="header-badge">🚔 Luzerner Polizei</div>
   <div class="header-title">Feedback Ausbildungstag</div>
-  <div class="header-sub">Dein anonymes Feedback hilft uns, den KMR und zukünftige Ausbildungstage zu verbessern.<br>Dauert ca. 3 Minuten.</div>
+  <div class="header-sub">Dein anonymes Feedback hilft uns, den KMR und zukünftige Ausbildungstage zu verbessern. Dauert ca. 3–4 Minuten.</div>
 </div>
 
 <div id="form-content">
 
-  <!-- Allgemein -->
+  <!-- ALLGEMEIN -->
   <div class="card">
     <div class="section-title">👤 Allgemein</div>
 
     <div class="field">
-      <label>Meine Spotter-Nummer <span>(optional)</span></label>
+      <label>Meine Spotter-Nummer <span class="opt-hint">(optional)</span></label>
       <select id="spotter">
         <option value="">— Keine Angabe —</option>
         <option>LU01 BUHOLZER Marc</option><option>LU02 STADELMANN Thierry</option>
@@ -82,12 +92,12 @@ textarea{min-height:90px}
     </div>
   </div>
 
-  <!-- Ausbildungstag Allgemein -->
+  <!-- AUSBILDUNGSTAG ALLGEMEIN -->
   <div class="card">
     <div class="section-title">📅 Ausbildungstag — Allgemein</div>
 
     <div class="field">
-      <label>Wie bewertest du den Ausbildungstag insgesamt? <span class="required">*</span></label>
+      <label>Bewertung Ausbildungstag gesamt <span class="required">*</span></label>
       <div class="stars" id="tag_gesamt">
         <button class="star-btn" onclick="setStar('tag_gesamt',1)">⭐ 1</button>
         <button class="star-btn" onclick="setStar('tag_gesamt',2)">⭐⭐ 2</button>
@@ -98,7 +108,7 @@ textarea{min-height:90px}
     </div>
 
     <div class="field">
-      <label>Wie bewertest du den theoretischen Teil (KMR-Test)? <span class="required">*</span></label>
+      <label>Bewertung theoretischer Teil (KMR-Test) <span class="required">*</span></label>
       <div class="stars" id="tag_theorie">
         <button class="star-btn" onclick="setStar('tag_theorie',1)">⭐ 1</button>
         <button class="star-btn" onclick="setStar('tag_theorie',2)">⭐⭐ 2</button>
@@ -109,27 +119,16 @@ textarea{min-height:90px}
     </div>
 
     <div class="field">
-      <label>Wie bewertest du den praktischen Teil (Stadtspiel)? <span class="required">*</span></label>
-      <div class="stars" id="tag_praxis">
-        <button class="star-btn" onclick="setStar('tag_praxis',1)">⭐ 1</button>
-        <button class="star-btn" onclick="setStar('tag_praxis',2)">⭐⭐ 2</button>
-        <button class="star-btn" onclick="setStar('tag_praxis',3)">⭐⭐⭐ 3</button>
-        <button class="star-btn" onclick="setStar('tag_praxis',4)">⭐⭐⭐⭐ 4</button>
-        <button class="star-btn" onclick="setStar('tag_praxis',5)">⭐⭐⭐⭐⭐ 5</button>
-      </div>
-    </div>
-
-    <div class="field">
       <label>War die Dauer des Ausbildungstages angemessen?</label>
-      <div class="radio-group" id="tag_dauer">
-        <label class="radio-opt" onclick="setRadio('tag_dauer','Zu kurz')"><span>⏩ Zu kurz</span></label>
-        <label class="radio-opt" onclick="setRadio('tag_dauer','Genau richtig')"><span>✅ Genau richtig</span></label>
-        <label class="radio-opt" onclick="setRadio('tag_dauer','Zu lang')"><span>⏪ Zu lang</span></label>
+      <div class="radio-group">
+        <button class="radio-btn" onclick="setRadio('tag_dauer', this)">⏩ Zu kurz</button>
+        <button class="radio-btn" onclick="setRadio('tag_dauer', this)">✅ Genau richtig</button>
+        <button class="radio-btn" onclick="setRadio('tag_dauer', this)">⏪ Zu lang</button>
       </div>
     </div>
 
     <div class="field">
-      <label>Wie war die Teamstimmung / der Zusammenhalt? <span class="required">*</span></label>
+      <label>Teamstimmung / Zusammenhalt <span class="required">*</span></label>
       <div class="stars" id="tag_stimmung">
         <button class="star-btn" onclick="setStar('tag_stimmung',1)">⭐ 1</button>
         <button class="star-btn" onclick="setStar('tag_stimmung',2)">⭐⭐ 2</button>
@@ -140,27 +139,27 @@ textarea{min-height:90px}
     </div>
 
     <div class="field">
-      <label>Was hat dir am Ausbildungstag besonders gut gefallen? <span>(optional)</span></label>
-      <textarea id="tag_gut" placeholder="z.B. die Mischung aus Theorie und Praxis, das Quiz war lustig…"></textarea>
+      <label>Was hat dir am Ausbildungstag besonders gut gefallen? <span class="opt-hint">(optional)</span></label>
+      <textarea id="tag_gut" placeholder="z.B. die Mischung aus Theorie und Praxis…"></textarea>
     </div>
 
     <div class="field">
-      <label>Was würdest du für den nächsten Ausbildungstag anders machen? <span>(optional)</span></label>
-      <textarea id="tag_anders" placeholder="z.B. mehr Zeit für den praktischen Teil, andere Aktivität…"></textarea>
+      <label>Was würdest du für den nächsten Ausbildungstag anders machen? <span class="opt-hint">(optional)</span></label>
+      <textarea id="tag_anders" placeholder="z.B. mehr Zeit für den praktischen Teil…"></textarea>
     </div>
 
     <div class="field">
-      <label>Welche Themen wünschst du dir für den nächsten Ausbildungstag? <span>(optional)</span></label>
-      <textarea id="tag_themen" placeholder="z.B. Rechtliche Grundlagen, Kommunikation, Deeskalation…"></textarea>
+      <label>Welche Themen wünschst du dir für den nächsten Ausbildungstag? <span class="opt-hint">(optional)</span></label>
+      <textarea id="tag_themen" placeholder="z.B. Rechtliche Grundlagen, Deeskalation…"></textarea>
     </div>
 
     <div class="field">
-      <label>Würdest du dieses Format des Ausbildungstages weiterempfehlen?</label>
-      <div class="radio-group" id="tag_empfehlung">
-        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Ja, auf jeden Fall')"><span>👍 Ja, auf jeden Fall</span></label>
-        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Eher ja')"><span>🙂 Eher ja</span></label>
-        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Eher nein')"><span>😐 Eher nein</span></label>
-        <label class="radio-opt" onclick="setRadio('tag_empfehlung','Nein')"><span>👎 Nein</span></label>
+      <label>Würdest du dieses Format weiterempfehlen?</label>
+      <div class="radio-group">
+        <button class="radio-btn" onclick="setRadio('tag_empfehlung', this)">👍 Ja, auf jeden Fall</button>
+        <button class="radio-btn" onclick="setRadio('tag_empfehlung', this)">🙂 Eher ja</button>
+        <button class="radio-btn" onclick="setRadio('tag_empfehlung', this)">😐 Eher nein</button>
+        <button class="radio-btn" onclick="setRadio('tag_empfehlung', this)">👎 Nein</button>
       </div>
     </div>
   </div>
@@ -192,17 +191,27 @@ textarea{min-height:90px}
     </div>
 
     <div class="field">
-      <label>Was hat gut funktioniert? <span>(optional)</span></label>
+      <label>Würdest du den KMR im echten Einsatz nutzen wollen? <span class="required">*</span></label>
+      <div class="radio-group">
+        <button class="radio-btn" onclick="setRadio('einsatz', this)">👍 Ja, auf jeden Fall</button>
+        <button class="radio-btn" onclick="setRadio('einsatz', this)">🙂 Eher ja</button>
+        <button class="radio-btn" onclick="setRadio('einsatz', this)">😐 Eher nein</button>
+        <button class="radio-btn" onclick="setRadio('einsatz', this)">👎 Nein</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Was hat gut funktioniert? <span class="opt-hint">(optional)</span></label>
       <textarea id="kmr_gut" placeholder="z.B. Entwurf speichern und laden hat super geklappt…"></textarea>
     </div>
 
     <div class="field">
-      <label>Was muss verbessert werden? <span>(optional)</span></label>
+      <label>Was muss verbessert werden? <span class="opt-hint">(optional)</span></label>
       <textarea id="kmr_verbesserung" placeholder="z.B. Pyro-Erfassung war unklar…"></textarea>
     </div>
   </div>
 
-  <!-- Counter -->
+  <!-- PYRO COUNTER -->
   <div class="card">
     <div class="section-title">🎆 Pyro Live Counter</div>
 
@@ -218,12 +227,12 @@ textarea{min-height:90px}
     </div>
 
     <div class="field">
-      <label>Bemerkungen zum Counter <span>(optional)</span></label>
+      <label>Bemerkungen zum Counter <span class="opt-hint">(optional)</span></label>
       <textarea id="counter_bem" placeholder="z.B. Sync war verzögert, Reset-Button gut…"></textarea>
     </div>
   </div>
 
-  <!-- Quiz -->
+  <!-- QUIZ -->
   <div class="card">
     <div class="section-title">🏆 Szenenkenner-Quiz</div>
 
@@ -237,24 +246,67 @@ textarea{min-height:90px}
         <button class="star-btn" onclick="setStar('quiz',5)">⭐⭐⭐⭐⭐ 5</button>
       </div>
     </div>
-  </div>
-
-  <!-- Einsatz -->
-  <div class="card">
-    <div class="section-title">🚔 Einsatztauglichkeit</div>
 
     <div class="field">
-      <label>Würdest du den KMR im echten Einsatz nutzen wollen? <span class="required">*</span></label>
-      <div class="radio-group" id="einsatz">
-        <label class="radio-opt" onclick="setRadio('einsatz','Ja, auf jeden Fall')"><span>👍 Ja, auf jeden Fall</span></label>
-        <label class="radio-opt" onclick="setRadio('einsatz','Eher ja')"><span>🙂 Eher ja</span></label>
-        <label class="radio-opt" onclick="setRadio('einsatz','Eher nein')"><span>😐 Eher nein</span></label>
-        <label class="radio-opt" onclick="setRadio('einsatz','Nein')"><span>👎 Nein</span></label>
+      <label>Schwierigkeitsgrad der Quiz-Fragen?</label>
+      <div class="radio-group">
+        <button class="radio-btn" onclick="setRadio('quiz_schwierigkeit', this)">😅 Zu schwierig</button>
+        <button class="radio-btn" onclick="setRadio('quiz_schwierigkeit', this)">✅ Genau richtig</button>
+        <button class="radio-btn" onclick="setRadio('quiz_schwierigkeit', this)">😴 Zu einfach</button>
       </div>
     </div>
 
     <div class="field">
-      <label>Weitere Bemerkungen / Wünsche <span>(optional)</span></label>
+      <label>Bemerkungen zum Quiz <span class="opt-hint">(optional)</span></label>
+      <textarea id="quiz_bem" placeholder="z.B. mehr Fragen zum Thema X, Insider-Fragen waren top…"></textarea>
+    </div>
+  </div>
+
+  <!-- STADTSPIEL -->
+  <div class="card">
+    <div class="section-title">🏃 Stadtspiel</div>
+
+    <div class="field">
+      <label>Wie hat dir das Stadtspiel gefallen? <span class="required">*</span></label>
+      <div class="stars" id="stadtspiel_gesamt">
+        <button class="star-btn" onclick="setStar('stadtspiel_gesamt',1)">⭐ 1</button>
+        <button class="star-btn" onclick="setStar('stadtspiel_gesamt',2)">⭐⭐ 2</button>
+        <button class="star-btn" onclick="setStar('stadtspiel_gesamt',3)">⭐⭐⭐ 3</button>
+        <button class="star-btn" onclick="setStar('stadtspiel_gesamt',4)">⭐⭐⭐⭐ 4</button>
+        <button class="star-btn" onclick="setStar('stadtspiel_gesamt',5)">⭐⭐⭐⭐⭐ 5</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>War die Spielidee (Spotter vs. Ultras) gut umgesetzt?</label>
+      <div class="radio-group">
+        <button class="radio-btn" onclick="setRadio('stadtspiel_konzept', this)">👍 Ja, sehr gut</button>
+        <button class="radio-btn" onclick="setRadio('stadtspiel_konzept', this)">🙂 Eher ja</button>
+        <button class="radio-btn" onclick="setRadio('stadtspiel_konzept', this)">😐 Eher nein</button>
+        <button class="radio-btn" onclick="setRadio('stadtspiel_konzept', this)">👎 Nein</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>War die Dauer des Stadtspiels angemessen?</label>
+      <div class="radio-group">
+        <button class="radio-btn" onclick="setRadio('stadtspiel_dauer', this)">⏩ Zu kurz</button>
+        <button class="radio-btn" onclick="setRadio('stadtspiel_dauer', this)">✅ Genau richtig</button>
+        <button class="radio-btn" onclick="setRadio('stadtspiel_dauer', this)">⏪ Zu lang</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Welche Verbesserungsvorschläge hast du für das Stadtspiel? <span class="opt-hint">(optional)</span></label>
+      <textarea id="stadtspiel_bem" placeholder="z.B. andere Hotspots, andere Regeln, mehr Zeit…"></textarea>
+    </div>
+  </div>
+
+  <!-- ABSCHLUSS -->
+  <div class="card">
+    <div class="section-title">💬 Abschluss</div>
+    <div class="field">
+      <label>Weitere Bemerkungen / Wünsche <span class="opt-hint">(optional)</span></label>
       <textarea id="bemerkungen" placeholder="Alles was du noch loswerden möchtest…"></textarea>
     </div>
   </div>
@@ -266,7 +318,7 @@ textarea{min-height:90px}
 <div class="success" id="success-msg">
   <div class="success-icon">✅</div>
   <div class="success-title">Danke für dein Feedback!</div>
-  <div class="success-sub">Deine Antworten wurden gespeichert.<br>Das hilft uns, den nächsten Ausbildungstag noch besser zu machen.</div>
+  <div class="success-sub">Deine Antworten wurden gespeichert.<br>Das hilft uns, den nächsten Ausbildungstag noch besser zu machen. 🚔</div>
 </div>
 
 <script>
@@ -275,25 +327,25 @@ const vals = {};
 
 const setStar = (field, val) => {
   vals[field] = String(val);
-  const btns = document.querySelectorAll(`#${field} .star-btn`);
-  btns.forEach((b,i) => b.classList.toggle('active', i < val));
+  document.querySelectorAll(`#${field} .star-btn`).forEach((b,i) => {
+    b.classList.toggle('active', i < val);
+  });
 };
 
-const setRadio = (field, val) => {
-  vals[field] = val;
-  document.querySelectorAll(`#${field} .radio-opt`).forEach(o => {
-    o.classList.toggle('active', o.querySelector('span').textContent.trim() === val);
+const setRadio = (field, btn) => {
+  vals[field] = btn.textContent.trim();
+  btn.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => {
+    b.classList.toggle('active', b === btn);
   });
 };
 
 const submitForm = async () => {
-  const required = ['gesamt','tag_gesamt','tag_theorie','tag_praxis','tag_stimmung','kmr_ux','kmr_rel','counter_ux','quiz','einsatz'];
+  const required = ['gesamt','tag_gesamt','tag_theorie','tag_stimmung','kmr_ux','kmr_rel','einsatz','counter_ux','quiz','stadtspiel_gesamt'];
   const missing = required.filter(f => !vals[f]);
   if (missing.length > 0) {
-    alert('Bitte alle Pflichtfelder (⭐ und Auswahl) ausfüllen.');
+    alert('Bitte alle Pflichtfelder ausfüllen (markiert mit *).');
     return;
   }
-
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = '⏳ Wird gespeichert…';
@@ -304,7 +356,6 @@ const submitForm = async () => {
     gesamt: vals.gesamt||'',
     tag_gesamt: vals.tag_gesamt||'',
     tag_theorie: vals.tag_theorie||'',
-    tag_praxis: vals.tag_praxis||'',
     tag_dauer: vals.tag_dauer||'',
     tag_stimmung: vals.tag_stimmung||'',
     tag_gut: document.getElementById('tag_gut').value,
@@ -313,19 +364,23 @@ const submitForm = async () => {
     tag_empfehlung: vals.tag_empfehlung||'',
     kmr_ux: vals.kmr_ux||'',
     kmr_rel: vals.kmr_rel||'',
+    einsatz: vals.einsatz||'',
     kmr_gut: document.getElementById('kmr_gut').value,
     kmr_verbesserung: document.getElementById('kmr_verbesserung').value,
     counter_ux: vals.counter_ux||'',
     counter_bem: document.getElementById('counter_bem').value,
     quiz: vals.quiz||'',
-    einsatz: vals.einsatz||'',
+    quiz_schwierigkeit: vals.quiz_schwierigkeit||'',
+    quiz_bem: document.getElementById('quiz_bem').value,
+    stadtspiel_gesamt: vals.stadtspiel_gesamt||'',
+    stadtspiel_konzept: vals.stadtspiel_konzept||'',
+    stadtspiel_dauer: vals.stadtspiel_dauer||'',
+    stadtspiel_bem: document.getElementById('stadtspiel_bem').value,
     bemerkungen: document.getElementById('bemerkungen').value,
     _: Date.now()
   });
 
-  try {
-    await fetch(`${SHEETS_URL}?${params}`);
-  } catch(e) {}
+  try { await fetch(`${SHEETS_URL}?${params}`); } catch(e) {}
 
   document.getElementById('form-content').style.display = 'none';
   document.getElementById('success-msg').style.display = 'block';
