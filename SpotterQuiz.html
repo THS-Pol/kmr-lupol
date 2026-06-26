@@ -80,49 +80,41 @@ body{font-family:'Arial',sans-serif;background:#0a0f1e;color:#fff;min-height:100
 <body>
 <div id="app"></div>
 <script>
-const ROUNDS = [
-  { title:"Runde 1 — FC Luzern Geschichte", emoji:"🔵", questions:[
-    {q:"In welchem Jahr gewann der FC Luzern seinen bisher einzigen Schweizer Meistertitel?",opts:["1984","1989","1993","1997"],a:1},
-    {q:"Wie oft hat der FC Luzern den Schweizer Cup bisher gewonnen?",opts:["1 Mal","2 Mal","3 Mal","4 Mal"],a:2},
-    {q:"Gegen wen gewann der FCL 2021 den Schweizer Cup und mit welchem Resultat?",opts:["YB 2:1","FC St. Gallen 3:1","FC Basel 2:0","FC Zürich 1:0"],a:1},
-    {q:"Wer erzielte das 1:0 für den FCL im Cupfinal 2021?",opts:["Pascal Schürpf","Jordy Wehrmann","Ibrahima Ndiaye","Louis Schaub"],a:2},
-    {q:"Welcher Spotter stürzt öfters ab als Windows? 💻",opts:["Garattoni","Jones","Marbacher","Bertschi"],a:1},
-    {q:"In welchem Jahr öffnete die swissporarena mit dem ersten Meisterschaftsspiel?",opts:["2009","2010","2011","2012"],a:2},
-    {q:"Welches war das offizielle Einweihungsspiel der swissporarena im September 2011?",opts:["FC Bayern München","Hamburger SV","Borussia Dortmund","1. FC Köln"],a:1},
-    {q:"In welchem Interimsstadion spielte der FCL während des Baus der swissporarena?",opts:["Stadion Gersag, Emmenbrücke","Kleinfeld, Kriens","Sportpark Horw","Allmend provisorisch"],a:0},
-    {q:"Wer nimmt nach einem Spotter-Ausbildungstag gerne mal die falschen Pillen ein? 💊",opts:["Baur","Stirnimann","Jones","Garattoni"],a:2},
-    {q:"Zu welchem ausländischen Club wechselte FCL-Juwel Ardon Jashari?",opts:["Stade Rennais","Eintracht Frankfurt","FC Brügge","Sporting Lissabon"],a:2},
-    {q:"In welchem Jahr gewann der FCL den zweiten Cupsieg und gegen wen?",opts:["1985 gegen YB","1990 gegen Basel","1992 gegen Lugano","1997 gegen Sion"],a:2}
-  ]},
-  { title:"Runde 2 — Aktuelles FCL & SFL", emoji:"🏆", questions:[
-    {q:"Wie heisst der aktuelle Präsident des FC Luzern?",opts:["Josef Bieri","Stefan Wolf","Michael Sigerist","Domenic Urech"],a:2},
-    {q:"Wie heisst der Geschäftsführer (CEO) des FC Luzern?",opts:["Simon Laager","Laurent Prince","Michael Sigerist","Domenic Urech"],a:3},
-    {q:"Wie heisst der neue Cheftrainer des FC Luzern ab Saison 2026/27?",opts:["Mario Frick","Fabio Celestini","Jörg «Udo» Portmann","Stefan Kobel"],a:2},
-    {q:"Wie gross ist die Kapazität des Gästesektors in der swissporarena?",opts:["850","1025","1200","1450"],a:1},
-    {q:"Welcher Spotter zeigte sich bei der Hamburger-Taufe auch schon nackt? 🍔",opts:["Silas","Marco","Nate","Aaron"],a:2},
-    {q:"Welcher Spieler wechselt für die Saison 2026/27 vom FC Thun zum FC Luzern?",opts:["Pascal Schürpf","Leonardo Bertone","Nando Toggenburger","Silvan Hefti"],a:1},
-    {q:"Wer wird neuer Assistenztrainer beim FC Luzern?",opts:["Roland Vrabec","Christian Schwegler","Daniel Gygax","Sandro Chieffo"],a:2},
-    {q:"Von welcher Mannschaft stammt der Fan, welcher einen Böller beim Gästeeinlass in die Nullzone warf und beim nächsten Spiel festgenommen wurde?",opts:["FC Basel","FC Zürich","BSC Young Boys","Servette FC"],a:3},
-    {q:"Wie heisst ab 1. Juli 2026 neu das Stadion des FC Luzern?",opts:["Pilatus Arena","Thermoplan Arena","Luzern Allmend Arena","Zentralschweiz Arena"],a:1},
-    {q:"Wie viele Cupsiege hat der Grasshopper Club Zürich?",opts:["13","16","19","22"],a:2},
-    {q:"Wie viele Meistertitel in Folge gewann BSC Young Boys von 2018 bis 2024?",opts:["5","6","7","8"],a:2}
-  ]},
-  { title:"Runde 3 — SC Kriens & Innerschweiz", emoji:"🟢", questions:[
-    {q:"In welchem Jahr wurde der SC Kriens (in heutiger Form) gegründet?",opts:["1920","1931","1944","1962"],a:2},
-    {q:"Wann machte der SC Kriens den Aufstieg 2026 in die Challenge League perfekt?",opts:["12. April 2026","30. April 2026","23. Mai 2026","7. Juni 2026"],a:2},
-    {q:"Gegen wen gewann der SC Kriens das entscheidende Aufstiegsspiel 2026?",opts:["FC Rapperswil-Jona","SC Brühl","U21 BSC Young Boys","FC Biel-Bienne"],a:2},
-    {q:"Wie heisst der Trainer der 1. Mannschaft des SC Kriens?",opts:["Gianluca Frontino","René van Eck","Michael «Mike» Winsauer","Marco Schällibaum"],a:2},
-    {q:"Wie viele Zuschauer fasst das Sportzentrum Kleinfeld in Kriens?",opts:["2'000","2'800","3'500","4'200"],a:2},
-    {q:"Wie heisst der Torhütertrainer beim FC Luzern?",opts:["David Zibung","Vaso Vasic","Lorenzo Bucchi","Marco Storari"],a:2},
-    {q:"Wer ist beim FC Luzern für die Haustechnik verantwortlich und schnitt schon mit einem Bolzenschneider die Kette auf, die Fans als Protest am Tor befestigt hatten? 🔧",opts:["Hanspeter Meier","Alfred Köhler","Bruno Walther","Peter Keller"],a:1},
-    {q:"Wann fand das für die Luzerner Polizei geschichtsträchtige Spiel gegen den FC St. Gallen statt, bei dem Päuli Winiker Seite an Seite mit der OD-Kette und dem Wasserwerfer die Zentralstrasse entlangging?",opts:["14.03.2022","20.05.2023","08.10.2023","15.04.2024"],a:1},
-    {q:"Wessen Mutter ist so hässlich, dass sie beim Halloween nicht verkleidet an die Tür klopft, sondern einfach ihr Gesicht zeigt? 👻",opts:["Am Garattoni sini Muetter","Am Jones sini Muetter","Am Marbacher sini Muetter","Am Bertschi sini Muetter"],a:1},
-    {q:"In welchem Jahr feierte der FC Luzern das 100-Jahr-Jubiläum mit einem Spiel gegen den FC Barcelona?",opts:["1997","2001","2005","2010"],a:1}
-  ]}
+const QUESTIONS = [
+  {q:"In welchem Jahr gewann der FC Luzern seinen bisher einzigen Schweizer Meistertitel?",opts:["1984","1989","1993","1997"],a:1},
+  {q:"Wie oft hat der FC Luzern den Schweizer Cup bisher gewonnen?",opts:["1 Mal","2 Mal","3 Mal","4 Mal"],a:2},
+  {q:"Gegen wen gewann der FCL 2021 den Schweizer Cup und mit welchem Resultat?",opts:["YB 2:1","FC St. Gallen 3:1","FC Basel 2:0","FC Zürich 1:0"],a:1},
+  {q:"Wer erzielte das 1:0 für den FCL im Cupfinal 2021?",opts:["Pascal Schürpf","Jordy Wehrmann","Ibrahima Ndiaye","Louis Schaub"],a:2},
+  {q:"In welchem Jahr öffnete die swissporarena mit dem ersten Meisterschaftsspiel?",opts:["2009","2010","2011","2012"],a:2},
+  {q:"Wer war der Gegner beim Einweihungsspiel der swissporarena?",opts:["FC Bayern München","Hamburger SV","Borussia Dortmund","1. FC Köln"],a:1},
+  {q:"In welchem Interimsstadion spielte der FCL während des Baus der swissporarena?",opts:["Stadion Gersag, Emmenbrücke","Kleinfeld, Kriens","Sportpark Horw","Allmend provisorisch"],a:0},
+  {q:"Wer nimmt nach einem Spotter-Ausbildungstag gerne mal die falschen Pillen ein? 💊",opts:["Baur","Stirnimann","Jones","Garattoni"],a:2},
+  {q:"Zu welchem ausländischen Club wechselte FCL-Juwel Ardon Jashari?",opts:["Stade Rennais","Eintracht Frankfurt","FC Brügge","Sporting Lissabon"],a:2},
+  {q:"In welchem Jahr gewann der FCL den zweiten Cupsieg und gegen wen?",opts:["1985 gegen YB","1990 gegen Basel","1992 gegen Lugano","1997 gegen Sion"],a:2},
+  {q:"Wie heisst der aktuelle Präsident des FC Luzern?",opts:["Josef Bieri","Stefan Wolf","Michael Sigerist","Domenic Urech"],a:2},
+  {q:"Wie heisst der Geschäftsführer (CEO) des FC Luzern?",opts:["Simon Laager","Laurent Prince","Michael Sigerist","Domenic Urech"],a:3},
+  {q:"Wie heisst der neue Cheftrainer des FC Luzern ab Saison 2026/27?",opts:["Mario Frick","Fabio Celestini","Jörg «Udo» Portmann","Stefan Kobel"],a:2},
+  {q:"Wie gross ist die Kapazität des Gästesektors in der swissporarena?",opts:["850","1025","1200","1450"],a:1},
+  {q:"Welcher Spotter zeigte sich bei der Hamburger-Taufe auch schon nackt? 🍔",opts:["Silas","Marco","Nate","Aaron"],a:2},
+  {q:"Welcher Spieler wechselt für die Saison 2026/27 vom FC Thun zum FC Luzern?",opts:["Pascal Schürpf","Leonardo Bertone","Nando Toggenburger","Silvan Hefti"],a:1},
+  {q:"Wer wird neuer Assistenztrainer beim FC Luzern?",opts:["Roland Vrabec","Christian Schwegler","Daniel Gygax","Sandro Chieffo"],a:2},
+  {q:"Von welcher Mannschaft stammt der Fan, der beim Gästeeinlass einen Böller in die Nullzone warf und beim darauffolgenden Spiel festgenommen wurde?",opts:["FC Basel","FC Zürich","BSC Young Boys","Servette FC"],a:3},
+  {q:"Wie heisst ab 1. Juli 2026 neu das Stadion des FC Luzern?",opts:["Pilatus Arena","Thermoplan Arena","Luzern Allmend Arena","Zentralschweiz Arena"],a:1},
+  {q:"Wie viele Cupsiege hat der Grasshopper Club Zürich?",opts:["13","16","19","22"],a:2},
+  {q:"Wie viele Meistertitel in Folge gewann BSC Young Boys von 2018 bis 2024?",opts:["5","6","7","8"],a:2},
+  {q:"In welchem Jahr wurde der SC Kriens (in heutiger Form) gegründet?",opts:["1920","1931","1944","1962"],a:2},
+  {q:"Wann machte der SC Kriens den Aufstieg 2026 in die Challenge League perfekt?",opts:["12. April 2026","30. April 2026","23. Mai 2026","7. Juni 2026"],a:2},
+  {q:"Gegen wen gewann der SC Kriens das entscheidende Aufstiegsspiel 2026?",opts:["FC Rapperswil-Jona","SC Brühl","U21 BSC Young Boys","FC Biel-Bienne"],a:2},
+  {q:"Wie heisst der Trainer der 1. Mannschaft des SC Kriens?",opts:["Gianluca Frontino","René van Eck","Michael «Mike» Winsauer","Marco Schällibaum"],a:2},
+  {q:"Wie viele Zuschauer fasst das Sportzentrum Kleinfeld in Kriens?",opts:["2'000","2'800","3'500","4'200"],a:2},
+  {q:"Wie heisst der Torhütertrainer beim FC Luzern?",opts:["David Zibung","Vaso Vasic","Lorenzo Bucchi","Marco Storari"],a:2},
+  {q:"Wer ist beim FC Luzern für die Haustechnik verantwortlich und schnitt schon mit einem Bolzenschneider die Kette auf, welche von den Fans vor dem Spiel als Protest für die Anspielzeiten am Tor befestigt wurde? 🔧",opts:["Hanspeter Meier","Alfred Köhler","Bruno Walther","Peter Keller"],a:1},
+  {q:"Wann fand das für die Luzerner Polizei aufgrund der Ausschreitungen geschichtsträchtige Fussballspiel gegen den FC St. Gallen statt, bei dem Päuli Winiker Seite an Seite mit der OD-Kette und dem Wasserwerfer die Zentralstrasse entlangging?",opts:["14.03.2022","20.05.2023","08.10.2023","15.04.2024"],a:1},
+  {q:"In welchem Jahr feierte der FC Luzern das 100-Jahr-Jubiläum mit einem Spiel gegen den FC Barcelona?",opts:["1997","2001","2005","2010"],a:1}
 ];
 
 const LETTERS = ['A','B','C','D'];
-const ALL_Q = ROUNDS.flatMap((r,ri)=>r.questions.map((q,qi)=>({...q,round:ri,roundTitle:r.title,roundEmoji:r.emoji,globalIdx:ri*15+qi})));
+const ALL_Q = QUESTIONS.map((q,i)=>({...q,globalIdx:i}));
 const TOTAL = ALL_Q.length;
 
 let S = {phase:'setup',names:{A:'🔵 Spotter',B:'🔴 Ultras'},scores:{A:0,B:0},qIdx:0,showOpts:false,showAns:false,history:[]};
@@ -149,7 +141,7 @@ const renderSetup=()=>`
 <div class="setup">
   <div class="setup-logo">🚔</div>
   <div class="setup-title">Szenenkenner Challenge</div>
-  <div class="setup-sub">Luzerner Polizei · Ausbildungstag 2026 · ${TOTAL} Fragen · 3 Runden</div>
+  <div class="setup-sub">Luzerner Polizei · Ausbildungstag 2026 · ${TOTAL} Fragen</div>
   <div class="setup-card">
     <label class="lbl">Name Team A (links)</label>
     <input class="inp" id="nameA" value="🔵 Spotter" placeholder="Team A">
@@ -193,7 +185,7 @@ const renderGame=()=>{
       <div><div class="score-name">${esc(S.names.A)}</div><div class="score-pts">${S.scores.A}</div></div>
     </div>
     <div class="score-mid">
-      <div class="round-badge">${q.roundEmoji} ${esc(q.roundTitle)}</div>
+      <div class="round-badge">🚔 Szenenkenner Challenge</div>
       <div class="q-counter">Frage ${S.qIdx+1} / ${TOTAL}</div>
       <div class="progress-bar"><div class="progress-fill" style="width:${progressPct}%"></div></div>
     </div>
@@ -202,7 +194,7 @@ const renderGame=()=>{
     </div>
   </div>
   <div class="main">
-    <div class="q-phase-badge">${q.roundEmoji} ${esc(q.roundTitle)} · Frage ${(S.qIdx%ALL_Q.filter(x=>x.round===q.round).length)+1} von ${ROUNDS[q.round].questions.length}</div>
+    <div class="q-phase-badge">Frage ${S.qIdx+1} von ${TOTAL}</div>
     <div class="q-text">${esc(q.q)}</div>
     <div class="opts-grid">${optsHtml}</div>
     ${ansBox}
